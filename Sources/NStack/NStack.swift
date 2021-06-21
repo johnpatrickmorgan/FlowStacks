@@ -1,50 +1,46 @@
 import SwiftUI
 
-public struct NStack<ViewModel: Hashable, V: View>: View {
+public struct NStack<Screen, V: View>: View {
     
-    @Binding var stack: [ViewModel]
-    @ViewBuilder var builder: (ViewModel) -> V
+    @Binding var stack: [Screen]
+    @ViewBuilder var buildView: (Screen) -> V
     
     public var body: some View {
-        NavigationView {
-            stack
-                .enumerated()
-                .reversed()
-                .reduce(NavNode<V>.unlinked) { viewToPush, new in
-                    let (index, screen) = new
-                    return NavNode.linked(
-                        view: builder(screen),
-                        pushing: viewToPush,
-                        pop: {
-                            stack = Array(stack.prefix(index + 1))
-                        }
-                    )
-                }
-        }
+        stack
+            .enumerated()
+            .reversed()
+            .reduce(NavNode<Screen, V>.unlinked) { pushedView, new in
+                let (index, screen) = new
+                return NavNode<Screen, V>.linked(
+                    view: buildView(screen),
+                    pushing: pushedView,
+                    stack: $stack,
+                    index: index
+                )
+            }
     }
 }
 
-public indirect enum NavNode<V: View>: View {
+indirect enum NavNode<Screen, V: View>: View {
     
-    case linked(view: V, pushing: NavNode<V>, pop: () -> Void)
+    case linked(view: V, pushing: NavNode<Screen, V>, stack: Binding<[Screen]>, index: Int)
     case unlinked
     
-    var isUnlinked: Bool {
-        guard case .unlinked = self else { return false }
-        return true
-    }
-    
-    public var body: some View {
-        if case .linked(let view, let pushedView, let pop) = self {
+    var body: some View {
+        if case .linked(let view, let pushedView, let stack, let index) = self {
             ZStack {
                 NavigationLink(
                     destination: pushedView,
                     isActive: Binding(
-                        get: { !pushedView.isUnlinked },
-                        set: { shouldStayPushed in
-                            if !shouldStayPushed {
-                                pop()
+                        get: {
+                            if case .unlinked = pushedView {
+                                return false
                             }
+                            return stack.wrappedValue.count > index
+                        },
+                        set: { isPushed in
+                            guard !isPushed else { return }
+                            stack.wrappedValue = Array(stack.wrappedValue.prefix(index + 1))
                         }),
                     label: { EmptyView() }
                 )
