@@ -1,6 +1,6 @@
 # NStack
 
-An NStack allows you to hoist SwiftUI navigation state into a higher-level coordinator view. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within an app.
+An NStack allows you to hoist SwiftUI navigation state into a higher-level coordinator view. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within the navigation flow of an app.
 
 
 ```swift
