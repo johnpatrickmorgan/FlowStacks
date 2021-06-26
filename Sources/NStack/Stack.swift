@@ -66,7 +66,7 @@ public struct Stack<E> {
             newArray.count <= array.count + 1,
             """
             ERROR: SwiftUI does not support increasing the navigation stack
-            by more than one in a single update.
+            by more than one in a single update. (FB9200490)
             OLD STACK:
             \(array)
             NEW STACK:
