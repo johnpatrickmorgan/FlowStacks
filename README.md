@@ -1,6 +1,6 @@
 # NStack
 
-An NStack allows you to manage SwiftUI navigation state with a single stack property. You can hoist that state into a high-level view, such as a coordinator. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within the navigation flow of an app.
+An NStack allows you to manage SwiftUI navigation state with a single stack property. This makes it easy to hoist that state into a high-level view, such as a coordinator. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within the navigation flow of an app.
 
 ## Usage
 
@@ -59,7 +59,7 @@ As you can see, pushing a new view is as easy as `stack.push(...)` and popping c
 
 If the user taps the back button, the stack will be automatically updated to reflect its new state. Navigating back with an edge swipe gesture or long-press gesture on the back button will also update the stack.
 
-Coordinators are just views, so they can be presented, added to a `TabView`, added to a `WindowGroup` etc.
+Coordinators are just views, so they can be presented, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. 
 
 ## Child coordinators
 
@@ -79,7 +79,7 @@ enum Screen {
     case number(NumberViewModel)
 }
 
-class AppViewModel: ObservableObject {
+class AppCoordinatorViewModel: ObservableObject {
     
     @Published var stack = Stack<Screen>()
     
@@ -106,7 +106,7 @@ class AppViewModel: ObservableObject {
 
 struct AppCoordinator: View {
     
-    @ObservedObject var viewModel = ViewModel()
+    @ObservedObject var viewModel = AppCoordinatorViewModel()
     
     var body: some View {
         NavigationView {
@@ -127,4 +127,4 @@ struct AppCoordinator: View {
 
 ## Limitations
 
-Currently, SwiftUI does not support increasing the navigation stack by more than one in a a single update. The `Stack` object will throw an assertion failure if you try to do so.
+Currently, SwiftUI does not support increasing the navigation stack by more than one in a single update. The `Stack` object will throw an assertion failure if you try to do so.

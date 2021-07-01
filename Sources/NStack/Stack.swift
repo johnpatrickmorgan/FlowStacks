@@ -33,7 +33,7 @@ public struct Stack<E> {
     
     /// Pops to a given index in the array of screens. The resulting screen count
     /// will be index + 1.
-    /// - Parameter index: <#index description#>
+    /// - Parameter index: The index that should become top of the stack.
     public mutating func popTo(index: Int) {
         array = Array(array.prefix(index + 1))
     }
