@@ -3,10 +3,10 @@ import Foundation
 /// A thin wrapper around an array. Stack provides some convenience methods for pushing
 /// and popping, and makes it harder to perform navigation operations that SwiftUI does
 /// not support.
-public struct Stack<E> {
+public struct Stack<Screen> {
     
     /// The underlying array of screens.
-    public internal(set) var array: [E]
+    public internal(set) var array: [Screen]
     
     /// Initializes the stack with an empty array of screens.
     public init() {
@@ -15,13 +15,13 @@ public struct Stack<E> {
     
     /// Initializes the stack with a single root screen.
     /// - Parameter root: The root screen.
-    public init(root: E) {
+    public init(root: Screen) {
         self.array = [root]
     }
     
     /// Pushes a new screen onto the stack.
     /// - Parameter screen: The screen to push.
-    public mutating func push(_ screen: E) {
+    public mutating func push(_ screen: Screen) {
         array.append(screen)
     }
     
@@ -50,7 +50,7 @@ public struct Stack<E> {
     /// - Parameter condition: The predicate indicating which screen to pop to.
     /// - Returns: A `Bool` indicating whether a screen was found.
     @discardableResult
-    public mutating func popTo(where condition: (E) -> Bool) -> Bool {
+    public mutating func popTo(where condition: (Screen) -> Bool) -> Bool {
         guard let index = array.lastIndex(where: condition) else {
             return false
         }
@@ -61,7 +61,7 @@ public struct Stack<E> {
     /// Replaces the current screen array with a new array. The count of the new
     /// array should be no more than the previous stack's count plus one.
     /// - Parameter newArray: The new screens array.
-    public mutating func replaceStack(with newArray: [E]) {
+    public mutating func replaceStack(with newArray: [Screen]) {
         assert(
             newArray.count <= array.count + 1,
             """
@@ -77,7 +77,7 @@ public struct Stack<E> {
     }
 }
 
-extension Stack where E: Equatable {
+extension Stack where Screen: Equatable {
     
     /// Pops to the topmost (most recently pushed) screen in the stack
     /// equal to the given screen. If no screens are found,
@@ -85,19 +85,19 @@ extension Stack where E: Equatable {
     /// - Parameter screen: The predicate indicating which screen to pop to.
     /// - Returns: A `Bool` indicating whether a matching screen was found.
     @discardableResult
-    public mutating func popTo(_ screen: E) -> Bool {
+    public mutating func popTo(_ screen: Screen) -> Bool {
         popTo(where: { $0 == screen })
     }
 }
 
-extension Stack where E: Identifiable {
+extension Stack where Screen: Identifiable {
     
     /// Pops to the topmost (most recently pushed) identifiable screen in the stack
     /// with the given ID. If no screens are found, the screens array will be unchanged.
     /// - Parameter id: The id of the screen to pop to.
     /// - Returns: A `Bool` indicating whether a matching screen was found.
     @discardableResult
-    public mutating func popTo(id: E.ID) -> Bool {
+    public mutating func popTo(id: Screen.ID) -> Bool {
         popTo(where: { $0.id == id })
     }
     
@@ -107,7 +107,7 @@ extension Stack where E: Identifiable {
     /// - Parameter screen: The screen to pop to.
     /// - Returns: A `Bool` indicating whether a matching screen was found.
     @discardableResult
-    public mutating func popTo(_ screen: E) -> Bool {
+    public mutating func popTo(_ screen: Screen) -> Bool {
         popTo(id: screen.id)
     }
 }

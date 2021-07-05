@@ -2,20 +2,23 @@ import Foundation
 import SwiftUI
 
 /// NStack maintains a stack of pushed views for use within a `NavigationView`.
-public struct NStack<Screen, V: View>: View {
+public struct NStack<Screen, ScreenView: View>: View {
     
+    /// The array of screens that represents the navigation stack.
     @Binding var stack: [Screen]
-    @ViewBuilder var buildView: (Screen) -> V
+    
+    /// A closure that builds a `ScreenView` from a `Screen`.
+    @ViewBuilder var buildView: (Screen) -> ScreenView
     
     public var body: some View {
         stack
             .enumerated()
             .reversed()
-            .reduce(NavigationNode<Screen, V>.end) { pushedView, new in
+            .reduce(NavigationNode<Screen, ScreenView>.end) { pushedNode, new in
                 let (index, screen) = new
-                return NavigationNode<Screen, V>.view(
+                return NavigationNode<Screen, ScreenView>.view(
                     buildView(screen),
-                    pushing: pushedView,
+                    pushing: pushedNode,
                     stack: $stack,
                     index: index
                 )
@@ -25,7 +28,12 @@ public struct NStack<Screen, V: View>: View {
 
 public extension NStack {
     
-    init(_ stack: Binding<Stack<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> V) {
+    /// Convenience initializer for creating an NStack using a binding to a `Stack`
+    /// of screens.
+    /// - Parameters:
+    ///   - stack: A binding to a stack of screens.
+    ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
+    init(_ stack: Binding<Stack<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
         self._stack = Binding(
             get: { stack.wrappedValue.array },
             set: { stack.wrappedValue.array = $0 }

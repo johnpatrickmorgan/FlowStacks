@@ -8,7 +8,7 @@ indirect enum NavigationNode<Screen, V: View>: View {
     case view(V, pushing: NavigationNode<Screen, V>, stack: Binding<[Screen]>, index: Int)
     case end
     
-    var isActiveBinding: Binding<Bool> {
+    private var isActiveBinding: Binding<Bool> {
         switch self {
         case .end, .view(_, .end, _, _):
             return .constant(false)
@@ -26,7 +26,7 @@ indirect enum NavigationNode<Screen, V: View>: View {
     }
     
     @ViewBuilder
-    var pushingView: some View {
+    private var pushingView: some View {
         switch self {
         case .end:
             EmptyView()
@@ -36,7 +36,7 @@ indirect enum NavigationNode<Screen, V: View>: View {
     }
     
     @ViewBuilder
-    var pushedView: some View {
+    private var pushedView: some View {
         switch self {
         case .end:
             EmptyView()
@@ -46,13 +46,15 @@ indirect enum NavigationNode<Screen, V: View>: View {
     }
     
     var body: some View {
-        ZStack {
-            NavigationLink(destination: pushedView, isActive: isActiveBinding, label: { EmptyView() })
+        pushingView
+            .background(
+                NavigationLink(destination: pushedView, isActive: isActiveBinding, label: EmptyView.init)
 #if os(iOS)
-                .isDetailLink(false)
+                    // NOTE: If this is set to true, there are some unexpected
+                    // pops when pushing more than 3 screens.
+                    .isDetailLink(false)
 #endif
-                .hidden()
-            pushingView
-        }
+                    .hidden()
+            )
     }
 }
