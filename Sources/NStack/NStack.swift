@@ -10,6 +10,15 @@ public struct NStack<Screen, ScreenView: View>: View {
     /// A closure that builds a `ScreenView` from a `Screen`.
     @ViewBuilder var buildView: (Screen) -> ScreenView
     
+    /// Initializer for creating an NStack using a binding to an array of screens.
+    /// - Parameters:
+    ///   - stack: A binding to an array of screens.
+    ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
+    public init(_ stack: Binding<[Screen]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+        self._stack = stack
+        self.buildView = buildView
+    }
+    
     public var body: some View {
         stack
             .enumerated()
