@@ -11,7 +11,7 @@ enum Screen {
     
     case home
     case numberList
-    case number(Int)
+    case numberDetail(Int)
 }
 ```
 
@@ -24,14 +24,14 @@ struct AppCoordinator: View {
     
     var body: some View {
         NavigationView {
-            NStack(stack: $stack) { screen in
+            NStack($stack) { screen in
                 switch screen {
                 case .home:
                     HomeView(onGoTapped: showNumberList)
                 case .numberList:
                     NumberListView(onNumberSelected: showNumber, cancel: pop)
-                case .number(let number):
-                    NumberView(number: number, cancel: popToRoot)
+                case .numberDetail(let number):
+                    NumberDetailView(number: number, cancel: popToRoot)
                 }
             }
         }
@@ -76,7 +76,7 @@ enum Screen {
     
     case home(HomeViewModel)
     case numberList(NumberListViewModel)
-    case number(NumberViewModel)
+    case numberDetail(NumberDetailViewModel)
 }
 
 class AppCoordinatorViewModel: ObservableObject {
@@ -92,7 +92,7 @@ class AppCoordinatorViewModel: ObservableObject {
     }
     
     func showNumber(_ number: Int) {
-        stack.push(.number(.init(number: number, cancel: popToRoot)))
+        stack.push(.numberDetail(.init(number: number, cancel: popToRoot)))
     }
     
     func pop() {
@@ -110,7 +110,7 @@ struct AppCoordinator: View {
     
     var body: some View {
         NavigationView {
-            NStack(stack: $viewModel.stack) { screen in
+            NStack($viewModel.stack) { screen in
                 switch screen {
                 case .home(let viewModel):
                     HomeView(viewModel: viewModel)
