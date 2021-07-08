@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name             = 'NStack'
-  s.version          = '0.0.4'
+  s.version          = '0.0.5'
   s.summary          = 'Hoist navigation state into a coordinator in SwiftUI.'
 
   s.description      = <<-DESC
