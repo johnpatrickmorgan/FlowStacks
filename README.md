@@ -8,7 +8,6 @@ To begin, create an enum encompassing each of the screens the navigation stack m
 
 ```swift
 enum Screen {
-    
     case home
     case numberList
     case numberDetail(Int)
@@ -19,7 +18,6 @@ You can then add a stack of these screens as a single property in a coordinator 
 
 ```swift
 struct AppCoordinator: View {
-    
     @State var stack = Stack<Screen>(root: .home)
     
     var body: some View {
@@ -73,14 +71,12 @@ Using `NStack`s in the coordinator pattern also works well when using View Model
 
 ```swift
 enum Screen {
-    
     case home(HomeViewModel)
     case numberList(NumberListViewModel)
     case numberDetail(NumberDetailViewModel)
 }
 
 class AppCoordinatorViewModel: ObservableObject {
-    
     @Published var stack = Stack<Screen>()
     
     init() {
@@ -105,7 +101,6 @@ class AppCoordinatorViewModel: ObservableObject {
 }
 
 struct AppCoordinator: View {
-    
     @ObservedObject var viewModel = AppCoordinatorViewModel()
     
     var body: some View {
@@ -128,3 +123,7 @@ struct AppCoordinator: View {
 ## Limitations
 
 Currently, SwiftUI does not support increasing the navigation stack by more than one in a single update. The `Stack` object will throw an assertion failure if you try to do so.
+
+## How does it work? 
+
+This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how NStack translates the stack of screens into a hierarchy of views and `NavigationLink`s. 
