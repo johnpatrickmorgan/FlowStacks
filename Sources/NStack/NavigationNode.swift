@@ -15,7 +15,7 @@ indirect enum NavigationNode<Screen, V: View>: View {
         case .view(_, .view, let stack, let index):
             return Binding(
                 get: {
-                    return stack.wrappedValue.count > index
+                    return stack.wrappedValue.count > index + 1
                 },
                 set: { isPushed in
                     guard !isPushed else { return }
