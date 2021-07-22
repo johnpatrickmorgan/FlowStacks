@@ -1,9 +1,9 @@
 import Foundation
 
-/// A thin wrapper around an array. Stack provides some convenience methods for pushing
+/// A thin wrapper around an array. NFlow provides some convenience methods for pushing
 /// and popping, and makes it harder to perform navigation operations that SwiftUI does
 /// not support.
-public struct Stack<Screen> {
+public struct NFlow<Screen> {
     
     /// The underlying array of screens.
     public internal(set) var array: [Screen]
@@ -61,7 +61,7 @@ public struct Stack<Screen> {
     /// Replaces the current screen array with a new array. The count of the new
     /// array should be no more than the previous stack's count plus one.
     /// - Parameter newArray: The new screens array.
-    public mutating func replaceStack(with newArray: [Screen]) {
+    public mutating func replaceNFlow(with newArray: [Screen]) {
         assert(
             newArray.count <= array.count + 1,
             """
@@ -77,7 +77,7 @@ public struct Stack<Screen> {
     }
 }
 
-extension Stack where Screen: Equatable {
+extension NFlow where Screen: Equatable {
     
     /// Pops to the topmost (most recently pushed) screen in the stack
     /// equal to the given screen. If no screens are found,
@@ -90,7 +90,7 @@ extension Stack where Screen: Equatable {
     }
 }
 
-extension Stack where Screen: Identifiable {
+extension NFlow where Screen: Identifiable {
     
     /// Pops to the topmost (most recently pushed) identifiable screen in the stack
     /// with the given ID. If no screens are found, the screens array will be unchanged.

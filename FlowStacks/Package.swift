@@ -1,24 +1,24 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.5
 
 import PackageDescription
 
 let package = Package(
-    name: "NStack",
+    name: "FlowStacks",
     platforms: [
         .iOS(.v13), .watchOS(.v7), .macOS(.v11), .tvOS(.v13),
     ],
     products: [
         .library(
-            name: "NStack",
-            targets: ["NStack"]),
+            name: "FlowStacks",
+            targets: ["FlowStacks"]),
     ],
     dependencies: [],
     targets: [
         .target(
-            name: "NStack",
+            name: "FlowStacks",
             dependencies: []),
         .testTarget(
-            name: "NStackTests",
-            dependencies: ["NStack"]),
+            name: "FlowStacksTests",
+            dependencies: ["FlowStacks"]),
     ]
 )

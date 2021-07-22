@@ -42,7 +42,7 @@ public extension NStack {
     /// - Parameters:
     ///   - stack: A binding to a stack of screens.
     ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
-    init(_ stack: Binding<Stack<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+    init(_ stack: Binding<NFlow<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
         self._stack = Binding(
             get: { stack.wrappedValue.array },
             set: { stack.wrappedValue.array = $0 }

@@ -19,6 +19,7 @@ indirect enum NavigationNode<Screen, V: View>: View {
                 },
                 set: { isPushed in
                     guard !isPushed else { return }
+                    guard stack.wrappedValue.count > index + 1 else { return }
                     stack.wrappedValue = Array(stack.wrappedValue.prefix(index + 1))
                 }
             )

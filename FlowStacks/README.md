@@ -1,6 +1,6 @@
-# NStack
+# FlowStacks
 
-An NStack allows you to manage SwiftUI navigation state with a single stack property. This makes it easy to hoist that state into a high-level view, such as a coordinator. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within the navigation flow of an app.
+*FlowStacks* allow you to manage complex SwiftUI navigation and presentation state with a single piece of state. This makes it easy to hoist that state into a high-level coordinator view. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within the navigation flow of an app.
 
 ## Usage
 
@@ -14,11 +14,11 @@ enum Screen {
 }
 ```
 
-You can then add a stack of these screens as a single property in a coordinator view. In the body of the coordinator view, return a `NavigationView` containing an `NStack`. The `NStack` should be initialized with a binding to the stack, and a `ViewBuilder` closure. The closure builds a view from a given screen, e.g.:
+You can then add a flow representing a stack of these screens (`NFlow` for navigation, or `PFlow` for presentation) as a single property in a coordinator view. In the body of the coordinator view, initialize an `NStack` (or `PStack` for presentation) with a binding to the flow, and a `ViewBuilder` closure. The closure builds a view for a given screen, e.g.:
 
 ```swift
 struct AppCoordinator: View {
-    @State var stack = Stack<Screen>(root: .home)
+    @State var flow = NFlow<Screen>(root: .home)
     
     var body: some View {
         NavigationView {
@@ -36,24 +36,24 @@ struct AppCoordinator: View {
     }
     
     private func showNumberList() {
-        stack.push(.numberList)
+        flow.push(.numberList)
     }
     
     private func showNumber(_ number: Int) {
-        stack.push(.number(number))
+        flow.push(.number(number))
     }
     
     private func pop() {
-        stack.pop()
+        flow.pop()
     }
     
     private func popToRoot() {
-        stack.popToRoot()
+        flow.popToRoot()
     }
 }
 ```
 
-As you can see, pushing a new view is as easy as `stack.push(...)` and popping can be achieved with `stack.pop()`. There are convenience methods for popping to the root and popping to a specific screen in the stack. 
+As you can see, pushing a new view is as easy as `stack.push(...)` and popping can be achieved with `stack.pop()`. There are convenience methods for popping to the root or popping to a specific screen in the stack. 
 
 If the user taps the back button, the stack will be automatically updated to reflect its new state. Navigating back with an edge swipe gesture or long-press gesture on the back button will also update the stack.
 
@@ -77,35 +77,35 @@ enum Screen {
 }
 
 class AppCoordinatorViewModel: ObservableObject {
-    @Published var stack = Stack<Screen>()
+    @Published var flow = NFlow<Screen>()
     
     init() {
-        stack.push(.home(.init(onGoTapped: showNumberList)))
+        flow.push(.home(.init(onGoTapped: showNumberList)))
     }
     
     func showNumberList() {
-        stack.push(.numberList(.init(onNumberSelected: showNumber, cancel: pop)))
+        flow.push(.numberList(.init(onNumberSelected: showNumber, cancel: pop)))
     }
     
     func showNumber(_ number: Int) {
-        stack.push(.numberDetail(.init(number: number, cancel: popToRoot)))
+        flow.push(.numberDetail(.init(number: number, cancel: popToRoot)))
     }
     
     func pop() {
-        stack.pop()
+        flow.pop()
     }
     
     func popToRoot() {
-        stack.popToRoot()
+        flow.popToRoot()
     }
 }
 
 struct AppCoordinator: View {
-    @ObservedObject var viewModel = AppCoordinatorViewModel()
+    @ObservedObject var viewModel: AppCoordinatorViewModel
     
     var body: some View {
         NavigationView {
-            NStack($viewModel.stack) { screen in
+            NStack($viewModel.flow) { screen in
                 switch screen {
                 case .home(let viewModel):
                     HomeView(viewModel: viewModel)
@@ -120,10 +120,20 @@ struct AppCoordinator: View {
 }
 ```
 
-## Limitations
+## Presentation
 
-Currently, SwiftUI does not support increasing the navigation stack by more than one in a single update. The `Stack` object will throw an assertion failure if you try to do so.
+In order to use presentation instead of navigation for showing and unshowing screens, the examples above can be re-written using a `PStack` instead of an `NStack`, and a `PFlow` instead of an `NFlow`. The `push` methods become `present` and the `pop` methods become `dismiss`. The presnt method allows you to customize the presentation style and add a callback on dismissal:
+
+```swift
+flow.present(detailView, style: .fullScreenCover) {
+    print("Detail dismissed")
+}
+```
 
 ## How does it work? 
 
-This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how NStack translates the stack of screens into a hierarchy of views and `NavigationLink`s. 
+This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how `NStack` translates the stack of screens into a hierarchy of views and `NavigationLink`s. `PStack` uses a similar approach.
+
+## Limitations
+
+SwiftUI does not allow more than one screen to be pushed, presented or dismissed in one update, though it is possible to pop any number of views in one update. `NFlow` and `PFlow` only expose methods to make updates that are supported in SwiftUI.
