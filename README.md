@@ -1,10 +1,10 @@
 # FlowStacks
 
-*FlowStacks* allow you to manage complex SwiftUI navigation and presentation state with a single piece of state. This makes it easy to hoist that state into a high-level coordinator view. The coordinator pattern allows you to write isolated views that have zero knowledge of their context within the navigation flow of an app.
+*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a single piece of state. This makes it easy to hoist that state into a high-level coordinator view. In the coordinator pattern, you can write isolated views that have zero knowledge of their context within the navigation flow of an app.
 
 ## Usage
 
-To begin, create an enum encompassing each of the screens the navigation stack might contain, e.g.:
+To begin, create an enum encompassing each of the screens your navigation stack might contain, e.g.:
 
 ```swift
 enum Screen {
