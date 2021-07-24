@@ -56,7 +56,15 @@ indirect enum PresentationNode<Screen, V: View>: View {
     }
     
     var body: some View {
-        if #available(iOS 14.0, *) {
+#if os(macOS)
+        presentingView
+            .sheet(
+                isPresented: isActiveBinding,
+                onDismiss: nil,
+                content: { presentedView }
+            )
+#else
+        if #available(iOS 14.0, tvOS 14.0, *) {
             presentingView
                 .fullScreenCover(
                     isPresented: presentedOptions?.style == .fullScreenCover ? isActiveBinding : .constant(false),
@@ -76,5 +84,6 @@ indirect enum PresentationNode<Screen, V: View>: View {
                     content: { presentedView }
                 )
         }
+#endif
     }
 }

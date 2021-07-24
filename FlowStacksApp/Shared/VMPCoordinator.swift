@@ -22,7 +22,7 @@ class VMPCoordinatorViewModel: ObservableObject {
     }
     
     func showNumber(_ number: Int) {
-        flow.present(.numberDetail(.init(number: number, showMore: showMore, cancel: dismissToRoot)))
+        flow.present(.numberDetail(.init(number: number, showMore: showMore, cancel: dismiss)))
     }
     
     func dismiss() {

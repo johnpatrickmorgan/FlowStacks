@@ -15,9 +15,13 @@ public struct PresentationOptions {
 /// Represents a style for how a view should be presented.
 public enum PresentationStyle {
 
-    @available(iOS 14.0, *)
+#if os(macOS)
+    case sheet
+#else
+    @available(iOS 14.0, tvOS 14.0, *)
     case fullScreenCover
     case sheet
+#endif
 
     public static let `default`: PresentationStyle = .sheet
 }
