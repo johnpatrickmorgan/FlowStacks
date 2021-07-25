@@ -1,6 +1,7 @@
 # FlowStacks
+_Coordinator pattern in SwiftUI_
 
-*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a single piece of state. This makes it easy to hoist that state into a high-level coordinator view. In the coordinator pattern, you can write isolated views that have zero knowledge of their context within the navigation flow of an app.
+*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a single piece of state. This makes it easy to hoist that state into a high-level coordinator view. Using this pattern, you can write isolated views that have zero knowledge of their context within the navigation flow of an app.
 
 ## Usage
 
@@ -22,7 +23,7 @@ struct AppCoordinator: View {
     
     var body: some View {
         NavigationView {
-            NStack($stack) { screen in
+            NStack($flow) { screen in
                 switch screen {
                 case .home:
                     HomeView(onGoTapped: showNumberList)
@@ -53,15 +54,15 @@ struct AppCoordinator: View {
 }
 ```
 
-As you can see, pushing a new view is as easy as `stack.push(...)` and popping can be achieved with `stack.pop()`. There are convenience methods for popping to the root or popping to a specific screen in the stack. 
+As you can see, pushing a new view is as easy as `flow.push(...)` and popping can be achieved with `flow.pop()`. There are convenience methods for popping to the root (`flow.popToRoot()`) and popping to a specific screen in the flow (`flow.popTo(.home)`). 
 
-If the user taps the back button, the stack will be automatically updated to reflect its new state. Navigating back with an edge swipe gesture or long-press gesture on the back button will also update the stack.
+If the user taps the back button, the flow will be automatically updated to reflect its new state. Navigating back with an edge swipe gesture or long-press gesture on the back button will also update the flow.
 
 Coordinators are just views, so they can be presented, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. 
 
 ## Child coordinators
 
-As coordinator views are just views, they can even be pushed onto a parent coordinator's navigation stack. When doing so, it is best that the child coordinator is always at the top of the parent's stack, as it will take over responsibility for pushing new views. 
+As coordinator views are just views, they can even be pushed onto a parent coordinator's navigation stack. When doing so, it is best that the child coordinator is always at the top of the parent's flow, as it will take over responsibility for pushing new views. 
 
 In order to allow coordinators to be nested in this way, the child coordinator should not include its own `NavigationView`. In fact, it's a good idea to add the `NavigationView` as high in the view hierarchy as you can - e.g. at the top-level of the app, when presenting a new coordinator, or when adding one to a `TabView`.
 
@@ -122,7 +123,7 @@ struct AppCoordinator: View {
 
 ## Presentation
 
-In order to use presentation instead of navigation for showing and unshowing screens, the examples above can be re-written using a `PStack` instead of an `NStack`, and a `PFlow` instead of an `NFlow`. The `push` methods become `present` and the `pop` methods become `dismiss`. The presnt method allows you to customize the presentation style and add a callback on dismissal:
+In order to use presentation instead of navigation for showing and unshowing screens, the examples above can be re-written using a `PStack` instead of an `NStack`, and a `PFlow` instead of an `NFlow`. The `push` methods become `present` and the `pop` methods become `dismiss`. The present method allows you to customize the presentation style and add a callback on dismissal:
 
 ```swift
 flow.present(detailView, style: .fullScreenCover) {
