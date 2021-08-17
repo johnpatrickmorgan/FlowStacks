@@ -50,12 +50,20 @@ indirect enum NavigationNode<Screen, V: View>: View {
         pushingView
             .background(
                 NavigationLink(destination: pushedView, isActive: isActiveBinding, label: EmptyView.init)
-#if os(iOS)
                     // NOTE: If this is set to true, there are some unexpected
                     // pops when pushing more than 3 screens.
-                    .isDetailLink(false)
-#endif
+                    .isDetailLinkiOS()
                     .hidden()
             )
     }
+}
+
+extension NavigationLink {
+  func isDetailLinkiOS() -> some View {
+    #if os(iOS)
+        isDetailLink(false)
+    #else
+        self
+    #endif
+  }
 }
