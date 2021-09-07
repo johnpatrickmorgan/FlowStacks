@@ -4,13 +4,13 @@ import SwiftUI
 struct FlowStacksApp: App {
     var body: some Scene {
         WindowGroup {
-            NumberPCoordinator()
+//            NumberPCoordinator()
 //            MixedCoordinator()
 //            VMCoordinator(viewModel: .init())
 //            VMPCoordinator(viewModel: .init())
-//            NavigationView {
-//                NumberNCoordinator()
-//            }
+            NavigationView {
+                NumberNCoordinator()
+            }
         }
     }
 }

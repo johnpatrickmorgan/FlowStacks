@@ -7,14 +7,14 @@ public struct NStack<Screen, ScreenView: View>: View {
     /// The array of screens that represents the navigation stack.
     @Binding var stack: [Screen]
     
-    /// A closure that builds a `ScreenView` from a `Screen`.
-    @ViewBuilder var buildView: (Screen) -> ScreenView
+    /// A closure that builds a `ScreenView` from a `Screen`and its index.
+    @ViewBuilder var buildView: (Screen, Int) -> ScreenView
     
     /// Initializer for creating an NStack using a binding to an array of screens.
     /// - Parameters:
     ///   - stack: A binding to an array of screens.
-    ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
-    public init(_ stack: Binding<[Screen]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+    ///   - buildView: A closure that builds a `ScreenView` from a `Screen` and its index.
+    public init(_ stack: Binding<[Screen]>, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
         self._stack = stack
         self.buildView = buildView
     }
@@ -26,7 +26,7 @@ public struct NStack<Screen, ScreenView: View>: View {
             .reduce(NavigationNode<Screen, ScreenView>.end) { pushedNode, new in
                 let (index, screen) = new
                 return NavigationNode<Screen, ScreenView>.view(
-                    buildView(screen),
+                    buildView(screen, index),
                     pushing: pushedNode,
                     stack: $stack,
                     index: index
@@ -37,16 +37,39 @@ public struct NStack<Screen, ScreenView: View>: View {
 
 public extension NStack {
     
-    /// Convenience initializer for creating an NStack using a binding to a `Stack`
+    /// Convenience initializer for creating an NStack using a binding to a `NFlow`
     /// of screens.
     /// - Parameters:
     ///   - stack: A binding to a stack of screens.
     ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
-    init(_ stack: Binding<NFlow<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+    init(_ nFlow: Binding<NFlow<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
         self._stack = Binding(
-            get: { stack.wrappedValue.array },
-            set: { stack.wrappedValue.array = $0 }
+            get: { nFlow.wrappedValue.array },
+            set: { nFlow.wrappedValue.array = $0 }
+        )
+        self.buildView = { screen, _ in buildView(screen) }
+    }
+    
+    /// Convenience initializer for creating an NStack using a binding to a `NFlow`
+    /// of screens.
+    /// - Parameters:
+    ///   - stack: A binding to a stack of screens.
+    ///   - buildView: A closure that builds a `ScreenView` from a `Screen` and its index.
+    init(_ nFlow: Binding<NFlow<Screen>>, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
+        self._stack = Binding(
+            get: { nFlow.wrappedValue.array },
+            set: { nFlow.wrappedValue.array = $0 }
         )
         self.buildView = buildView
+    }
+    
+    /// Convenience initializer for creating an NStack without using an index in the
+    /// `buildView` closure.
+    /// - Parameters:
+    ///   - stack: A binding to a stack of screens.
+    ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
+    init(_ stack: Binding<[Screen]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+        self._stack = stack
+        self.buildView = { screen, _ in buildView(screen) }
     }
 }

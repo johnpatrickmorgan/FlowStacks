@@ -5,9 +5,9 @@ struct NumberNCoordinator: View {
     @State var flow = NFlow(root: 0)
     
     var body: some View {
-        NStack($flow) { screen in
+        NStack($flow) { screen, index in
             VStack(spacing: 8) {
-                Text("Screen \(screen)")
+                Text("Screen \(index)")
                 HStack(spacing: 8) {
                     Button("<-", action: showPrevious)
                     Button("->", action: showNext)
