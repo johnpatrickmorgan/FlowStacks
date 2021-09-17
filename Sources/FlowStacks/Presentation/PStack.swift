@@ -38,15 +38,31 @@ public struct PStack<Screen, ScreenView: View>: View {
 
 public extension PStack {
     
-    /// Convenience initializer for creating an PStack using a binding to a `Stack`
+    /// Convenience initializer for creating an PStack using a binding to a `PFlow`
     /// of screens.
     /// - Parameters:
-    ///   - stack: A binding to a stack of screens.
+    ///   - stack: A binding to a PFlow of screens.
     ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
     init(_ stack: Binding<PFlow<Screen>>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
         self._stack = Binding(
             get: { stack.wrappedValue.array },
             set: { stack.wrappedValue.array = $0 }
+        )
+        self.buildView = buildView
+    }
+}
+
+public extension PStack {
+    
+    /// Convenience initializer for creating an PStack using a binding to an array
+    /// of screens, using the default presentation style.
+    /// - Parameters:
+    ///   - stack: A binding to an array of screens.
+    ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
+    init(_ stack: Binding<[Screen]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+        self._stack = Binding(
+            get: { stack.wrappedValue.map { ($0, .init(style: .default, onDismiss: nil)) } },
+            set: { stack.wrappedValue = $0.map { $0.0 } }
         )
         self.buildView = buildView
     }
