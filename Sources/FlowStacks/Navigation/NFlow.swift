@@ -111,3 +111,17 @@ extension NFlow where Screen: Identifiable {
         popTo(id: screen.id)
     }
 }
+
+/// Avoids an ambiguity for `popTo` when `Screen` is both `Identifiable` and `Equatable`.
+extension NFlow where Screen: Identifiable & Equatable {
+  
+  /// Pops to the topmost (most recently pushed) identifiable screen in the stack
+  /// matching the given screen. If no screens are found, the screens array
+  /// will be unchanged.
+  /// - Parameter screen: The screen to pop to.
+  /// - Returns: A `Bool` indicating whether a matching screen was found.
+    @discardableResult
+    public mutating func popTo(_ screen: Screen) -> Bool {
+        popTo(id: screen.id)
+    }
+}
