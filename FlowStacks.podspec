@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name             = 'FlowStacks'
-  s.version          = '0.0.13'
+  s.version          = '0.0.14'
   s.summary          = 'Hoist navigation state into a coordinator in SwiftUI.'
 
   s.description      = <<-DESC
