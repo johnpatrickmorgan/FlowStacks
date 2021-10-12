@@ -17,12 +17,11 @@ struct NumberNCoordinator: View {
     }
     
     private func showPrevious() {
-        flow.pop()
+        $flow.replaceNFlow(newScreens: [2])
     }
     
     private func showNext() {
-        let index = flow.array.count
-        flow.push(index)
+        $flow.replaceNFlow(newScreens: [5, 8, 13,800, 9])
     }
 }
 
