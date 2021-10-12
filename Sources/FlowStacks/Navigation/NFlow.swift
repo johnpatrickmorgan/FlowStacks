@@ -125,3 +125,28 @@ extension NFlow where Screen: Identifiable & Equatable {
         popTo(id: screen.id)
     }
 }
+
+import SwiftUI
+
+extension Binding {
+  
+  /// This method allows you to replace the NFlow's current screens with a new set of screens. If
+  /// the number of screens is increased greater than is supported within a single SwiftUI update,
+  /// the additional screens will be pushed one at a time.
+  public func replaceNFlow<Screen>(newScreens: [Screen]) where Value == NFlow<Screen> {
+    let oldScreens = wrappedValue.array
+    let numberOfReplacableScreens = oldScreens.count + 1
+    let replacableScreens = newScreens.prefix(numberOfReplacableScreens)
+    let remainingScreens = numberOfReplacableScreens < newScreens.count ? newScreens.suffix(from: numberOfReplacableScreens) : []
+    
+    wrappedValue.replaceNFlow(with: Array(replacableScreens))
+    for (index, screen) in remainingScreens.enumerated() {
+      // There doesn't seem to be a hook to dispatch code when the navigation animation has
+      // completed, so a hardcoded delay is used instead.
+      DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(650 * (index + 1))) {
+        self.wrappedValue.push(screen)
+      }
+    }
+  }
+}
+
