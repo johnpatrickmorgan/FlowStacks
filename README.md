@@ -138,3 +138,7 @@ This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outline
 ## Limitations
 
 SwiftUI does not allow more than one screen to be pushed, presented or dismissed in one update, though it is possible to pop any number of views in one update. `NFlow` and `PFlow` only expose methods to make updates that are supported in SwiftUI.
+
+## Using The Composable Architecture?
+
+See [TCACoordinators](https://github.com/johnpatrickmorgan/TCACoordinators) which uses FlowStacks to help navigation in TCA.
