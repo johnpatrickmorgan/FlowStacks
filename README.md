@@ -139,6 +139,8 @@ This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outline
 
 SwiftUI does not allow more than one screen to be pushed, presented or dismissed in one update, though it is possible to pop any number of views in one update. `NFlow` and `PFlow` only expose methods to make updates that are supported in SwiftUI.
 
+Be careful that your screens do not inadvertently end up observing the coordinator's navigation state, e.g. if you were to pass a coordinator object to its screens as an `ObservableObject` or `EnvironmentObject`. Not only would that cause your screens to be re-rendered unnecessarily whenever the navigation state changes, it can also cause SwiftUI's navigation state to deviate from your app's state. 
+
 ## Using The Composable Architecture?
 
 See [TCACoordinators](https://github.com/johnpatrickmorgan/TCACoordinators) which uses FlowStacks to help navigation in TCA.
