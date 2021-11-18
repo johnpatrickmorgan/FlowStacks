@@ -7,7 +7,7 @@ struct MixedCoordinator: View {
     case number(Int)
   }
   
-  @State var routes: [Route<Screen>] = .root(.number(1), embedInNavigationView: true)
+  @State var routes: [Route<Screen>] = [.root(.number(1), embedInNavigationView: true)]
   
   var body: some View {
     Router($routes) { screen, index in
