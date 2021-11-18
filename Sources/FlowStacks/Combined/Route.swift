@@ -19,18 +19,6 @@ public enum Route<Screen> {
   @available (OSX, unavailable, message: "Not available on OS X.")
   case cover(Screen, embedInNavigationView: Bool)
   
-  /// A sheet presentation.
-  /// - Parameter screen: the screen to be shown.
-  public static func sheet(_ screen: Screen) -> Route {
-    return .sheet(screen, embedInNavigationView: false)
-  }
-  
-  /// A full-screen cover presentation.
-  /// - Parameter screen: the screen to be shown.
-  public static func cover(_ screen: Screen) -> Route {
-    return .cover(screen, embedInNavigationView: false)
-  }
-  
   /// The root of the stack. The presentation style is irrelevant as it will not be presented.
   /// - Parameter screen: the screen to be shown.
   public static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
@@ -39,9 +27,21 @@ public enum Route<Screen> {
   
   /// The screen to be shown.
   public var screen: Screen {
-    switch self {
-    case .push(let screen), .sheet(let screen, _), .cover(let screen, _):
-      return screen
+    get {
+      switch self {
+      case .push(let screen), .sheet(let screen, _), .cover(let screen, _):
+        return screen
+      }
+    }
+    set {
+      switch self {
+      case .push(let screen):
+        self = .push(screen)
+      case .sheet(let screen, let embedInNavigationView):
+        self = .sheet(screen, embedInNavigationView: embedInNavigationView)
+      case .cover(let screen, let embedInNavigationView):
+        self = .cover(screen, embedInNavigationView: embedInNavigationView)
+      }
     }
   }
   
@@ -52,6 +52,16 @@ public enum Route<Screen> {
       return false
     case .sheet(_, let embedInNavigationView), .cover(_, let embedInNavigationView):
       return embedInNavigationView
+    }
+  }
+  
+  /// Whether the route is presented (via a sheet or cover presentation).
+  public var isPresented: Bool {
+    switch self {
+    case .push:
+      return false
+    case .sheet, .cover:
+      return true
     }
   }
 }

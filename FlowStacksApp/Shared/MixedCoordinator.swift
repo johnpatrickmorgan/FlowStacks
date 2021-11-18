@@ -16,16 +16,16 @@ struct MixedCoordinator: View {
         NumberView(
           number: number,
           presentDoubleCover: { number in
-            routes.append(.cover(.number(number * 2), embedInNavigationView: true))
+            routes.presentCover(.number(number * 2), embedInNavigationView: true)
           },
           presentDoubleSheet: { number in
-            routes.append(.sheet(.number(number * 2), embedInNavigationView: true))
+            routes.presentSheet(.number(number * 2), embedInNavigationView: true)
           },
           pushNext: { number in
-            routes.append(.push(.number(number + 1)))
+            routes.push(.number(number + 1))
           },
-          unwind: { routes = routes.dropLast() },
-          popToRoot: { routes = Array(routes.prefix(1)) }
+          goBack: { routes.goBack() },
+          popToRoot: { routes.goBackToRoot() }
         )
       }
     }
@@ -39,7 +39,7 @@ struct NumberView: View {
   let presentDoubleCover: (Int) -> Void
   let presentDoubleSheet: (Int) -> Void
   let pushNext: (Int) -> Void
-  let unwind: () -> Void
+  let goBack: () -> Void
   let popToRoot: () -> Void
   
   var body: some View {
@@ -48,7 +48,7 @@ struct NumberView: View {
       Button("Present Double (cover)") { presentDoubleCover(number) }
       Button("Present Double (sheet)") { presentDoubleSheet(number) }
       Button("Push next") { pushNext(number) }
-      Button("Unwind", action: unwind)
+      Button("Go back", action: goBack)
       Button("Pop to root", action: popToRoot)
     }.navigationTitle("\(number)")
   }
