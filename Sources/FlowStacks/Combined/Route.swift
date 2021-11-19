@@ -35,12 +35,12 @@ public enum Route<Screen> {
     }
     set {
       switch self {
-      case .push(let screen):
-        self = .push(screen)
-      case .sheet(let screen, let embedInNavigationView):
-        self = .sheet(screen, embedInNavigationView: embedInNavigationView)
-      case .cover(let screen, let embedInNavigationView):
-        self = .cover(screen, embedInNavigationView: embedInNavigationView)
+      case .push:
+        self = .push(newValue)
+      case .sheet(_, let embedInNavigationView):
+        self = .sheet(newValue, embedInNavigationView: embedInNavigationView)
+      case .cover(_, let embedInNavigationView):
+        self = .cover(newValue, embedInNavigationView: embedInNavigationView)
       }
     }
   }

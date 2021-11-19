@@ -18,11 +18,10 @@ struct MixedCoordinator: View {
     return options.randomElement()!
   }
   
-  
   var body: some View {
-    Router($routes) { number, _ in
+    Router($routes) { $number, _ in
       NumberView(
-        number: number,
+        number: $number,
         presentDoubleCover: { number in
           routes.presentCover(number * 2, embedInNavigationView: true)
         },
@@ -50,7 +49,7 @@ struct MixedCoordinator: View {
 
 struct NumberView: View {
   
-  let number: Int
+  @Binding var number: Int
   
   let presentDoubleCover: (Int) -> Void
   let presentDoubleSheet: (Int) -> Void
@@ -62,6 +61,7 @@ struct NumberView: View {
   var body: some View {
     VStack(spacing: 8) {
       Text("\(number)")
+      Stepper("", value: $number)
       Button("Present Double (cover)") { presentDoubleCover(number) }
       Button("Present Double (sheet)") { presentDoubleSheet(number) }
       Button("Push next") { pushNext(number) }
