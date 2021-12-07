@@ -29,34 +29,13 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
       return transformed
     }()
     
-    let pairs = Array(zip(start, end))
-    let firstDivergingIndex = pairs.dropFirst()
-      .firstIndex(where: { $0.style != $1.style  })
-    ?? pairs.endIndex
-    
-    let initialStep = Array(end[..<firstDivergingIndex] + start[firstDivergingIndex...])
-    var steps = [initialStep]
-    
-    while steps.last!.count > firstDivergingIndex {
-      var newStep = steps.last!
-      var dismissed: Route<Screen>? = newStep.popLast()
-      while dismissed?.style == .push && steps.last!.count > firstDivergingIndex && newStep.last!.style == .push {
-        dismissed = newStep.popLast()
-      }
-      steps.append(newStep)
-    }
-    
-    while steps.last!.count < end.count {
-      var newStep = steps.last!
-      newStep.append(end[steps.last!.count])
-      steps.append(newStep)
-    }
+    let steps = calculateSteps(from: start, to: end)
     
     self.wrappedValue = steps.first!
     scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
   
-  private func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == Array<Route<Screen>>  {
+  internal func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == Array<Route<Screen>>  {
     guard let firstStep = steps.first else {
       return
     }
@@ -65,4 +44,29 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
       scheduleRemainingSteps(steps: Array(steps.dropFirst()))
     }
   }
+}
+
+func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> [[Route<Screen>]] {
+  let pairs = Array(zip(start, end))
+  let firstDivergingIndex = pairs.dropFirst()
+    .firstIndex(where: { $0.style != $1.style  })
+  ?? pairs.endIndex
+  
+  let initialStep = Array(end[..<firstDivergingIndex] + start[firstDivergingIndex...])
+  var steps = [initialStep]
+  
+  while var newStep = steps.last, newStep.count > firstDivergingIndex {
+    var dismissed: Route<Screen>? = newStep.popLast()
+    while dismissed?.style == .push && newStep.count > firstDivergingIndex && newStep.last?.style == .push {
+      dismissed = newStep.popLast()
+    }
+    steps.append(newStep)
+  }
+  
+  while var newStep = steps.last, newStep.count < end.count {
+    newStep.append(end[newStep.count])
+    steps.append(newStep)
+  }
+  
+  return steps
 }

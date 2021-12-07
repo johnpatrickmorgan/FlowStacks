@@ -65,3 +65,18 @@ public enum Route<Screen> {
     }
   }
 }
+
+extension Route: Equatable where Screen: Equatable {
+  
+  public static func == (lhs: Route, rhs: Route) -> Bool {
+    switch (lhs, rhs) {
+    case (.push(let left), .push(let right)):
+      return left == right
+    case (.sheet(let left, let leftEmbed), .sheet(let right, let rightEmbed)), (.cover(let left, let leftEmbed), .cover(let right, let rightEmbed)):
+      return left == right && leftEmbed == rightEmbed
+    default:
+      return false
+    }
+  }
+}
+
