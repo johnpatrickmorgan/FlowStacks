@@ -232,107 +232,19 @@ public extension Array where Element: RouteProtocol, Element.Screen: Identifiabl
 
 public extension Array where Element: RouteProtocol {
   
-  /// Dismisses a given number of screens off the stack. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter count: The number of screens to go back. Defaults to 1.
+  /// Dismisses a given number of presentation layers off the stack. Only screens that have been presented will
+  /// be included in the count.
+  /// - Parameter count: The number of presentation layers to go back. Defaults to 1.
   mutating func dismiss(count: Int = 1) {
-    assert(self.suffix(count).allSatisfy({ $0.isPresented }))
-    self = dropLast(count)
-  }
-  
-  /// Dismisses to a given index in the array of screens. The resulting screen count
-  /// will be index + 1. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter index: The index that should become top of the stack.
-  mutating func dismissTo(index: Int) {
-    let dismissCount = count - (index + 1)
-    dismiss(count: dismissCount)
-  }
-  
-  /// Dismisses to the root screen (index 0). The resulting screen count
-  /// will be 1. Only screens that have been presented will
-  /// be dismissed.
-  mutating func dismissToRoot() {
-    dismissTo(index: 0)
-  }
-  
-  /// Dismisses to the topmost (most recently presented) screen in the stack
-  /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter condition: The predicate indicating which screen to dismiss to.
-  /// - Returns: A `Bool` indicating whether a screen was found.
-  @discardableResult
-  mutating func dismissTo(where condition: (Element) -> Bool) -> Bool {
-    guard let index = lastIndex(where: condition) else {
-      return false
+    assert(count >= 0)
+    var index = self.endIndex - 1
+    var dismissed = 0
+    while dismissed < count && indices.contains(index) {
+      if self[index].isPresented {
+        dismissed += 1
+      }
+      index -= 1
     }
-    dismissTo(index: index)
-    return true
-  }
-  
-  /// Dismisses to the topmost (most recently presented) screen in the stack
-  /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter condition: The predicate indicating which screen to dismiss to.
-  /// - Returns: A `Bool` indicating whether a screen was found.
-  @discardableResult
-  mutating func dismissTo(where condition: (Element.Screen) -> Bool) -> Bool {
-    return dismissTo(where: { condition($0.screen) })
-  }
-}
-
-public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
-  
-  /// Dismisses to the topmost (most recently presented) screen in the stack
-  /// equal to the given screen. If no screens are found,
-  /// the screens array will be unchanged. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter screen: The predicate indicating which screen to go back to.
-  /// - Returns: A `Bool` indicating whether a matching screen was found.
-  @discardableResult
-  mutating func dismissTo(_ screen: Element.Screen) -> Bool {
-    dismissTo(where: { $0 == screen })
-  }
-}
-
-public extension Array where Element: RouteProtocol, Element.Screen:  Identifiable {
-  
-  /// Dismisses to the topmost (most recently presented) identifiable screen in the stack
-  /// with the given ID. If no screens are found, the screens array will be unchanged.
-  /// Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter id: The id of the screen to goBack to.
-  /// - Returns: A `Bool` indicating whether a matching screen was found.
-  @discardableResult
-  mutating func dismissTo(id: Element.Screen.ID) -> Bool {
-    dismissTo(where: { $0.id == id })
-  }
-  
-  /// Dismisses to the topmost (most recently presented) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
-  /// will be unchanged. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter screen: The screen to goBack to.
-  /// - Returns: A `Bool` indicating whether a matching screen was found.
-  @discardableResult
-  mutating func dismissTo(_ screen: Element.Screen) -> Bool {
-    dismissTo(id: screen.id)
-  }
-}
-
-/// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
-public extension Array where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
-  
-  /// Dismisses to the topmost (most recently presented) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
-  /// will be unchanged. Only screens that have been presented will
-  /// be dismissed.
-  /// - Parameter screen: The screen to dismiss to.
-  /// - Returns: A `Bool` indicating whether a matching screen was found.
-  @discardableResult
-  mutating func dismissTo(_ screen: Element.Screen) -> Bool {
-    dismissTo(id: screen.id)
+    goBackTo(index: index)
   }
 }
