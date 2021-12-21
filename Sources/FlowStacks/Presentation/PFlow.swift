@@ -1,6 +1,7 @@
 import Foundation
 
 /// A thin wrapper around an array. PFlow provides some convenience methods for presenting and dismissing.
+@available(*, deprecated, message: "Use [Route<Screen>] instead")
 public struct PFlow<Screen> {
     
     /// The underlying array of screens.

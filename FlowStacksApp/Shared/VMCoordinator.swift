@@ -1,58 +1,51 @@
 import SwiftUI
 import FlowStacks
 
-class VMNCoordinatorViewModel: ObservableObject {
+class VMCoordinatorViewModel: ObservableObject {
     enum Screen {
         case home(HomeView.ViewModel)
         case numberList(NumberListView.ViewModel)
         case numberDetail(NumberDetailView.ViewModel)
     }
     
-    @Published var flow = NFlow<Screen>()
-    let showMore: () -> Void
+  @Published var routes: Routes<Screen> = []
     
-    init(showMore: @escaping () -> Void = {}) {
-        self.showMore = showMore
-        
-        flow.push(.home(.init(pickANumberSelected: showNumberList)))
+    init() {
+      routes.presentSheet(.home(.init(pickANumberSelected: showNumberList)))
     }
     
     func showNumberList() {
-        flow.push(.numberList(.init(numberSelected: showNumber, cancel: pop)))
+        routes.presentSheet(.numberList(.init(numberSelected: showNumber, cancel: dismiss)))
     }
     
     func showNumber(_ number: Int) {
-        flow.push(.numberDetail(.init(number: number, showMore: showMore, cancel: popToRoot)))
+        routes.presentSheet(.numberDetail(.init(number: number, cancel: dismiss)))
     }
     
-    func pop() {
-        flow.pop()
-    }
-    
-    func popToRoot() {
-        flow.popToRoot()
+    func dismiss() {
+        routes.dismiss()
     }
 }
 
-struct VMNCoordinator: View {
+struct VMPCoordinator: View {
     
-    @ObservedObject var viewModel = VMNCoordinatorViewModel()
+    @ObservedObject var viewModel = VMCoordinatorViewModel()
     
     var body: some View {
-        NavigationView {
-            NStack($viewModel.flow) { screen in
-                switch screen {
-                case .home(let viewModel):
-                    HomeView(viewModel: viewModel)
-                case .numberList(let viewModel):
-                    NumberListView(viewModel: viewModel)
-                case .numberDetail(let viewModel):
-                    NumberDetailView(viewModel: viewModel)
-                }
+        Router($viewModel.routes) { screen, _ in
+            switch screen {
+            case .home(let viewModel):
+                HomeView(viewModel: viewModel)
+            case .numberList(let viewModel):
+                NumberListView(viewModel: viewModel)
+            case .numberDetail(let viewModel):
+                NumberDetailView(viewModel: viewModel)
             }
         }
     }
 }
+
+// MARK: - Views
 
 struct HomeView: View {
     
@@ -104,12 +97,10 @@ struct NumberDetailView: View {
     
     class ViewModel: ObservableObject {
         let number: Int
-        let showMore: () -> Void
         let cancel: () -> Void
         
-        init(number: Int, showMore: @escaping () -> Void = {}, cancel: @escaping () -> Void) {
+        init(number: Int, cancel: @escaping () -> Void) {
             self.number = number
-            self.showMore = showMore
             self.cancel = cancel
         }
     }
@@ -122,11 +113,11 @@ struct NumberDetailView: View {
         VStack {
             Text("\(viewModel.number)")
             Button("Go back", action: viewModel.cancel)
-            Button("Show more", action: viewModel.showMore)
-            Button("Dismiss") {
+            Button("PresentationMode Dismiss") {
                 presentationMode.wrappedValue.dismiss()
             }
         }
         .navigationTitle("Number \(viewModel.number)")
     }
 }
+

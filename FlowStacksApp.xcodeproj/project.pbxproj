@@ -9,16 +9,11 @@
 /* Begin PBXBuildFile section */
 		5241BF6F26AA1E8A002D6892 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 5241BF6E26AA1E8A002D6892 /* FlowStacks */; };
 		5241BF7126AA1E8F002D6892 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 5241BF7026AA1E8F002D6892 /* FlowStacks */; };
+		525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C733427729300009CBD67 /* SwiftUINavigation */; };
 		526D9F2426AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
 		526D9F2526AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
-		526D9F2626AF661F00B6B882 /* VMNCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F1E26AF661F00B6B882 /* VMNCoordinator.swift */; };
-		526D9F2726AF661F00B6B882 /* VMNCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F1E26AF661F00B6B882 /* VMNCoordinator.swift */; };
-		526D9F2A26AF661F00B6B882 /* NumberNCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2026AF661F00B6B882 /* NumberNCoordinator.swift */; };
-		526D9F2B26AF661F00B6B882 /* NumberNCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2026AF661F00B6B882 /* NumberNCoordinator.swift */; };
-		526D9F2C26AF661F00B6B882 /* NumberPCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2126AF661F00B6B882 /* NumberPCoordinator.swift */; };
-		526D9F2D26AF661F00B6B882 /* NumberPCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2126AF661F00B6B882 /* NumberPCoordinator.swift */; };
-		526D9F2E26AF661F00B6B882 /* VMPCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2226AF661F00B6B882 /* VMPCoordinator.swift */; };
-		526D9F2F26AF661F00B6B882 /* VMPCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2226AF661F00B6B882 /* VMPCoordinator.swift */; };
+		526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2226AF661F00B6B882 /* VMCoordinator.swift */; };
+		526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2226AF661F00B6B882 /* VMCoordinator.swift */; };
 		526D9F3026AF661F00B6B882 /* MixedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2326AF661F00B6B882 /* MixedCoordinator.swift */; };
 		526D9F3126AF661F00B6B882 /* MixedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2326AF661F00B6B882 /* MixedCoordinator.swift */; };
 		526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
@@ -31,10 +26,7 @@
 		5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		526D9F1C26AF661F00B6B882 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		526D9F1E26AF661F00B6B882 /* VMNCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMNCoordinator.swift; sourceTree = "<group>"; };
-		526D9F2026AF661F00B6B882 /* NumberNCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberNCoordinator.swift; sourceTree = "<group>"; };
-		526D9F2126AF661F00B6B882 /* NumberPCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberPCoordinator.swift; sourceTree = "<group>"; };
-		526D9F2226AF661F00B6B882 /* VMPCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMPCoordinator.swift; sourceTree = "<group>"; };
+		526D9F2226AF661F00B6B882 /* VMCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMCoordinator.swift; sourceTree = "<group>"; };
 		526D9F2326AF661F00B6B882 /* MixedCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MixedCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		526D9F7A26AF6BE900B6B882 /*  */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ""; sourceTree = "<group>"; };
@@ -45,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */,
 				5241BF7126AA1E8F002D6892 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -99,10 +92,7 @@
 			isa = PBXGroup;
 			children = (
 				526D9F3226AF667000B6B882 /* FlowStacksApp.swift */,
-				526D9F1E26AF661F00B6B882 /* VMNCoordinator.swift */,
-				526D9F2026AF661F00B6B882 /* NumberNCoordinator.swift */,
-				526D9F2126AF661F00B6B882 /* NumberPCoordinator.swift */,
-				526D9F2226AF661F00B6B882 /* VMPCoordinator.swift */,
+				526D9F2226AF661F00B6B882 /* VMCoordinator.swift */,
 				526D9F2326AF661F00B6B882 /* MixedCoordinator.swift */,
 			);
 			path = Shared;
@@ -126,6 +116,7 @@
 			name = "FlowStacksApp (iOS)";
 			packageProductDependencies = (
 				5241BF7026AA1E8F002D6892 /* FlowStacks */,
+				525C733427729300009CBD67 /* SwiftUINavigation */,
 			);
 			productName = "FlowStacksApp (iOS)";
 			productReference = 5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */;
@@ -179,6 +170,7 @@
 			);
 			mainGroup = 5241BF2626AA1D3A002D6892;
 			packageReferences = (
+				525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */,
 			);
 			productRefGroup = 5241BF3426AA1D3B002D6892 /* Products */;
 			projectDirPath = "";
@@ -217,11 +209,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */,
-				526D9F2E26AF661F00B6B882 /* VMPCoordinator.swift in Sources */,
-				526D9F2C26AF661F00B6B882 /* NumberPCoordinator.swift in Sources */,
+				526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				526D9F3026AF661F00B6B882 /* MixedCoordinator.swift in Sources */,
-				526D9F2A26AF661F00B6B882 /* NumberNCoordinator.swift in Sources */,
-				526D9F2626AF661F00B6B882 /* VMNCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,11 +219,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */,
-				526D9F2F26AF661F00B6B882 /* VMPCoordinator.swift in Sources */,
-				526D9F2D26AF661F00B6B882 /* NumberPCoordinator.swift in Sources */,
+				526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				526D9F3126AF661F00B6B882 /* MixedCoordinator.swift in Sources */,
-				526D9F2B26AF661F00B6B882 /* NumberNCoordinator.swift in Sources */,
-				526D9F2726AF661F00B6B882 /* VMNCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -503,6 +489,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swiftui-navigation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		5241BF6E26AA1E8A002D6892 /* FlowStacks */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -511,6 +508,11 @@
 		5241BF7026AA1E8F002D6892 /* FlowStacks */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlowStacks;
+		};
+		525C733427729300009CBD67 /* SwiftUINavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
+			productName = SwiftUINavigation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

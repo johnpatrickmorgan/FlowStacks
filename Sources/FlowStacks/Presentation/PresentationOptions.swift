@@ -1,6 +1,7 @@
 import Foundation
 
 /// A struct representing the options for how to present a view.
+@available(*, deprecated, message: "No longer needed for Router")
 public struct PresentationOptions {
     
     public let style: PresentationStyle
@@ -13,6 +14,7 @@ public struct PresentationOptions {
 }
 
 /// Represents a style for how a view should be presented.
+@available(*, deprecated, message: "No longer needed for Router")
 public enum PresentationStyle {
 
 #if os(macOS)

@@ -1,11 +1,23 @@
 import SwiftUI
 import FlowStacks
+import SwiftUINavigation
+
+enum Screen {
+  
+  case number(Int)
+  case other
+}
+
+extension Screen: ExpressibleByIntegerLiteral {
+  
+  init(integerLiteral value: Int) {
+    self = .number(value)
+  }
+}
 
 struct MixedCoordinator: View {
   
-  typealias Screen = Int
-  
-  @State var routes: [Route<Screen>] = [.root(0, embedInNavigationView: true)]
+  @State var routes: Routes<Screen> = [.root(0, embedInNavigationView: true)]
   
   var randomRoutes: [Route<Screen>] {
     let options: [[Route<Screen>]] = [
@@ -19,30 +31,34 @@ struct MixedCoordinator: View {
   }
   
   var body: some View {
-    Router($routes) { $number, _ in
-      NumberView(
-        number: $number,
-        presentDoubleCover: { number in
-          routes.presentCover(number * 2, embedInNavigationView: true)
-        },
-        presentDoubleSheet: { number in
-          routes.presentSheet(number * 2, embedInNavigationView: true)
-        },
-        pushNext: { number in
-          routes.push(number + 1)
-        },
-        goBack: { routes.goBack() },
-        goBackToRoot: {
-          $routes.withDelaysIfUnsupported {
-            $0.goBackToRoot()
+    Router($routes) { $screen, index in
+      if let number = Binding(unwrapping: $screen, case: /Screen.number) {
+        NumberView(
+          number: number,
+          presentDoubleCover: { number in
+            routes.presentCover(.number(number * 2), embedInNavigationView: true)
+          },
+          presentDoubleSheet: { number in
+            routes.presentSheet(.number(number * 2), embedInNavigationView: true)
+          },
+          pushNext: { number in
+            routes.push(.number(number + 1))
+          },
+          goBack: index != 0 ? { routes.goBack() } : nil,
+          goBackToRoot: {
+            $routes.withDelaysIfUnsupported {
+              $0.goBackToRoot()
+            }
+          },
+          goRandom: {
+            $routes.withDelaysIfUnsupported {
+              $0 = randomRoutes
+            }
           }
-        },
-        goRandom: {
-          $routes.withDelaysIfUnsupported {
-            $0 = randomRoutes
-          }
-        }
-      )
+        )
+      } else {
+        EmptyView()
+      }
     }
   }
 }
@@ -54,7 +70,7 @@ struct NumberView: View {
   let presentDoubleCover: (Int) -> Void
   let presentDoubleSheet: (Int) -> Void
   let pushNext: (Int) -> Void
-  let goBack: () -> Void
+  let goBack: (() -> Void)?
   let goBackToRoot: () -> Void
   let goRandom: () -> Void
   
@@ -65,7 +81,9 @@ struct NumberView: View {
       Button("Present Double (cover)") { presentDoubleCover(number) }
       Button("Present Double (sheet)") { presentDoubleSheet(number) }
       Button("Push next") { pushNext(number) }
-      Button("Go back", action: goBack)
+      if let goBack = goBack {
+        Button("Go back", action: goBack)
+      }
       Button("Go back to root", action: goBackToRoot)
       Button("Go random", action: goRandom)
     }.navigationTitle("\(number)")

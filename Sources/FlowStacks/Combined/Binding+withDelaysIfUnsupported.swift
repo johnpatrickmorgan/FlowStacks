@@ -1,12 +1,16 @@
 import Foundation
 import SwiftUI
 
-fileprivate extension Route {
+public extension Route {
   
+  /// The style with which the route is shown, i.e., if the route is pushed, presented
+  /// as a sheet or presented as a full-screen cover.
   enum Style: Hashable {
     case push, sheet(embedInNavigationView: Bool), cover(embedInNavigationView: Bool)
   }
   
+  /// Whether the route is pushed, presented as a sheet or presented as a full-screen
+  /// cover.
   var style: Style {
     switch self {
     case .push:
@@ -21,6 +25,9 @@ fileprivate extension Route {
 
 public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   
+  /// Any changes can be made to the routes passed to the transform closure. If those
+  /// changes are not supported within a single update by SwiftUI, the changes will be
+  /// applied in stages.
   func withDelaysIfUnsupported<Screen>(_ transform: (inout Array<Route<Screen>>) -> Void) where Value == Array<Route<Screen>> {
     let start = wrappedValue
     let end: [Route<Screen>] = {
@@ -35,7 +42,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
   
-  internal func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == Array<Route<Screen>>  {
+  fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == Array<Route<Screen>>  {
     guard let firstStep = steps.first else {
       return
     }
@@ -46,23 +53,40 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   }
 }
 
+/// For a given update to an array of routes, returns the minimum intermediate steps
+/// required to ensure each update is supported by SwiftUI.
+/// - Returns: <#description#>
 func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> [[Route<Screen>]] {
   let pairs = Array(zip(start, end))
   let firstDivergingIndex = pairs.dropFirst()
-    .firstIndex(where: { $0.style != $1.style  })
-  ?? pairs.endIndex
+    .firstIndex(where: { $0.style != $1.style  }) ?? pairs.endIndex
+  let firstDivergingPresentationIndex = start[firstDivergingIndex..<start.count]
+    .firstIndex(where: { $0.isPresented }) ?? start.endIndex
   
+  // Initial step is to change screen content without changing navigation structure.
   let initialStep = Array(end[..<firstDivergingIndex] + start[firstDivergingIndex...])
   var steps = [initialStep]
   
-  while var newStep = steps.last, newStep.count > firstDivergingIndex {
-    var dismissed: Route<Screen>? = newStep.popLast()
-    while dismissed?.style == .push && newStep.count > firstDivergingIndex && newStep.last?.style == .push {
-      dismissed = newStep.popLast()
+  // Dismiss extraneous presented stacks.
+  while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
+    var dismissed: Route<Screen>? = dismissStep.popLast()
+    // Ignore pushed screens as they can be dismissed en masse.
+    while dismissed?.isPresented == false, dismissStep.count > firstDivergingPresentationIndex  {
+      dismissed = dismissStep.popLast()
     }
-    steps.append(newStep)
+    steps.append(dismissStep)
   }
   
+  // Pop extraneous pushed screens.
+  while var popStep = steps.last, popStep.count > firstDivergingIndex {
+    var popped: Route<Screen>? = popStep.popLast()
+    while popped?.style == .push && popStep.count > firstDivergingIndex && popStep.last?.style == .push {
+      popped = popStep.popLast()
+    }
+    steps.append(popStep)
+  }
+  
+  // Push or present each new step.
   while var newStep = steps.last, newStep.count < end.count {
     newStep.append(end[newStep.count])
     steps.append(newStep)

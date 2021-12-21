@@ -3,6 +3,7 @@ import Foundation
 /// A thin wrapper around an array. NFlow provides some convenience methods for pushing
 /// and popping, and makes it harder to perform navigation operations that SwiftUI does
 /// not support.
+@available(*, deprecated, message: "Use [Route<Screen>] instead")
 public struct NFlow<Screen> {
     
     /// The underlying array of screens.

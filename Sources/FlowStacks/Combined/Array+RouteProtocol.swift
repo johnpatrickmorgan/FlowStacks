@@ -1,5 +1,7 @@
 import Foundation
 
+public typealias Routes<Screen> = [Route<Screen>]
+
 public extension Array where Element: RouteProtocol {
   
   /// Pushes a new screen via a push navigation.

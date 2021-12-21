@@ -164,12 +164,12 @@ final class FlowStacksTests: XCTestCase {
     XCTAssertEqual(steps, expectedSteps)
   }
   
-  func testBackToCommonAncestorFIrst() {
+  func testBackToCommonAncestorFirst() {
     let start: RouterState = [
-      .root(-1, embedInNavigationView: true),
-      .push(-2),
-      .push(-3),
-      .push(-4)
+      .root(1, embedInNavigationView: true),
+      .push(2),
+      .push(3),
+      .push(4)
     ]
     let end: RouterState = [
       .root(-1, embedInNavigationView: true),
@@ -186,7 +186,7 @@ final class FlowStacksTests: XCTestCase {
         .root(-1, embedInNavigationView: true),
         .push(-2),
         .push(-3),
-        .push(-4)
+        .push(4)
       ],
       [
         .root(-1, embedInNavigationView: true),
@@ -198,6 +198,42 @@ final class FlowStacksTests: XCTestCase {
         .push(-2),
         .push(-3),
         .sheet(-4)
+      ],
+      end
+    ]
+    XCTAssertEqual(steps, expectedSteps)
+  }    
+  
+  func testBackToCommonAncestorFirstWithoutPoppingWithinExtraPresentationLayers() {
+    let start: RouterState = [
+      .root(1, embedInNavigationView: true),
+      .sheet(2),
+      .push(3),
+      .sheet(4),
+      .push(5),
+    ]
+    let end: RouterState = [
+      .root(-1, embedInNavigationView: true),
+      .push(-2),
+    ]
+    
+    let steps = calculateSteps(from: start, to: end)
+    
+    let expectedSteps: [RouterState] = [
+      [
+        .root(-1, embedInNavigationView: true),
+        .sheet(2),
+        .push(3),
+        .sheet(4),
+        .push(5),
+      ],
+      [
+        .root(-1, embedInNavigationView: true),
+        .sheet(2),
+        .push(3),
+      ],
+      [
+        .root(-1, embedInNavigationView: true)
       ],
       end
     ]

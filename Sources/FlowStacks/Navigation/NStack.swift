@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 /// NStack maintains a stack of pushed views for use within a `NavigationView`.
+@available(*, deprecated, message: "Use Router instead. It is capable of both navigation and presentation.")
 public struct NStack<Screen, ScreenView: View>: View {
     
     /// The array of screens that represents the navigation stack.

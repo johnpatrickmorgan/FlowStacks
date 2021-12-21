@@ -79,4 +79,3 @@ extension Route: Equatable where Screen: Equatable {
     }
   }
 }
-
