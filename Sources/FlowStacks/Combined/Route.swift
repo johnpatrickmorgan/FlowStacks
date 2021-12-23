@@ -3,7 +3,6 @@ import Foundation
 /// A step in the navigation flow of an app, encompassing a Screen and how it should be shown,
 /// e.g. via a push navigation, a sheet or a full-screen cover.
 public enum Route<Screen> {
-  
   /// A push navigation. Only valid if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: the screen to be shown.
   case push(Screen)
@@ -16,7 +15,7 @@ public enum Route<Screen> {
   /// A full-screen cover presentation.
   /// - Parameter screen: the screen to be shown.
   /// - Parameter embedInNavigationView: whether the presented screen should be embedded in a `NavigationView`.
-  @available (OSX, unavailable, message: "Not available on OS X.")
+  @available(OSX, unavailable, message: "Not available on OS X.")
   case cover(Screen, embedInNavigationView: Bool)
   
   /// The root of the stack. The presentation style is irrelevant as it will not be presented.
@@ -67,7 +66,6 @@ public enum Route<Screen> {
 }
 
 extension Route: Equatable where Screen: Equatable {
-  
   public static func == (lhs: Route, rhs: Route) -> Bool {
     switch (lhs, rhs) {
     case (.push(let left), .push(let right)):

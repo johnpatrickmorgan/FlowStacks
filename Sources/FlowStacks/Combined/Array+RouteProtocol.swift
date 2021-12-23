@@ -3,11 +3,29 @@ import Foundation
 public typealias Routes<Screen> = [Route<Screen>]
 
 public extension Array where Element: RouteProtocol {
-  
+  /// Whether the Array of Routes is able to push new screens.
+  var canPush: Bool {
+    for route in self.reversed() {
+      switch route.style {
+      case .push:
+        continue
+      case .cover(let embedInNavigationView), .sheet(let embedInNavigationView):
+        return embedInNavigationView
+      }
+    }
+    return false
+  }
   /// Pushes a new screen via a push navigation.
   /// This should only be called if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: The screen to push.
   mutating func push(_ screen: Element.Screen) {
+    assert(
+      canPush,
+      """
+      Attempting to push a screen, but the most recently presented screen is not
+      embedded in a `NavigationView`. Please ensure the root or most recently presented route has `embedInNavigationView` set to `true`.
+      """
+    )
     append(.push(screen))
   }
   
@@ -27,7 +45,6 @@ public extension Array where Element: RouteProtocol {
 // MARK: - Go back
 
 public extension Array where Element: RouteProtocol {
-  
   /// Goes back a given number of screens off the stack
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   mutating func goBack(count: Int = 1) {
@@ -73,7 +90,6 @@ public extension Array where Element: RouteProtocol {
 }
 
 public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
-  
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// equal to the given screen. If no screens are found,
   /// the screens array will be unchanged.
@@ -85,8 +101,7 @@ public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
   }
 }
 
-public extension Array where Element: RouteProtocol, Element.Screen:  Identifiable {
-  
+public extension Array where Element: RouteProtocol, Element.Screen: Identifiable {
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
   /// with the given ID. If no screens are found, the screens array will be unchanged.
   /// - Parameter id: The id of the screen to goBack to.
@@ -109,7 +124,6 @@ public extension Array where Element: RouteProtocol, Element.Screen:  Identifiab
 
 /// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
 public extension Array where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
-  
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
   /// matching the given screen. If no screens are found, the screens array
   /// will be unchanged.
@@ -124,12 +138,12 @@ public extension Array where Element: RouteProtocol, Element.Screen: Identifiabl
 // MARK: - Pop
 
 public extension Array where Element: RouteProtocol {
-  
   /// Pops a given number of screens off the stack. Only screens that have been pushed will
   /// be popped.
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   mutating func pop(count: Int = 1) {
-    assert(self.suffix(count).allSatisfy({ !$0.isPresented }))
+    assert(count <= self.count)
+    assert(suffix(count).allSatisfy { $0.style == .push })
     self = dropLast(count)
   }
   
@@ -177,7 +191,6 @@ public extension Array where Element: RouteProtocol {
 }
 
 public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
-  
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// equal to the given screen. If no screens are found,
   /// the screens array will be unchanged. Only screens that have been pushed will
@@ -190,8 +203,7 @@ public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
   }
 }
 
-public extension Array where Element: RouteProtocol, Element.Screen:  Identifiable {
-  
+public extension Array where Element: RouteProtocol, Element.Screen: Identifiable {
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
   /// with the given ID. If no screens are found, the screens array will be unchanged.
   /// Only screens that have been pushed will
@@ -217,7 +229,6 @@ public extension Array where Element: RouteProtocol, Element.Screen:  Identifiab
 
 /// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
 public extension Array where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
-  
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
   /// matching the given screen. If no screens are found, the screens array
   /// will be unchanged. Only screens that have been pushed will
@@ -233,15 +244,14 @@ public extension Array where Element: RouteProtocol, Element.Screen: Identifiabl
 // MARK: - Dismiss
 
 public extension Array where Element: RouteProtocol {
-  
   /// Dismisses a given number of presentation layers off the stack. Only screens that have been presented will
   /// be included in the count.
   /// - Parameter count: The number of presentation layers to go back. Defaults to 1.
   mutating func dismiss(count: Int = 1) {
     assert(count >= 0)
-    var index = self.endIndex - 1
+    var index = endIndex - 1
     var dismissed = 0
-    while dismissed < count && indices.contains(index) {
+    while dismissed < count, indices.contains(index) {
       if self[index].isPresented {
         dismissed += 1
       }

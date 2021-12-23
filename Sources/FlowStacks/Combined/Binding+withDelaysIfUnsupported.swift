@@ -1,17 +1,17 @@
 import Foundation
 import SwiftUI
 
+/// The style with which a route is shown, i.e., if the route is pushed, presented
+/// as a sheet or presented as a full-screen cover.
+public enum RouteStyle: Hashable {
+  case push, sheet(embedInNavigationView: Bool), cover(embedInNavigationView: Bool)
+}
+
 public extension Route {
-  
-  /// The style with which the route is shown, i.e., if the route is pushed, presented
-  /// as a sheet or presented as a full-screen cover.
-  enum Style: Hashable {
-    case push, sheet(embedInNavigationView: Bool), cover(embedInNavigationView: Bool)
-  }
   
   /// Whether the route is pushed, presented as a sheet or presented as a full-screen
   /// cover.
-  var style: Style {
+  var style: RouteStyle {
     switch self {
     case .push:
       return .push
@@ -24,11 +24,10 @@ public extension Route {
 }
 
 public extension Binding where Value: Collection, Value.Element: RouteProtocol {
-  
   /// Any changes can be made to the routes passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
-  func withDelaysIfUnsupported<Screen>(_ transform: (inout Array<Route<Screen>>) -> Void) where Value == Array<Route<Screen>> {
+  func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void) where Value == [Route<Screen>] {
     let start = wrappedValue
     let end: [Route<Screen>] = {
       var transformed = start
@@ -39,10 +38,10 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     let steps = calculateSteps(from: start, to: end)
     
     self.wrappedValue = steps.first!
-    scheduleRemainingSteps(steps: Array(steps.dropFirst()))
+    self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
   
-  fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == Array<Route<Screen>>  {
+  fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == [Route<Screen>] {
     guard let firstStep = steps.first else {
       return
     }
@@ -59,8 +58,8 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
 func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> [[Route<Screen>]] {
   let pairs = Array(zip(start, end))
   let firstDivergingIndex = pairs.dropFirst()
-    .firstIndex(where: { $0.style != $1.style  }) ?? pairs.endIndex
-  let firstDivergingPresentationIndex = start[firstDivergingIndex..<start.count]
+    .firstIndex(where: { $0.style != $1.style }) ?? pairs.endIndex
+  let firstDivergingPresentationIndex = start[firstDivergingIndex ..< start.count]
     .firstIndex(where: { $0.isPresented }) ?? start.endIndex
   
   // Initial step is to change screen content without changing navigation structure.
@@ -71,7 +70,7 @@ func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]
   while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
     var dismissed: Route<Screen>? = dismissStep.popLast()
     // Ignore pushed screens as they can be dismissed en masse.
-    while dismissed?.isPresented == false, dismissStep.count > firstDivergingPresentationIndex  {
+    while dismissed?.isPresented == false, dismissStep.count > firstDivergingPresentationIndex {
       dismissed = dismissStep.popLast()
     }
     steps.append(dismissStep)
@@ -80,7 +79,7 @@ func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]
   // Pop extraneous pushed screens.
   while var popStep = steps.last, popStep.count > firstDivergingIndex {
     var popped: Route<Screen>? = popStep.popLast()
-    while popped?.style == .push && popStep.count > firstDivergingIndex && popStep.last?.style == .push {
+    while popped?.style == .push, popStep.count > firstDivergingIndex, popStep.last?.style == .push {
       popped = popStep.popLast()
     }
     steps.append(popStep)

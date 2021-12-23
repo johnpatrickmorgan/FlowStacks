@@ -4,7 +4,6 @@ import SwiftUI
 /// A view that represents a linked list of routes, each pushing or presenting the next in
 /// the list.
 indirect enum Node<Screen, V: View>: View {
-  
   case route(Route<Screen>, next: Node<Screen, V>, allRoutes: Binding<[Route<Screen>]>, index: Int, buildView: (Screen) -> V)
   case end
   
@@ -15,7 +14,7 @@ indirect enum Node<Screen, V: View>: View {
     case .route(_, .route, let allRoutes, let index, _):
       return Binding(
         get: {
-          return allRoutes.wrappedValue.count > index + 1
+          allRoutes.wrappedValue.count > index + 1
         },
         set: { isShowing in
           guard !isShowing else { return }

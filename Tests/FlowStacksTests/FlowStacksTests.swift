@@ -1,8 +1,7 @@
-import XCTest
 @testable import FlowStacks
+import XCTest
 
 final class FlowStacksTests: XCTestCase {
-  
   typealias RouterState = [Route<Int>]
   
   func testPushOneAtATime() {
@@ -24,7 +23,7 @@ final class FlowStacksTests: XCTestCase {
       ],
       [
         .root(-1, embedInNavigationView: true),
-        .push(-2),
+        .push(-2)
       ],
       [
         .root(-1, embedInNavigationView: true),
@@ -80,7 +79,7 @@ final class FlowStacksTests: XCTestCase {
       ],
       [
         .root(-1, embedInNavigationView: true),
-        .sheet(-2),
+        .sheet(-2)
       ],
       [
         .root(-1, embedInNavigationView: true),
@@ -119,7 +118,7 @@ final class FlowStacksTests: XCTestCase {
       ],
       [
         .root(-1, embedInNavigationView: true),
-        .sheet(2),
+        .sheet(2)
       ],
       end
     ]
@@ -146,12 +145,12 @@ final class FlowStacksTests: XCTestCase {
       ],
       [
         .root(-1, embedInNavigationView: true),
-        .push(-2),
+        .push(-2)
       ],
       [
         .root(-1, embedInNavigationView: true),
         .push(-2),
-        .push(-3),
+        .push(-3)
       ],
       [
         .root(-1, embedInNavigationView: true),
@@ -191,7 +190,7 @@ final class FlowStacksTests: XCTestCase {
       [
         .root(-1, embedInNavigationView: true),
         .push(-2),
-        .push(-3),
+        .push(-3)
       ],
       [
         .root(-1, embedInNavigationView: true),
@@ -202,7 +201,7 @@ final class FlowStacksTests: XCTestCase {
       end
     ]
     XCTAssertEqual(steps, expectedSteps)
-  }    
+  }
   
   func testBackToCommonAncestorFirstWithoutPoppingWithinExtraPresentationLayers() {
     let start: RouterState = [
@@ -210,11 +209,11 @@ final class FlowStacksTests: XCTestCase {
       .sheet(2),
       .push(3),
       .sheet(4),
-      .push(5),
+      .push(5)
     ]
     let end: RouterState = [
       .root(-1, embedInNavigationView: true),
-      .push(-2),
+      .push(-2)
     ]
     
     let steps = calculateSteps(from: start, to: end)
@@ -225,12 +224,12 @@ final class FlowStacksTests: XCTestCase {
         .sheet(2),
         .push(3),
         .sheet(4),
-        .push(5),
+        .push(5)
       ],
       [
         .root(-1, embedInNavigationView: true),
         .sheet(2),
-        .push(3),
+        .push(3)
       ],
       [
         .root(-1, embedInNavigationView: true)

@@ -1,22 +1,19 @@
-import SwiftUI
 import FlowStacks
+import SwiftUI
 import SwiftUINavigation
 
 enum Screen {
-  
   case number(Int)
   case other
 }
 
 extension Screen: ExpressibleByIntegerLiteral {
-  
   init(integerLiteral value: Int) {
     self = .number(value)
   }
 }
 
-struct MixedCoordinator: View {
-  
+struct NumberCoordinator: View {
   @State var routes: Routes<Screen> = [.root(0, embedInNavigationView: true)]
   
   var randomRoutes: [Route<Screen>] {
@@ -64,7 +61,6 @@ struct MixedCoordinator: View {
 }
 
 struct NumberView: View {
-  
   @Binding var number: Int
   
   let presentDoubleCover: (Int) -> Void
@@ -76,8 +72,7 @@ struct NumberView: View {
   
   var body: some View {
     VStack(spacing: 8) {
-      Text("\(number)")
-      Stepper("", value: $number)
+      Stepper("\(number)", value: $number)
       Button("Present Double (cover)") { presentDoubleCover(number) }
       Button("Present Double (sheet)") { presentDoubleSheet(number) }
       Button("Push next") { pushNext(number) }
@@ -86,6 +81,8 @@ struct NumberView: View {
       }
       Button("Go back to root", action: goBackToRoot)
       Button("Go random", action: goRandom)
-    }.navigationTitle("\(number)")
+    }
+    .padding()
+    .navigationTitle("\(number)")
   }
 }

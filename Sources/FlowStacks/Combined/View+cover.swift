@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 
 extension View {
-  
   /// A shim for presenting a full-screen cover that falls back on a sheet presentation on platforms
   /// where fullScreenCover is unavailable.
   @ViewBuilder

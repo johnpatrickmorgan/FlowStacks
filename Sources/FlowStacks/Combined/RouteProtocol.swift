@@ -3,7 +3,6 @@ import Foundation
 /// The RouteProtocol is used to restrict the extensions on Array so that they do not
 /// pollute autocomplete for Arrays containing other types.
 public protocol RouteProtocol {
-  
   associatedtype Screen
   
   static func push(_ screen: Screen) -> Self
@@ -13,10 +12,11 @@ public protocol RouteProtocol {
   var screen: Screen { get set }
   var embedInNavigationView: Bool { get }
   var isPresented: Bool { get }
+  
+  var style: RouteStyle { get }
 }
 
 public extension RouteProtocol {
-  
   /// A sheet presentation.
   /// - Parameter screen: the screen to be shown.
   static func sheet(_ screen: Screen) -> Self {
@@ -36,4 +36,4 @@ public extension RouteProtocol {
   }
 }
   
-extension Route: RouteProtocol { }
+extension Route: RouteProtocol {}
