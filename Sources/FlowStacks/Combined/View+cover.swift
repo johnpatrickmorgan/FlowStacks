@@ -6,6 +6,14 @@ extension View {
   /// where fullScreenCover is unavailable.
   @ViewBuilder
   func cover<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
+#if os(macOS)
+    self
+      .sheet(
+        isPresented: isPresented,
+        onDismiss: nil,
+        content: content
+      )
+#else
     if #available(iOS 14.0, tvOS 14.0, macOS 99.9, *) {
       self
         .fullScreenCover(
@@ -21,5 +29,6 @@ extension View {
           content: content
         )
     }
+#endif
   }
 }

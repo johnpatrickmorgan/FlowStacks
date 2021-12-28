@@ -86,3 +86,20 @@ struct NumberView: View {
     .navigationTitle("\(number)")
   }
 }
+
+// Included so that the same example code can be used for macOS too.
+#if os(macOS)
+extension Route {
+  
+  static func cover(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
+    sheet(screen, embedInNavigationView: embedInNavigationView)
+  }
+}
+
+extension Array where Element: RouteProtocol {
+  
+  mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
+    presentSheet(screen, embedInNavigationView: embedInNavigationView)
+  }
+}
+#endif

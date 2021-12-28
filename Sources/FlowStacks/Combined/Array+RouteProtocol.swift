@@ -35,11 +35,15 @@ public extension Array where Element: RouteProtocol {
     append(.sheet(screen, embedInNavigationView: embedInNavigationView))
   }
   
+#if os(macOS)
+#else
   /// Presents a new screen via a full-screen cover presentation.
   /// - Parameter screen: The screen to push.
+  @available(OSX, unavailable, message: "Not available on OS X.")
   mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
     append(.cover(screen, embedInNavigationView: embedInNavigationView))
   }
+#endif
 }
 
 // MARK: - Go back

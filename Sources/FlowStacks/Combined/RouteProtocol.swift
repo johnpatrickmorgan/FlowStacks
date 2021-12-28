@@ -7,8 +7,11 @@ public protocol RouteProtocol {
   
   static func push(_ screen: Screen) -> Self
   static func sheet(_ screen: Screen, embedInNavigationView: Bool) -> Self
+#if os(macOS)
+  // Full-screen cover unavailable.
+#else
   static func cover(_ screen: Screen, embedInNavigationView: Bool) -> Self
-  
+#endif
   var screen: Screen { get set }
   var embedInNavigationView: Bool { get }
   var isPresented: Bool { get }
@@ -23,16 +26,21 @@ public extension RouteProtocol {
     return sheet(screen, embedInNavigationView: false)
   }
   
+#if os(macOS)
+  // Full-screen cover unavailable.
+#else
   /// A full-screen cover presentation.
   /// - Parameter screen: the screen to be shown.
+  @available(OSX, unavailable, message: "Not available on OS X.")
   static func cover(_ screen: Screen) -> Self {
     return cover(screen, embedInNavigationView: false)
   }
+#endif
   
   /// The root of the stack. The presentation style is irrelevant as it will not be presented.
   /// - Parameter screen: the screen to be shown.
   static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> Self {
-    return cover(screen, embedInNavigationView: embedInNavigationView)
+    return sheet(screen, embedInNavigationView: embedInNavigationView)
   }
 }
   

@@ -14,6 +14,7 @@
 		525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C733A2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73392774BDB7009CBD67 /* BindingCoordinator.swift */; };
 		525C733B2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73392774BDB7009CBD67 /* BindingCoordinator.swift */; };
+		525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C7343277BCDDA009CBD67 /* SwiftUINavigation */; };
 		526D9F2426AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
 		526D9F2526AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
 		526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2226AF661F00B6B882 /* VMCoordinator.swift */; };
@@ -49,6 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */,
 				5241BF6F26AA1E8A002D6892 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -141,6 +143,7 @@
 			name = "FlowStacksApp (macOS)";
 			packageProductDependencies = (
 				5241BF6E26AA1E8A002D6892 /* FlowStacks */,
+				525C7343277BCDDA009CBD67 /* SwiftUINavigation */,
 			);
 			productName = "FlowStacksApp (macOS)";
 			productReference = 5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */;
@@ -516,6 +519,11 @@
 			productName = FlowStacks;
 		};
 		525C733427729300009CBD67 /* SwiftUINavigation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
+			productName = SwiftUINavigation;
+		};
+		525C7343277BCDDA009CBD67 /* SwiftUINavigation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
 			productName = SwiftUINavigation;
