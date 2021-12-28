@@ -66,6 +66,17 @@ public enum Route<Screen> {
       return true
     }
   }
+  
+  public func map<NewScreen>(_ transform: (Screen) -> NewScreen) -> Route<NewScreen> {
+    switch self {
+    case .push:
+      return .push(transform(screen))
+    case .sheet(_, let embedInNavigationView):
+      return .sheet(transform(screen), embedInNavigationView: embedInNavigationView)
+    case .cover(_, let embedInNavigationView):
+      return .cover(transform(screen), embedInNavigationView: embedInNavigationView)
+    }
+  }
 }
 
 extension Route: Equatable where Screen: Equatable {

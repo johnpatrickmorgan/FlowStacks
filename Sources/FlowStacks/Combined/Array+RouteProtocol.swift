@@ -13,8 +13,10 @@ public extension Array where Element: RouteProtocol {
         return embedInNavigationView
       }
     }
-    return false
+    // We have to assume that the routes are being pushed onto a navigation view outside this array.
+    return true
   }
+
   /// Pushes a new screen via a push navigation.
   /// This should only be called if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: The screen to push.
@@ -28,22 +30,22 @@ public extension Array where Element: RouteProtocol {
     )
     append(.push(screen))
   }
-  
+
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
   mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
     append(.sheet(screen, embedInNavigationView: embedInNavigationView))
   }
-  
-#if os(macOS)
-#else
+
+  #if os(macOS)
+  #else
   /// Presents a new screen via a full-screen cover presentation.
   /// - Parameter screen: The screen to push.
   @available(OSX, unavailable, message: "Not available on OS X.")
   mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
     append(.cover(screen, embedInNavigationView: embedInNavigationView))
   }
-#endif
+  #endif
 }
 
 // MARK: - Go back
@@ -54,20 +56,20 @@ public extension Array where Element: RouteProtocol {
   mutating func goBack(count: Int = 1) {
     self = dropLast(count)
   }
-  
+
   /// Goes back to a given index in the array of screens. The resulting screen count
   /// will be index + 1.
   /// - Parameter index: The index that should become top of the stack.
   mutating func goBackTo(index: Int) {
     self = Array(prefix(index + 1))
   }
-  
+
   /// Goes back to the root screen (index 0). The resulting screen count
   /// will be 1.
   mutating func goBackToRoot() {
     goBackTo(index: 0)
   }
-  
+
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
   /// the screens array will be unchanged.
@@ -81,7 +83,7 @@ public extension Array where Element: RouteProtocol {
     goBackTo(index: index)
     return true
   }
-  
+
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
   /// the screens array will be unchanged.
@@ -114,7 +116,7 @@ public extension Array where Element: RouteProtocol, Element.Screen: Identifiabl
   mutating func goBackTo(id: Element.Screen.ID) -> Bool {
     goBackTo(where: { $0.id == id })
   }
-  
+
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
   /// matching the given screen. If no screens are found, the screens array
   /// will be unchanged.
@@ -150,7 +152,7 @@ public extension Array where Element: RouteProtocol {
     assert(suffix(count).allSatisfy { $0.style == .push })
     self = dropLast(count)
   }
-  
+
   /// Pops to a given index in the array of screens. The resulting screen count
   /// will be index + 1. Only screens that have been pushed will
   /// be popped.
@@ -159,14 +161,14 @@ public extension Array where Element: RouteProtocol {
     let popCount = count - (index + 1)
     pop(count: popCount)
   }
-  
+
   /// Pops to the root screen (index 0). The resulting screen count
   /// will be 1. Only screens that have been pushed will
   /// be popped.
   mutating func popToRoot() {
     popTo(index: 0)
   }
-  
+
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
   /// the screens array will be unchanged. Only screens that have been pushed will
@@ -181,7 +183,7 @@ public extension Array where Element: RouteProtocol {
     popTo(index: index)
     return true
   }
-  
+
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
   /// the screens array will be unchanged. Only screens that have been pushed will
@@ -218,7 +220,7 @@ public extension Array where Element: RouteProtocol, Element.Screen: Identifiabl
   mutating func popTo(id: Element.Screen.ID) -> Bool {
     popTo(where: { $0.id == id })
   }
-  
+
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
   /// matching the given screen. If no screens are found, the screens array
   /// will be unchanged. Only screens that have been pushed will

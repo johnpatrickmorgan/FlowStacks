@@ -1,16 +1,23 @@
 # FlowStacks
 _Coordinator pattern in SwiftUI_
 
-*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a simple array. 
-
-This makes it easy to hoist navigation state into a higher-level coordinator, allowing you to write isolated views that have zero knowledge of their context within the navigation flow of an app. 
+*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a simple array. This makes it easy to hoist navigation state into a higher-level coordinator, allowing you to write isolated views that have zero knowledge of their context within the navigation flow of an app. 
 
 You might like this library if:
 
-- You want to be able support deeplinks to any part of your app.
-- You want to be able to easily reuse views within different navigation contexts.
-- You want to use the coordinator pattern to keep navigation logic in a single place.
-- You miss the power of being able to call `setViewControllers` on `UINavigationController`.
+✅ You want to be able support deeplinks into deeply nested navigation routes in your app.<br/>
+✅ You want to be able to easily reuse views within different navigation contexts.<br/>
+✅ You want to easily go back to the root screen or a specific screen in the navigation stack.<br/>
+✅ You want to use the coordinator pattern to keep navigation logic in a single place.<br/>
+✅ You want to break an app's navigation into multiple reusable coordinators and compose them together.<br/>
+
+
+The library works by translating the array of screens into a hierarchy of nested NavigationLinks and presentation calls, so:
+
+🚫 It does not rely on UIKit at all.<br/>
+🚫 It does not use `AnyView` to type-erase screens.<br/>
+🚫 It does not try to recreate NavigationView from scratch.<br/>
+
 
 ## Usage
 
@@ -61,9 +68,9 @@ struct AppCoordinator: View {
 }
 ```
 
-## Convenience methods
+### Convenience methods
 
-The routes array can be managed using normal Array methods, but a number of convenience methods are available for common transformations:
+The routes array can be managed using normal Array methods, but a number of convenience methods are available for common transformations, such as:
 
 | Method       | Effect                                            |
 |--------------|---------------------------------------------------|
@@ -78,13 +85,34 @@ The routes array can be managed using normal Array methods, but a number of conv
 
 † _Pass `embedInNavigationView: true` if you want to be able to push screens from the presented screen._
 
-## Automatically updated
+### Routes array automatically updated
 
-If the user taps the back button, the routes array will be automatically updated to reflect the new navigation state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as well as when the user swipes to dismiss a sheet.
+If the user taps the back button, the routes array will be automatically updated to reflect the new navigation state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as will swiping to dismiss a sheet.
 
-## Bindings
+### Fixed root screen
 
-The Router can be configured to work with a binding to the screen state, rather than just a read-only value. The screen can then be responsible for updating its state in the routes array. Normally an enum is used to represent the screen, so it might be necessary to further extract the associated value for a particular screen as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
+Often the root screen in a screen flow is static - always the same screen is in the root position. In this case you can use the `showing` function on the root screen view to simplify matters. It takes the same parameters as the `Router` initializer:
+
+```swift
+struct ShowingCoordinator: View {
+  enum Screen {
+    case detail, edit, confirm
+  }
+  
+  @State var routes: Routes<Screen> = []
+  
+  var body: some View {
+    HomeView(onGoTapped: { routes.presentSheet(.detail) })
+      .showing($routes) { $number, index in
+        ...
+      }
+  }
+}
+```
+
+### Bindings
+
+The Router can be configured to work with a binding to the screen state, rather than just a read-only value - just add `$` before the screen argument in the view-builder closure. The screen itself can then be responsible for updating its state within the routes array. Normally an enum is used to represent the screen, so it might be necessary to further extract the associated value for a particular screen as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
 
 ```swift
 import SwiftUINavigation
@@ -115,13 +143,13 @@ struct BindingExampleCoordinator: View {
 }
 ```
 
-## Child coordinators
+### Child coordinators
 
 Coordinators are just views themselves, so they can be presented, pushed, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. They can even be pushed onto a parent coordinator's navigation stack, allowing you to break out parts of your navigation flow into separate child coordinators. When doing so, it is best that the child coordinator is always at the top of the parent's routes stack, as it will take over responsibility for pushing and presenting new screens.
 
-## Using View Models
+### Using View Models
 
-Using `Router`s in the coordinator pattern also works well when using View Models. In these cases, the navigation state can live in the coordinator's own view model, and the Screen enum can include each screen's view model. With view models, the example above can be re-written:
+Using `Router`s in the coordinator pattern also works well when using View Models. In these cases, the navigation state can live in the coordinator's own view model, and the Screen enum can include each screen's view model. With view models, the first example above can be re-written:
 
 ```swift
 enum Screen {
@@ -172,7 +200,7 @@ struct AppCoordinator: View {
 }
 ```
 
-## Overcoming SwiftUI's limitations
+### Making complex navigation updates
 
 SwiftUI does not allow more than one screen to be pushed, presented or dismissed within a single update. This makes it tricky to make large updates to the navigation state, e.g. when deeplinking straight to a view deep in the navigation hierarchy, when going back several presentation layers to the root, or when restoring arbitrary navigation state. With *FlowStacks*, you can wrap such changes within a call to `withDelaysIfUnsupported`, and the library will break down the large update into a series of smaller updates that SwiftUI supports:
 
@@ -192,9 +220,11 @@ $routes.withDelaysIfUnsupported {
 
 ## How does it work? 
 
-This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how an array of screens can be translated into a hierarchy of views and `NavigationLink`s. `Router` uses a similar approach to allow both pushing and presenting.
+This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how an array of screens can be translated into a hierarchy of views and `NavigationLink`s. `Router` uses a similar approach to allow both navigation and presentation.
 
 ## Caveats
+
+Currently only the `.stack` navigation view style is supported. There are some unexpected behaviours with the `.column` navigation view style that make it problematic for the approach used in this library.
 
 Be careful that your screens do not inadvertently end up observing the navigation state, e.g. if you were to pass a coordinator object to its screens as an `ObservableObject` or `EnvironmentObject`. Not only would that cause your screens to be re-rendered unnecessarily whenever the navigation state changes, it can also cause SwiftUI's navigation state to deviate from your app's state. 
 

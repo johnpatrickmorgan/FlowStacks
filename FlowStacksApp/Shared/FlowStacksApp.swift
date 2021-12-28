@@ -11,6 +11,8 @@ struct FlowStacksApp: App {
           .tabItem { Text("VMs") }
         BindingCoordinator()
           .tabItem { Text("Binding") }
+        ShowingCoordinator()
+          .tabItem { Text("Showing") }
       }
     }
   }

@@ -8,7 +8,6 @@ public enum RouteStyle: Hashable {
 }
 
 public extension Route {
-  
   /// Whether the route is pushed, presented as a sheet or presented as a full-screen
   /// cover.
   var style: RouteStyle {

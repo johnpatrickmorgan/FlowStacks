@@ -84,7 +84,6 @@ indirect enum Node<Screen, V: View>: View {
     screenView
       .background(
         NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
-          .isDetailLinkiOS()
           .hidden()
       )
       .sheet(
@@ -104,8 +103,19 @@ indirect enum Node<Screen, V: View>: View {
       NavigationView {
         unwrappedBody
       }
+      .navigationViewStyle(supportedNavigationViewStyle)
     } else {
       unwrappedBody
     }
   }
+}
+
+/// There are spurious state updates when using the `column` navigation view style, so
+/// the navigation view style is forced to `stack` where possible.
+private var supportedNavigationViewStyle: some NavigationViewStyle {
+#if os(macOS)
+    .default
+#else
+    .stack
+#endif
 }

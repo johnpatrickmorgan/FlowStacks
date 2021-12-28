@@ -8,7 +8,7 @@ public protocol RouteProtocol {
   static func push(_ screen: Screen) -> Self
   static func sheet(_ screen: Screen, embedInNavigationView: Bool) -> Self
 #if os(macOS)
-  // Full-screen cover unavailable.
+// Full-screen cover unavailable.
 #else
   static func cover(_ screen: Screen, embedInNavigationView: Bool) -> Self
 #endif
@@ -27,7 +27,7 @@ public extension RouteProtocol {
   }
   
 #if os(macOS)
-  // Full-screen cover unavailable.
+// Full-screen cover unavailable.
 #else
   /// A full-screen cover presentation.
   /// - Parameter screen: the screen to be shown.

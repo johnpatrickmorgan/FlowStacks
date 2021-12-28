@@ -68,7 +68,7 @@ struct NumberView: View {
   let pushNext: (Int) -> Void
   let goBack: (() -> Void)?
   let goBackToRoot: () -> Void
-  let goRandom: () -> Void
+  let goRandom: (() -> Void)?
   
   var body: some View {
     VStack(spacing: 8) {
@@ -76,11 +76,13 @@ struct NumberView: View {
       Button("Present Double (cover)") { presentDoubleCover(number) }
       Button("Present Double (sheet)") { presentDoubleSheet(number) }
       Button("Push next") { pushNext(number) }
+      if let goRandom = goRandom {
+        Button("Go random", action: goRandom)
+      }
       if let goBack = goBack {
         Button("Go back", action: goBack)
       }
       Button("Go back to root", action: goBackToRoot)
-      Button("Go random", action: goRandom)
     }
     .padding()
     .navigationTitle("\(number)")

@@ -14,6 +14,8 @@
 		525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C733A2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73392774BDB7009CBD67 /* BindingCoordinator.swift */; };
 		525C733B2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73392774BDB7009CBD67 /* BindingCoordinator.swift */; };
+		525C7341277BC788009CBD67 /* ShowingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C7340277BC788009CBD67 /* ShowingCoordinator.swift */; };
+		525C7342277BC788009CBD67 /* ShowingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C7340277BC788009CBD67 /* ShowingCoordinator.swift */; };
 		525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C7343277BCDDA009CBD67 /* SwiftUINavigation */; };
 		526D9F2426AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
 		526D9F2526AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
@@ -30,6 +32,7 @@
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		525C73362774BA6B009CBD67 /* NumberCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCoordinator.swift; sourceTree = "<group>"; };
 		525C73392774BDB7009CBD67 /* BindingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BindingCoordinator.swift; sourceTree = "<group>"; };
+		525C7340277BC788009CBD67 /* ShowingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowingCoordinator.swift; sourceTree = "<group>"; };
 		526D9F1C26AF661F00B6B882 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		526D9F2226AF661F00B6B882 /* VMCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
@@ -99,6 +102,7 @@
 				526D9F3226AF667000B6B882 /* FlowStacksApp.swift */,
 				525C73362774BA6B009CBD67 /* NumberCoordinator.swift */,
 				526D9F2226AF661F00B6B882 /* VMCoordinator.swift */,
+				525C7340277BC788009CBD67 /* ShowingCoordinator.swift */,
 				525C73392774BDB7009CBD67 /* BindingCoordinator.swift */,
 			);
 			path = Shared;
@@ -219,6 +223,7 @@
 				526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				525C733A2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
 				525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
+				525C7341277BC788009CBD67 /* ShowingCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +235,7 @@
 				526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				525C733B2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
 				525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
+				525C7342277BC788009CBD67 /* ShowingCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
