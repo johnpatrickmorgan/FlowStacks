@@ -1,145 +1,232 @@
 # FlowStacks
 _Coordinator pattern in SwiftUI_
 
-*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a single piece of state. This makes it easy to hoist that state into a high-level coordinator view. Using this pattern, you can write isolated views that have zero knowledge of their context within the navigation flow of an app.
+*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a simple array. This makes it easy to hoist navigation state into a higher-level coordinator, allowing you to write isolated views that have zero knowledge of their context within the navigation flow of an app. 
+
+You might like this library if:
+
+✅ You want to be able support deeplinks into deeply nested navigation routes in your app.<br/>
+✅ You want to be able to easily reuse views within different navigation contexts.<br/>
+✅ You want to easily go back to the root screen or a specific screen in the navigation stack.<br/>
+✅ You want to use the coordinator pattern to keep navigation logic in a single place.<br/>
+✅ You want to break an app's navigation into multiple reusable coordinators and compose them together.<br/>
+
+
+The library works by translating the array of screens into a hierarchy of nested NavigationLinks and presentation calls, so:
+
+🚫 It does not rely on UIKit at all.<br/>
+🚫 It does not use `AnyView` to type-erase screens.<br/>
+🚫 It does not try to recreate NavigationView from scratch.<br/>
+
 
 ## Usage
 
-To begin, create an enum encompassing each of the screens your navigation stack might contain, e.g.:
+To begin, create an enum encompassing each of the screens your flow might contain, e.g.:
 
 ```swift
 enum Screen {
-    case home
-    case numberList
-    case numberDetail(Int)
+  case home
+  case numberList
+  case numberDetail(Int)
 }
 ```
 
-You can then add a flow representing a stack of these screens (`NFlow` for navigation, or `PFlow` for presentation) as a single property in a coordinator view. In the body of the coordinator view, initialize an `NStack` (or `PStack` for presentation) with a binding to the flow, and a `ViewBuilder` closure. The closure builds a view for a given screen, e.g.:
+A coordinator view can then manage an array of `Route<Screen>`s, representing a stack of these screens, each one either pushed or presented. In the body of the coordinator view, initialize a `Router` with a binding to the routes array, and a `ViewBuilder` closure. The closure builds a view for a given screen, e.g.:
 
 ```swift
 struct AppCoordinator: View {
-    @State var flow = NFlow<Screen>(root: .home)
+  @State var routes: Routes<Screen> = [.root(.home)]
     
-    var body: some View {
-        NavigationView {
-            NStack($flow) { screen in
-                switch screen {
-                case .home:
-                    HomeView(onGoTapped: showNumberList)
-                case .numberList:
-                    NumberListView(onNumberSelected: showNumber, cancel: pop)
-                case .numberDetail(let number):
-                    NumberDetailView(number: number, cancel: popToRoot)
-                }
-            }
-        }
+  var body: some View {
+    Router($routes) { screen, _ in
+      switch screen {
+      case .home:
+        HomeView(onGoTapped: showNumberList)
+      case .numberList:
+        NumberListView(onNumberSelected: showNumber, cancel: goBack)
+      case .numberDetail(let number):
+        NumberDetailView(number: number, cancel: goBackToRoot)
+      }
     }
+  }
     
-    private func showNumberList() {
-        flow.push(.numberList)
-    }
+  private func showNumberList() {
+    routes.presentSheet(.numberList, embedInNavigationView: true)
+  }
     
-    private func showNumber(_ number: Int) {
-        flow.push(.number(number))
-    }
+  private func showNumber(_ number: Int) {
+    routes.push(.numberDetail(number))
+  }
     
-    private func pop() {
-        flow.pop()
-    }
+  private func goBack() {
+    routes.goBack()
+  }
     
-    private func popToRoot() {
-        flow.popToRoot()
-    }
+  private func goBackToRoot() {
+    routes.goBackToRoot()
+  }
 }
 ```
 
-As you can see, pushing a new view is as easy as `flow.push(...)` and popping can be achieved with `flow.pop()`. There are convenience methods for popping to the root (`flow.popToRoot()`) and popping to a specific screen in the flow (`flow.popTo(.home)`). 
+### Convenience methods
 
-If the user taps the back button, the flow will be automatically updated to reflect its new state. Navigating back with an edge swipe gesture or long-press gesture on the back button will also update the flow.
+The routes array can be managed using normal Array methods, but a number of convenience methods are available for common transformations, such as:
 
-Coordinators are just views, so they can be presented, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. 
+| Method       | Effect                                            |
+|--------------|---------------------------------------------------|
+| push         | Pushes a new screen onto the stack.               |
+| presentSheet | Presents a new screen as a sheet.†                |
+| presentCover | Presents a new screen as a full-screen cover.†    |
+| goBack       | Goes back one screen in the stack.                |
+| goBackToRoot | Goes back to the very first screen in the stack.  |
+| goBackTo     | Goes back to a specific screen in the stack.      |
+| pop          | Pops the current screen if it was pushed.         |
+| dismiss      | Dismisses the most recently presented screen.     |
 
-## Child coordinators
+† _Pass `embedInNavigationView: true` if you want to be able to push screens from the presented screen._
 
-As coordinator views are just views, they can even be pushed onto a parent coordinator's navigation stack. When doing so, it is best that the child coordinator is always at the top of the parent's flow, as it will take over responsibility for pushing new views. 
+### Routes array automatically updated
 
-In order to allow coordinators to be nested in this way, the child coordinator should not include its own `NavigationView`. In fact, it's a good idea to add the `NavigationView` as high in the view hierarchy as you can - e.g. at the top-level of the app, when presenting a new coordinator, or when adding one to a `TabView`.
+If the user taps the back button, the routes array will be automatically updated to reflect the new navigation state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as will swiping to dismiss a sheet.
 
-## Using View Models
+### Fixed root screen
 
-Using `NStack`s in the coordinator pattern also works well when using View Models. In these cases, the navigation state can live in the coordinator's own view model, and the Screen enum can include each screen's view model. With view models, the example above can be re-written:
+Often the root screen in a screen flow is static - always the same screen is in the root position. In this case you can use the `showing` function on the root screen view to simplify matters. It takes the same parameters as the `Router` initializer:
+
+```swift
+struct ShowingCoordinator: View {
+  enum Screen {
+    case detail, edit, confirm
+  }
+  
+  @State var routes: Routes<Screen> = []
+  
+  var body: some View {
+    HomeView(onGoTapped: { routes.presentSheet(.detail) })
+      .showing($routes) { $number, index in
+        ...
+      }
+  }
+}
+```
+
+### Bindings
+
+The Router can be configured to work with a binding to the screen state, rather than just a read-only value - just add `$` before the screen argument in the view-builder closure. The screen itself can then be responsible for updating its state within the routes array. Normally an enum is used to represent the screen, so it might be necessary to further extract the associated value for a particular screen as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
+
+```swift
+import SwiftUINavigation
+
+struct BindingExampleCoordinator: View {
+  enum Screen {
+    case start
+    case number(Int)
+  }
+  
+  @State var routes: Routes<Screen> = [.root(.start, embedInNavigationView: true)]
+    
+  var body: some View {
+    Router($routes) { $screen, _ in
+      if let number = Binding(unwrapping: $screen, case: /Screen.number) {
+        // Here number is a Binding<Int>, so EditableNumberView can change its
+        // value in the routes array.
+        EditableNumberView(number: number)
+      } else {
+        StartView(goTapped: goTapped)
+      }
+    }
+  }
+  
+  func goTapped() {
+    routes.push(.number(42))
+  }
+}
+```
+
+### Child coordinators
+
+Coordinators are just views themselves, so they can be presented, pushed, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. They can even be pushed onto a parent coordinator's navigation stack, allowing you to break out parts of your navigation flow into separate child coordinators. When doing so, it is best that the child coordinator is always at the top of the parent's routes stack, as it will take over responsibility for pushing and presenting new screens.
+
+### Using View Models
+
+Using `Router`s in the coordinator pattern also works well when using View Models. In these cases, the navigation state can live in the coordinator's own view model, and the Screen enum can include each screen's view model. With view models, the first example above can be re-written:
 
 ```swift
 enum Screen {
-    case home(HomeViewModel)
-    case numberList(NumberListViewModel)
-    case numberDetail(NumberDetailViewModel)
+  case home(HomeViewModel)
+  case numberList(NumberListViewModel)
+  case numberDetail(NumberDetailViewModel)
 }
 
 class AppCoordinatorViewModel: ObservableObject {
-    @Published var flow = NFlow<Screen>()
+  @Published var routes: Routes<Screen>
     
-    init() {
-        flow.push(.home(.init(onGoTapped: showNumberList)))
-    }
+  init() {
+    self.routes = [.root(.home(.init(onGoTapped: showNumberList)))]
+  }
     
-    func showNumberList() {
-        flow.push(.numberList(.init(onNumberSelected: showNumber, cancel: pop)))
-    }
+  func showNumberList() {
+    routes.presentSheet(.numberList(.init(onNumberSelected: showNumber, cancel: goBack)), embedInNavigationView: true)
+  }
     
-    func showNumber(_ number: Int) {
-        flow.push(.numberDetail(.init(number: number, cancel: popToRoot)))
-    }
+  func showNumber(_ number: Int) {
+    routes.push(.numberDetail(.init(number: number, cancel: goBackToRoot)))
+  }
     
-    func pop() {
-        flow.pop()
-    }
+  func goBack() {
+    routes.goBack()
+  }
     
-    func popToRoot() {
-        flow.popToRoot()
-    }
+  func goBackToRoot() {
+    routes.goBackToRoot()
+  }
 }
 
 struct AppCoordinator: View {
-    @ObservedObject var viewModel: AppCoordinatorViewModel
+  @ObservedObject var viewModel: AppCoordinatorViewModel
     
-    var body: some View {
-        NavigationView {
-            NStack($viewModel.flow) { screen in
-                switch screen {
-                case .home(let viewModel):
-                    HomeView(viewModel: viewModel)
-                case .numberList(let viewModel):
-                    NumberListView(viewModel: viewModel)
-                case .number(let viewModel):
-                    NumberView(viewModel: viewModel)
-                }
-            }
-        }
+  var body: some View {
+    Router($viewModel.routes) { screen in
+      switch screen {
+      case .home(let viewModel):
+        HomeView(viewModel: viewModel)
+      case .numberList(let viewModel):
+        NumberListView(viewModel: viewModel)
+      case .number(let viewModel):
+        NumberView(viewModel: viewModel)
+      }
     }
+  }
 }
 ```
 
-## Presentation
+### Making complex navigation updates
 
-In order to use presentation instead of navigation for showing and unshowing screens, the examples above can be re-written using a `PStack` instead of an `NStack`, and a `PFlow` instead of an `NFlow`. The `push` methods become `present` and the `pop` methods become `dismiss`. The present method allows you to customize the presentation style and add a callback on dismissal:
+SwiftUI does not allow more than one screen to be pushed, presented or dismissed within a single update. This makes it tricky to make large updates to the navigation state, e.g. when deeplinking straight to a view deep in the navigation hierarchy, when going back several presentation layers to the root, or when restoring arbitrary navigation state. With *FlowStacks*, you can wrap such changes within a call to `withDelaysIfUnsupported`, and the library will break down the large update into a series of smaller updates that SwiftUI supports:
 
 ```swift
-flow.present(detailView, style: .fullScreenCover) {
-    print("Detail dismissed")
+$routes.withDelaysIfUnsupported {
+  $0.goBackToRoot()
+}
+```
+
+```swift
+$routes.withDelaysIfUnsupported {
+  $0.push(...)
+  $0.push(...)
+  $0.presentSheet(...)
 }
 ```
 
 ## How does it work? 
 
-This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how `NStack` translates the stack of screens into a hierarchy of views and `NavigationLink`s. `PStack` uses a similar approach.
+This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how an array of screens can be translated into a hierarchy of views and `NavigationLink`s. `Router` uses a similar approach to allow both navigation and presentation.
 
-## Limitations
+## Caveats
 
-SwiftUI does not allow more than one screen to be pushed, presented or dismissed in one update, though it is possible to pop any number of views in one update. `NFlow` and `PFlow` only expose methods to make updates that are supported in SwiftUI.
+Currently only the `.stack` navigation view style is supported. There are some unexpected behaviours with the `.column` navigation view style that make it problematic for the approach used in this library.
 
-Be careful that your screens do not inadvertently end up observing the coordinator's navigation state, e.g. if you were to pass a coordinator object to its screens as an `ObservableObject` or `EnvironmentObject`. Not only would that cause your screens to be re-rendered unnecessarily whenever the navigation state changes, it can also cause SwiftUI's navigation state to deviate from your app's state. 
+Be careful that your screens do not inadvertently end up observing the navigation state, e.g. if you were to pass a coordinator object to its screens as an `ObservableObject` or `EnvironmentObject`. Not only would that cause your screens to be re-rendered unnecessarily whenever the navigation state changes, it can also cause SwiftUI's navigation state to deviate from your app's state. 
 
 ## Using The Composable Architecture?
 
