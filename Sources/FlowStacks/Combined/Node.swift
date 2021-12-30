@@ -114,7 +114,7 @@ indirect enum Node<Screen, V: View>: View {
 /// the navigation view style is forced to `stack` where possible.
 private var supportedNavigationViewStyle: some NavigationViewStyle {
 #if os(macOS)
-    .default
+    .automatic
 #else
     .stack
 #endif

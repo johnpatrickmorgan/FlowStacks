@@ -38,11 +38,11 @@ public enum Route<Screen> {
         self = .push(newValue)
       case .sheet(_, let embedInNavigationView):
         self = .sheet(newValue, embedInNavigationView: embedInNavigationView)
-#if os(macOS)
-#else
-      case .cover(_, let embedInNavigationView):
-        self = .cover(newValue, embedInNavigationView: embedInNavigationView)
-#endif
+        #if os(macOS)
+        #else
+        case .cover(_, let embedInNavigationView):
+          self = .cover(newValue, embedInNavigationView: embedInNavigationView)
+      #endif
       }
     }
   }
@@ -73,8 +73,11 @@ public enum Route<Screen> {
       return .push(transform(screen))
     case .sheet(_, let embedInNavigationView):
       return .sheet(transform(screen), embedInNavigationView: embedInNavigationView)
+#if os(macOS)
+#else
     case .cover(_, let embedInNavigationView):
       return .cover(transform(screen), embedInNavigationView: embedInNavigationView)
+#endif
     }
   }
 }
