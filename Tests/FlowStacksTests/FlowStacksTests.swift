@@ -15,7 +15,7 @@ final class FlowStacksTests: XCTestCase {
       .push(-4)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [
@@ -46,7 +46,7 @@ final class FlowStacksTests: XCTestCase {
       .root(-1, embedInNavigationView: true)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [
@@ -71,7 +71,7 @@ final class FlowStacksTests: XCTestCase {
       .sheet(-4)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [
@@ -102,7 +102,7 @@ final class FlowStacksTests: XCTestCase {
       .root(-1, embedInNavigationView: true)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [
@@ -137,7 +137,7 @@ final class FlowStacksTests: XCTestCase {
       .sheet(-5)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [
@@ -178,7 +178,7 @@ final class FlowStacksTests: XCTestCase {
       .sheet(-5)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [
@@ -216,7 +216,7 @@ final class FlowStacksTests: XCTestCase {
       .push(-2)
     ]
     
-    let steps = calculateSteps(from: start, to: end)
+    let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     let expectedSteps: [RouterState] = [
       [

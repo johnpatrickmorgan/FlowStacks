@@ -67,7 +67,7 @@ public extension RoutableCollection where Element: RouteProtocol {
   /// will be index + 1.
   /// - Parameter index: The index that should become top of the stack.
   mutating func goBackTo(index: Int) {
-    self.goBack(endIndex - 1 - index)
+    goBack(endIndex - 1 - index)
   }
 
   /// Goes back to the root screen (index 0). The resulting screen count
