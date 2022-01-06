@@ -3,18 +3,25 @@ import Foundation
 public typealias Routes<Screen> = [Route<Screen>]
 
 public extension Array where Element: RouteProtocol {
-  /// Whether the Array of Routes is able to push new screens.
-  var canPush: Bool {
-    for route in self.reversed() {
+  /// Whether the Array of Routes is able to push new screens. If it is not possible to determine,
+  /// `nil` will be returned, e.g. if there is no `NavigationView` in this routes stack but it's possible
+  /// it has been pushed onto a parent coordinator with a `NavigationView`.
+  var canPush: Bool? {
+    for (index, route) in zip(indices, self).reversed() {
       switch route.style {
       case .push:
         continue
       case .cover(let embedInNavigationView), .sheet(let embedInNavigationView):
-        return embedInNavigationView
+        if index > 0 {
+          return embedInNavigationView
+        } else {
+          // Once we reach the root screen, it's not possible to determine if the routes are being pushed onto a
+          // parent coordinator with a NavigationView, so we return nil rather than false.
+          return embedInNavigationView ? true : nil
+        }
       }
     }
-    // We have to assume that the routes are being pushed onto a navigation view outside this array.
-    return true
+    return nil
   }
 
   /// Pushes a new screen via a push navigation.
@@ -22,7 +29,7 @@ public extension Array where Element: RouteProtocol {
   /// - Parameter screen: The screen to push.
   mutating func push(_ screen: Element.Screen) {
     assert(
-      canPush,
+      canPush != false,
       """
       Attempting to push a screen, but the most recently presented screen is not
       embedded in a `NavigationView`. Please ensure the root or most recently presented route has `embedInNavigationView` set to `true`.
