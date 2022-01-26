@@ -5,6 +5,24 @@ import SwiftUI
 /// as a sheet or presented as a full-screen cover.
 public enum RouteStyle: Hashable {
   case push, sheet(embedInNavigationView: Bool), cover(embedInNavigationView: Bool)
+  
+  public var isSheet: Bool {
+    switch self {
+    case .sheet:
+      return true
+    case .cover, .push:
+      return false
+    }
+  }
+  
+  public var isCover: Bool {
+    switch self {
+    case .cover:
+      return true
+    case .sheet, .push:
+      return false
+    }
+  }
 }
 
 public extension Route {
