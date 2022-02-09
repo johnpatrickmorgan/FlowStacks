@@ -91,18 +91,39 @@ indirect enum Node<Screen, V: View>: View {
   
   @ViewBuilder
   private var unwrappedBody: some View {
-    let asSheet = next?.route?.style.isSheet ?? false
-    screenView
-      .background(
-        NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
-          .hidden()
-      )
-      .present(
-        asSheet: asSheet,
-        isPresented: asSheet ? sheetBinding : coverBinding,
-        onDismiss: nil,
-        content: { next }
-      )
+    /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
+    /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
+    /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
+    if #available(iOS 14.5, *) {
+      screenView
+        .background(
+          NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
+            .hidden()
+        )
+        .sheet(
+          isPresented: sheetBinding,
+          onDismiss: nil,
+          content: { next }
+        )
+        .cover(
+          isPresented: coverBinding,
+          onDismiss: nil,
+          content: { next }
+        )
+    } else {
+      let asSheet = next?.route?.style.isSheet ?? false
+      screenView
+        .background(
+          NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
+            .hidden()
+        )
+        .present(
+          asSheet: asSheet,
+          isPresented: asSheet ? sheetBinding : coverBinding,
+          onDismiss: nil,
+          content: { next }
+        )
+    }
   }
   
   var body: some View {
