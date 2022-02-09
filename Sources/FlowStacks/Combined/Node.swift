@@ -43,9 +43,9 @@ indirect enum Node<Screen, V: View>: View {
     }
   }
 
-  private var sheetOnDismiss: (() -> Void)? {
+  private var onDismiss: (() -> Void)? {
     switch next {
-    case .route(.sheet(_, _, let onDismiss), _, _, _, _):
+    case .route(.sheet(_, _, let onDismiss), _, _, _, _), .route(.cover(_, _, let onDismiss), _, _, _, _):
         return onDismiss
     default:
         return nil
@@ -90,19 +90,19 @@ indirect enum Node<Screen, V: View>: View {
   }
   
   private var unwrappedBody: some View {
-    screenView
+    return screenView
       .background(
         NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
           .hidden()
       )
       .sheet(
         isPresented: sheetBinding,
-        onDismiss: sheetOnDismiss,
+        onDismiss: onDismiss,
         content: { next }
       )
       .cover(
         isPresented: coverBinding,
-        onDismiss: nil,
+        onDismiss: onDismiss,
         content: { next }
       )
   }

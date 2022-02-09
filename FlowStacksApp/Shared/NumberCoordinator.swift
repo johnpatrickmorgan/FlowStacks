@@ -33,10 +33,10 @@ struct NumberCoordinator: View {
         NumberView(
           number: number,
           presentDoubleCover: { number in
-            routes.presentCover(.number(number * 2), embedInNavigationView: true)
+            routes.presentCover(.number(number * 2), embedInNavigationView: true, onDismiss: { print("dismiss cover \(number * 2)") })
           },
           presentDoubleSheet: { number in
-            routes.presentSheet(.number(number * 2), embedInNavigationView: true)
+            routes.presentSheet(.number(number * 2), embedInNavigationView: true, onDismiss: { print("dismiss sheet \(number * 2)") })
           },
           pushNext: { number in
             routes.push(.number(number + 1))

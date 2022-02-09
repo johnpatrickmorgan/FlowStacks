@@ -10,7 +10,7 @@ extension View {
       self
         .sheet(
           isPresented: isPresented,
-          onDismiss: nil,
+          onDismiss: onDismiss,
           content: content
         )
     #else
@@ -18,14 +18,14 @@ extension View {
         self
           .fullScreenCover(
             isPresented: isPresented,
-            onDismiss: nil,
+            onDismiss: onDismiss,
             content: content
           )
       } else {
         self
           .sheet(
             isPresented: isPresented,
-            onDismiss: nil,
+            onDismiss: onDismiss,
             content: content
           )
       }

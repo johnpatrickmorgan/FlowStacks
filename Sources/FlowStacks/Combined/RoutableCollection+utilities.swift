@@ -39,6 +39,7 @@ public extension RoutableCollection where Element: RouteProtocol {
 
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
+  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
   mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
     _append(element: .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss))
   }
@@ -47,9 +48,10 @@ public extension RoutableCollection where Element: RouteProtocol {
   #else
   /// Presents a new screen via a full-screen cover presentation.
   /// - Parameter screen: The screen to push.
+  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed. 
   @available(OSX, unavailable, message: "Not available on OS X.")
-  mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
-    _append(element: .cover(screen, embedInNavigationView: embedInNavigationView))
+  mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
+    _append(element: .cover(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss))
   }
   #endif
 }
