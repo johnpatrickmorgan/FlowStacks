@@ -42,6 +42,15 @@ indirect enum Node<Screen, V: View>: View {
       return .constant(false)
     }
   }
+
+  private var sheetOnDismiss: (() -> Void)? {
+    switch next {
+    case .route(.sheet(_, _, let onDismiss), _, _, _, _):
+        return onDismiss
+    default:
+        return nil
+    }
+  }
   
   private var coverBinding: Binding<Bool> {
     switch next {
@@ -88,7 +97,7 @@ indirect enum Node<Screen, V: View>: View {
       )
       .sheet(
         isPresented: sheetBinding,
-        onDismiss: nil,
+        onDismiss: sheetOnDismiss,
         content: { next }
       )
       .cover(

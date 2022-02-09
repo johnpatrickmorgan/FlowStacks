@@ -14,7 +14,7 @@ public extension Route {
     switch self {
     case .push:
       return .push
-    case .sheet(_, let embedInNavigationView):
+    case .sheet(_, let embedInNavigationView, _):
       return .sheet(embedInNavigationView: embedInNavigationView)
     case .cover(_, let embedInNavigationView):
       return .cover(embedInNavigationView: embedInNavigationView)

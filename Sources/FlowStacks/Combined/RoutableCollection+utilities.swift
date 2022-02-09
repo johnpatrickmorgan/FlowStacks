@@ -39,8 +39,8 @@ public extension RoutableCollection where Element: RouteProtocol {
 
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
-  mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
-    _append(element: .sheet(screen, embedInNavigationView: embedInNavigationView))
+  mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
+    _append(element: .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss))
   }
 
   #if os(macOS)

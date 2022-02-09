@@ -10,7 +10,7 @@ public enum Route<Screen> {
   /// A sheet presentation.
   /// - Parameter screen: the screen to be shown.
   /// - Parameter embedInNavigationView: whether the presented screen should be embedded in a `NavigationView`.
-  case sheet(Screen, embedInNavigationView: Bool)
+  case sheet(Screen, embedInNavigationView: Bool, onDismiss: (() -> Void)? = nil)
   
   /// A full-screen cover presentation.
   /// - Parameter screen: the screen to be shown.
@@ -21,14 +21,14 @@ public enum Route<Screen> {
   /// The root of the stack. The presentation style is irrelevant as it will not be presented.
   /// - Parameter screen: the screen to be shown.
   public static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
-    return .sheet(screen, embedInNavigationView: embedInNavigationView)
+    return .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: nil)
   }
   
   /// The screen to be shown.
   public var screen: Screen {
     get {
       switch self {
-      case .push(let screen), .sheet(let screen, _), .cover(let screen, _):
+      case .push(let screen), .sheet(let screen, _, _), .cover(let screen, _):
         return screen
       }
     }
@@ -36,8 +36,8 @@ public enum Route<Screen> {
       switch self {
       case .push:
         self = .push(newValue)
-      case .sheet(_, let embedInNavigationView):
-        self = .sheet(newValue, embedInNavigationView: embedInNavigationView)
+      case .sheet(_, let embedInNavigationView, let onDismiss):
+        self = .sheet(newValue, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
         #if os(macOS)
         #else
         case .cover(_, let embedInNavigationView):
@@ -52,7 +52,7 @@ public enum Route<Screen> {
     switch self {
     case .push:
       return false
-    case .sheet(_, let embedInNavigationView), .cover(_, let embedInNavigationView):
+    case .sheet(_, let embedInNavigationView, _), .cover(_, let embedInNavigationView):
       return embedInNavigationView
     }
   }
@@ -71,8 +71,8 @@ public enum Route<Screen> {
     switch self {
     case .push:
       return .push(transform(screen))
-    case .sheet(_, let embedInNavigationView):
-      return .sheet(transform(screen), embedInNavigationView: embedInNavigationView)
+    case .sheet(_, let embedInNavigationView, let onDismiss):
+      return .sheet(transform(screen), embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
 #if os(macOS)
 #else
     case .cover(_, let embedInNavigationView):
@@ -87,7 +87,7 @@ extension Route: Equatable where Screen: Equatable {
     switch (lhs, rhs) {
     case (.push(let left), .push(let right)):
       return left == right
-    case (.sheet(let left, let leftEmbed), .sheet(let right, let rightEmbed)), (.cover(let left, let leftEmbed), .cover(let right, let rightEmbed)):
+    case (.sheet(let left, let leftEmbed, _), .sheet(let right, let rightEmbed, _)), (.cover(let left, let leftEmbed), .cover(let right, let rightEmbed)):
       return left == right && leftEmbed == rightEmbed
     default:
       return false
