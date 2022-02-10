@@ -7,7 +7,7 @@ enum Screen {
   case other
 }
 
-extension Screen: ExpressibleByIntegerLiteral {
+extension Screen: ExpressibleByIntegerLiteral, Hashable {
   init(integerLiteral value: Int) {
     self = .number(value)
   }
@@ -33,10 +33,10 @@ struct NumberCoordinator: View {
         NumberView(
           number: number,
           presentDoubleCover: { number in
-            routes.presentCover(.number(number * 2), embedInNavigationView: true, onDismiss: { print("dismiss cover \(number * 2)") })
+            routes.presentCover(.number(number * 2), embedInNavigationView: true)
           },
           presentDoubleSheet: { number in
-            routes.presentSheet(.number(number * 2), embedInNavigationView: true, onDismiss: { print("dismiss sheet \(number * 2)") })
+            routes.presentSheet(.number(number * 2), embedInNavigationView: true)
           },
           pushNext: { number in
             routes.push(.number(number + 1))
@@ -55,6 +55,16 @@ struct NumberCoordinator: View {
         )
       } else {
         EmptyView()
+      }
+    }
+    .onChange(of: routes) { [oldRoutes = routes] newRoutes in
+      let shownRoutes = newRoutes.suffix(from: min(newRoutes.endIndex, oldRoutes.endIndex))
+      let unshownRoutes = oldRoutes.suffix(from: min(oldRoutes.endIndex, newRoutes.endIndex)).reversed()
+      for route in shownRoutes {
+        print("Showed \(route.screen)")
+      }
+      for route in unshownRoutes {
+        print("Unshowed \(route.screen)")
       }
     }
   }
