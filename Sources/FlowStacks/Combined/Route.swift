@@ -85,14 +85,10 @@ public enum Route<Screen> {
 }
 
 extension Route: Equatable where Screen: Equatable {
+  /// Compares two Routes for equality, based on screen equality and equality of presentation styles.
+  /// Note that any `onDismiss` closures are ignored when checking for equality.
+  /// - Returns: A Bool indicating if the two are equal.
   public static func == (lhs: Route, rhs: Route) -> Bool {
-    switch (lhs, rhs) {
-    case (.push(let left), .push(let right)):
-      return left == right
-    case (.sheet(let left, let leftEmbed, _), .sheet(let right, let rightEmbed, _)), (.cover(let left, let leftEmbed, _), .cover(let right, let rightEmbed, _)):
-      return left == right && leftEmbed == rightEmbed
-    default:
-      return false
-    }
+    return lhs.style == rhs.style && lhs.screen == rhs.screen
   }
 }
