@@ -102,12 +102,12 @@ indirect enum Node<Screen, V: View>: View {
         )
         .sheet(
           isPresented: sheetBinding,
-          onDismiss: nil,
+          onDismiss: onDismiss,
           content: { next }
         )
         .cover(
           isPresented: coverBinding,
-          onDismiss: nil,
+          onDismiss: onDismiss,
           content: { next }
         )
     } else {
@@ -120,7 +120,7 @@ indirect enum Node<Screen, V: View>: View {
         .present(
           asSheet: asSheet,
           isPresented: asSheet ? sheetBinding : coverBinding,
-          onDismiss: nil,
+          onDismiss: onDismiss,
           content: { next }
         )
     }
