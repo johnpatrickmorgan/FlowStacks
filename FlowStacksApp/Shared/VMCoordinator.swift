@@ -19,11 +19,17 @@ class VMCoordinatorViewModel: ObservableObject {
   }
     
   func showNumber(_ number: Int) {
-    routes.presentSheet(.numberDetail(.init(number: number, cancel: dismiss)))
+    routes.presentSheet(.numberDetail(.init(number: number, cancel: goBackToRoot)))
   }
     
   func dismiss() {
-    routes.dismiss()
+    routes.goBack()
+  }
+  
+  func goBackToRoot() {
+    RouteSteps.withDelaysIfUnsupported(self, \.routes) {
+      $0.goBackToRoot()
+    }
   }
 }
 

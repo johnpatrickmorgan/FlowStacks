@@ -71,6 +71,17 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
 
 /// A namespace to avoid polluting the global namespace with a public function.
 public enum RouteSteps {
+  /// Any changes can be made to the routes passed to the transform closure. If those
+  /// changes are not supported within a single update by SwiftUI, the changes will be
+  /// applied in stages.
+  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void) {
+    let binding = Binding(
+      get: { [weak owner] in owner?[keyPath: keyPath] ?? [] },
+      set: { [weak owner] in owner?[keyPath: keyPath] = $0 }
+    )
+    binding.withDelaysIfUnsupported(transform)
+  }
+  
   /// For a given update to an array of routes, returns the minimum intermediate steps
   /// required to ensure each update is supported by SwiftUI.
   /// - Returns: An Array of Route arrays, representing a series of permissible steps

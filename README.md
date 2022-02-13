@@ -210,8 +210,10 @@ $routes.withDelaysIfUnsupported {
 }
 ```
 
+Or, if using a view model:
+
 ```swift
-$routes.withDelaysIfUnsupported {
+RouteSteps.withDelaysIfUnsupported(self, \.routes) {
   $0.push(...)
   $0.push(...)
   $0.presentSheet(...)
