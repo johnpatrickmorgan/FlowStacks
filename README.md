@@ -89,27 +89,6 @@ The routes array can be managed using normal Array methods, but a number of conv
 
 If the user taps the back button, the routes array will be automatically updated to reflect the new navigation state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as will swiping to dismiss a sheet.
 
-### Fixed root screen
-
-Often the root screen in a screen flow is static - always the same screen is in the root position. In this case you can use the `showing` function on the root screen view to simplify matters. It takes the same parameters as the `Router` initializer:
-
-```swift
-struct ShowingCoordinator: View {
-  enum Screen {
-    case detail, edit, confirm
-  }
-  
-  @State var routes: Routes<Screen> = []
-  
-  var body: some View {
-    HomeView(onGoTapped: { routes.presentSheet(.detail) })
-      .showing($routes) { $number, index in
-        ...
-      }
-  }
-}
-```
-
 ### Bindings
 
 The Router can be configured to work with a binding to the screen state, rather than just a read-only value - just add `$` before the screen argument in the view-builder closure. The screen itself can then be responsible for updating its state within the routes array. Normally an enum is used to represent the screen, so it might be necessary to further extract the associated value for a particular screen as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
@@ -145,7 +124,7 @@ struct BindingExampleCoordinator: View {
 
 ### Child coordinators
 
-Coordinators are just views themselves, so they can be presented, pushed, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. They can even be pushed onto a parent coordinator's navigation stack, allowing you to break out parts of your navigation flow into separate child coordinators. When doing so, it is best that the child coordinator is always at the top of the parent's routes stack, as it will take over responsibility for pushing and presenting new screens.
+Coordinators are just views themselves, so they can be presented, pushed, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. They can even be pushed onto a parent coordinator's navigation stack, allowing you to break out parts of your navigation flow into separate child coordinators. When doing so, it is best that the child coordinator is always at the top of the parent's routes stack, as it will take over responsibility for pushing and presenting new screens. Otherwise, the parent might attempt to push screen(s) when the child is already pushing screen(s), causing a conflict.
 
 ### Using View Models
 
@@ -217,6 +196,27 @@ RouteSteps.withDelaysIfUnsupported(self, \.routes) {
   $0.push(...)
   $0.push(...)
   $0.presentSheet(...)
+}
+```
+
+### Fixed root screen
+
+Often the root screen in a screen flow is static - always the same screen is in the root position. In this case you can use the `showing` function on the root screen view to simplify matters. It takes the same parameters as the `Router` initializer:
+
+```swift
+struct ShowingCoordinator: View {
+  enum Screen {
+    case detail, edit, confirm
+  }
+  
+  @State var routes: Routes<Screen> = []
+  
+  var body: some View {
+    HomeView(onGoTapped: { routes.presentSheet(.detail) })
+      .showing($routes) { $number, index in
+        ...
+      }
+  }
 }
 ```
 
