@@ -5,13 +5,13 @@ import Foundation
 public enum Route<Screen> {
   /// A push navigation. Only valid if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: the screen to be shown.
-  case push(Screen)
+  case push(Screen, manualNavigation: Bool = false)
   
   /// A sheet presentation.
   /// - Parameter screen: the screen to be shown.
   /// - Parameter embedInNavigationView: whether the presented screen should be embedded in a `NavigationView`.
   /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
-  case sheet(Screen, embedInNavigationView: Bool, onDismiss: (() -> Void)? = nil)
+  case sheet(Screen, embedInNavigationView: Bool, manualNavigation: Bool = false, onDismiss: (() -> Void)? = nil)
   
   /// A full-screen cover presentation.
   /// - Parameter screen: the screen to be shown.
@@ -22,24 +22,24 @@ public enum Route<Screen> {
   
   /// The root of the stack. The presentation style is irrelevant as it will not be presented.
   /// - Parameter screen: the screen to be shown.
-  public static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
-    return .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: nil)
+  public static func root(_ screen: Screen, embedInNavigationView: Bool = false, manualNavigation: Bool = false) -> Route {
+    return .sheet(screen, embedInNavigationView: embedInNavigationView, manualNavigation: manualNavigation, onDismiss: nil)
   }
   
   /// The screen to be shown.
   public var screen: Screen {
     get {
       switch self {
-      case .push(let screen), .sheet(let screen, _, _), .cover(let screen, _, _):
+      case .push(let screen, _), .sheet(let screen, _, _, _), .cover(let screen, _, _):
         return screen
       }
     }
     set {
       switch self {
-      case .push:
-        self = .push(newValue)
-      case .sheet(_, let embedInNavigationView, let onDismiss):
-        self = .sheet(newValue, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
+      case .push(_, let manualNavigation):
+        self = .push(newValue, manualNavigation: manualNavigation)
+      case .sheet(_, let embedInNavigationView, let manualNavigation, let onDismiss):
+        self = .sheet(newValue, embedInNavigationView: embedInNavigationView, manualNavigation: manualNavigation, onDismiss: onDismiss)
         #if os(macOS)
         #else
         case .cover(_, let embedInNavigationView, let onDismiss):
@@ -54,8 +54,20 @@ public enum Route<Screen> {
     switch self {
     case .push:
       return false
-    case .sheet(_, let embedInNavigationView, _), .cover(_, let embedInNavigationView, _):
+    case .sheet(_, let embedInNavigationView, _, _), .cover(_, let embedInNavigationView, _):
       return embedInNavigationView
+    }
+  }
+  
+  /// Whether the presented screen's navigation flow is managed manually.
+  public var manualNavigation: Bool {
+    switch self {
+    case .cover:
+      return false
+    case .push(_, let manualNavigation):
+      return manualNavigation
+    case .sheet(_, _, let manualNavigation, _):
+      return manualNavigation
     }
   }
   
@@ -71,10 +83,10 @@ public enum Route<Screen> {
   
   public func map<NewScreen>(_ transform: (Screen) -> NewScreen) -> Route<NewScreen> {
     switch self {
-    case .push:
-      return .push(transform(screen))
-    case .sheet(_, let embedInNavigationView, let onDismiss):
-      return .sheet(transform(screen), embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
+    case .push(_, let manualNavigation):
+      return .push(transform(screen), manualNavigation: manualNavigation)
+    case .sheet(_, let embedInNavigationView, let manualNavigation, let onDismiss):
+      return .sheet(transform(screen), embedInNavigationView: embedInNavigationView, manualNavigation: manualNavigation, onDismiss: onDismiss)
 #if os(macOS)
 #else
     case .cover(_, let embedInNavigationView, let onDismiss):

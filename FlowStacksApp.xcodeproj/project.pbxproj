@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4209924C281654980089B42E /* ManualCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4209924B281654980089B42E /* ManualCoordinator.swift */; };
+		4209924D281654980089B42E /* ManualCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4209924B281654980089B42E /* ManualCoordinator.swift */; };
 		5241BF6F26AA1E8A002D6892 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 5241BF6E26AA1E8A002D6892 /* FlowStacks */; };
 		5241BF7126AA1E8F002D6892 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 5241BF7026AA1E8F002D6892 /* FlowStacks */; };
 		525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C733427729300009CBD67 /* SwiftUINavigation */; };
@@ -28,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4209924B281654980089B42E /* ManualCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualCoordinator.swift; sourceTree = "<group>"; };
 		5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		525C73362774BA6B009CBD67 /* NumberCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCoordinator.swift; sourceTree = "<group>"; };
@@ -101,6 +104,7 @@
 			children = (
 				526D9F3226AF667000B6B882 /* FlowStacksApp.swift */,
 				525C73362774BA6B009CBD67 /* NumberCoordinator.swift */,
+				4209924B281654980089B42E /* ManualCoordinator.swift */,
 				526D9F2226AF661F00B6B882 /* VMCoordinator.swift */,
 				525C7340277BC788009CBD67 /* ShowingCoordinator.swift */,
 				525C73392774BDB7009CBD67 /* BindingCoordinator.swift */,
@@ -219,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4209924C281654980089B42E /* ManualCoordinator.swift in Sources */,
 				526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				525C733A2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
@@ -231,6 +236,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4209924D281654980089B42E /* ManualCoordinator.swift in Sources */,
 				526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				525C733B2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,

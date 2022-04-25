@@ -45,7 +45,7 @@ indirect enum Node<Screen, V: View>: View {
 
   private var onDismiss: (() -> Void)? {
     switch next {
-    case .route(.sheet(_, _, let onDismiss), _, _, _, _), .route(.cover(_, _, let onDismiss), _, _, _, _):
+    case .route(.sheet(_, _, _, let onDismiss), _, _, _, _), .route(.cover(_, _, let onDismiss), _, _, _, _):
       return onDismiss
     default:
       return nil
@@ -90,10 +90,57 @@ indirect enum Node<Screen, V: View>: View {
   }
   
   @ViewBuilder
-  private var unwrappedBody: some View {
-    /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
-    /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
-    /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
+  private var manualNavigationBody: some View {
+    if #available(iOS 14.5, *) {
+      if isActiveBinding.wrappedValue {
+        next
+          .sheet(
+            isPresented: sheetBinding,
+            onDismiss: onDismiss,
+            content: { next }
+          )
+          .cover(
+            isPresented: coverBinding,
+            onDismiss: onDismiss,
+            content: { next }
+          )
+      } else {
+        screenView
+          .sheet(
+            isPresented: sheetBinding,
+            onDismiss: onDismiss,
+            content: { next }
+          )
+          .cover(
+            isPresented: coverBinding,
+            onDismiss: onDismiss,
+            content: { next }
+          )
+      }
+    } else {
+      let asSheet = next?.route?.style.isSheet ?? false
+      if isActiveBinding.wrappedValue {
+        next
+          .present(
+            asSheet: asSheet,
+            isPresented: asSheet ? sheetBinding : coverBinding,
+            onDismiss: onDismiss,
+            content: { next }
+          )
+      } else {
+        screenView
+          .present(
+            asSheet: asSheet,
+            isPresented: asSheet ? sheetBinding : coverBinding,
+            onDismiss: onDismiss,
+            content: { next }
+          )
+      }
+    }
+  }
+  
+  @ViewBuilder
+  private var navigationViewBody: some View {
     if #available(iOS 14.5, *) {
       screenView
         .background(
@@ -123,6 +170,19 @@ indirect enum Node<Screen, V: View>: View {
           onDismiss: onDismiss,
           content: { next }
         )
+    }
+  }
+  
+  @ViewBuilder
+  private var unwrappedBody: some View {
+    /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
+    /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
+    /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
+    
+    if route?.manualNavigation ?? false {
+      manualNavigationBody
+    } else {
+      navigationViewBody
     }
   }
   

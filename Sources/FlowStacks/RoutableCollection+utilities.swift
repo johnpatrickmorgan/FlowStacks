@@ -9,13 +9,22 @@ public extension RoutableCollection where Element: RouteProtocol {
       switch route.style {
       case .push:
         continue
-      case .cover(let embedInNavigationView), .sheet(let embedInNavigationView):
+      case .cover(let embedInNavigationView):
         if index > 0 {
           return embedInNavigationView
         } else {
           // Once we reach the root screen, it's not possible to determine if the routes are being pushed onto a
           // parent coordinator with a NavigationView, so we return nil rather than false.
           return embedInNavigationView ? true : nil
+        }
+      case .sheet(let embedInNavigationView, let manualNavigation):
+        let canNavigate = embedInNavigationView || manualNavigation
+        if index > 0 {
+          return canNavigate
+        } else {
+          // Once we reach the root screen, it's not possible to determine if the routes are being pushed onto a
+          // parent coordinator with a NavigationView, so we return nil rather than false.
+          return canNavigate ? true : nil
         }
       }
     }
@@ -25,7 +34,7 @@ public extension RoutableCollection where Element: RouteProtocol {
   /// Pushes a new screen via a push navigation.
   /// This should only be called if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: The screen to push.
-  mutating func push(_ screen: Element.Screen) {
+  mutating func push(_ screen: Element.Screen, manualNavigation: Bool = false) {
     assert(
       canPush != false,
       """
@@ -34,14 +43,14 @@ public extension RoutableCollection where Element: RouteProtocol {
       route has `embedInNavigationView` set to `true`.
       """
     )
-    _append(element: .push(screen))
+    _append(element: .push(screen, manualNavigation: manualNavigation))
   }
-
+  
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
   /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
-  mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
-    _append(element: .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss))
+  mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false, manualNavigation: Bool = false, onDismiss: (() -> Void)? = nil) {
+    _append(element: .sheet(screen, embedInNavigationView: embedInNavigationView, manualNavigation: manualNavigation, onDismiss: onDismiss))
   }
 
   #if os(macOS)

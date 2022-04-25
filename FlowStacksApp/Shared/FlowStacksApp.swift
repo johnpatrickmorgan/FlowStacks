@@ -13,6 +13,8 @@ struct FlowStacksApp: App {
           .tabItem { Text("Binding") }
         ShowingCoordinator()
           .tabItem { Text("Showing") }
+        ManualCoordinator()
+          .tabItem { Text("Manual") }
       }
     }
   }
