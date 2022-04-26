@@ -30,11 +30,37 @@ public extension RoutableCollection where Element: RouteProtocol {
     }
     return nil
   }
+  
+  var isManualNavigation: Bool? {
+    for (index, route) in zip(indices, self).reversed() {
+      switch route.style {
+      case .push:
+        continue
+      case .cover(let embedInNavigationView):
+        if index > 0 {
+          return embedInNavigationView
+        } else {
+          // Once we reach the root screen, it's not possible to determine if the routes are being pushed onto a
+          // parent coordinator with a NavigationView, so we return nil rather than false.
+          return embedInNavigationView ? false : nil
+        }
+      case .sheet(_, let manualNavigation):
+        if index > 0 {
+          return manualNavigation
+        } else {
+          // Once we reach the root screen, it's not possible to determine if the routes are being pushed onto a
+          // parent coordinator with a NavigationView, so we return nil rather than false.
+          return manualNavigation ? true : nil
+        }
+      }
+    }
+    return nil
+  }
 
   /// Pushes a new screen via a push navigation.
   /// This should only be called if the most recently presented screen is embedded in a `NavigationView`.
   /// - Parameter screen: The screen to push.
-  mutating func push(_ screen: Element.Screen, manualNavigation: Bool = false) {
+  mutating func push(_ screen: Element.Screen) {
     assert(
       canPush != false,
       """
@@ -43,7 +69,7 @@ public extension RoutableCollection where Element: RouteProtocol {
       route has `embedInNavigationView` set to `true`.
       """
     )
-    _append(element: .push(screen, manualNavigation: manualNavigation))
+    _append(element: .push(screen, manualNavigation: isManualNavigation ?? false))
   }
   
   /// Presents a new screen via a sheet presentation.

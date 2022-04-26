@@ -90,52 +90,42 @@ indirect enum Node<Screen, V: View>: View {
   }
   
   @ViewBuilder
+  private var manualNavigationView: some View {
+    switch next {
+    case .route(.push(_, manualNavigation: true), _, _, _, _), .route(.sheet(_, _, manualNavigation: true, _), _, _, _, _):
+      if isActiveBinding.wrappedValue {
+        next
+      } else {
+        screenView
+      }
+    default:
+      screenView
+    }
+  }
+  
+  @ViewBuilder
   private var manualNavigationBody: some View {
     if #available(iOS 14.5, *) {
-      if isActiveBinding.wrappedValue {
-        next
-          .sheet(
-            isPresented: sheetBinding,
-            onDismiss: onDismiss,
-            content: { next }
-          )
-          .cover(
-            isPresented: coverBinding,
-            onDismiss: onDismiss,
-            content: { next }
-          )
-      } else {
-        screenView
-          .sheet(
-            isPresented: sheetBinding,
-            onDismiss: onDismiss,
-            content: { next }
-          )
-          .cover(
-            isPresented: coverBinding,
-            onDismiss: onDismiss,
-            content: { next }
-          )
-      }
+      manualNavigationView
+        .sheet(
+          isPresented: sheetBinding,
+          onDismiss: onDismiss,
+          content: { next }
+        )
+        .cover(
+          isPresented: coverBinding,
+          onDismiss: onDismiss,
+          content: { next }
+        )
     } else {
       let asSheet = next?.route?.style.isSheet ?? false
-      if isActiveBinding.wrappedValue {
-        next
-          .present(
-            asSheet: asSheet,
-            isPresented: asSheet ? sheetBinding : coverBinding,
-            onDismiss: onDismiss,
-            content: { next }
-          )
-      } else {
-        screenView
-          .present(
-            asSheet: asSheet,
-            isPresented: asSheet ? sheetBinding : coverBinding,
-            onDismiss: onDismiss,
-            content: { next }
-          )
-      }
+      manualNavigationView
+        .present(
+          asSheet: asSheet,
+          isPresented: asSheet ? sheetBinding : coverBinding,
+          onDismiss: onDismiss,
+          content: { next }
+        )
     }
   }
   
