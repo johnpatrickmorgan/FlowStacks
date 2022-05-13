@@ -17,16 +17,14 @@ struct ShowingCoordinator: View {
             routes.presentSheet(number * 2 , embedInNavigationView: true)
           },
           pushNext: { number in
-						routes.push(number + 1)
-					},
-					goBack: { routes.goBack() },
-					goBackToRoot: {
-						Task { @MainActor in
-							await $routes.withDelaysIfUnsupported {
-								$0 = []
-							}
-						}
-					},
+            routes.push(number + 1)
+          },
+          goBack: { routes.goBack() },
+          goBackToRoot: {
+            $routes.withDelaysIfUnsupported {
+              $0 = []
+            }
+          },
           goRandom: nil
         )
       }
