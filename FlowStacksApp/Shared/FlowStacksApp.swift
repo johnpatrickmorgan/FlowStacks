@@ -5,6 +5,8 @@ struct FlowStacksApp: App {
   var body: some Scene {
     WindowGroup {
       TabView {
+        ParentCoordinator()
+          .tabItem { Text("Parent") }
         NumberCoordinator()
           .tabItem { Text("Numbers") }
         VMCoordinator()

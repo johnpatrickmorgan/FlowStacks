@@ -44,7 +44,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   /// Any changes can be made to the routes passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
-  func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void) where Value == [Route<Screen>] {
+  func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void) async where Value == [Route<Screen>] {
     let start = wrappedValue
     let end: [Route<Screen>] = {
       var transformed = start
@@ -55,17 +55,18 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     self.wrappedValue = steps.first!
-    self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
+    await self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
   
-  fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) where Value == [Route<Screen>] {
+  fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) async where Value == [Route<Screen>] {
     guard let firstStep = steps.first else {
       return
     }
     self.wrappedValue = firstStep
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(650)) {
-      scheduleRemainingSteps(steps: Array(steps.dropFirst()))
-    }
+	do {
+		try await Task.sleep(nanoseconds: UInt64(0.65 * 1_000_000_000))
+		await scheduleRemainingSteps(steps: Array(steps.dropFirst()))
+	} catch {}
   }
 }
 
@@ -74,12 +75,12 @@ public enum RouteSteps {
   /// Any changes can be made to the routes passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
-  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void) {
+  public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void) async {
     let binding = Binding(
       get: { [weak owner] in owner?[keyPath: keyPath] ?? [] },
       set: { [weak owner] in owner?[keyPath: keyPath] = $0 }
     )
-    binding.withDelaysIfUnsupported(transform)
+    await binding.withDelaysIfUnsupported(transform)
   }
   
   /// For a given update to an array of routes, returns the minimum intermediate steps

@@ -27,8 +27,10 @@ class VMCoordinatorViewModel: ObservableObject {
   }
   
   func goBackToRoot() {
-    RouteSteps.withDelaysIfUnsupported(self, \.routes) {
-      $0.goBackToRoot()
+    Task { @MainActor in
+      await RouteSteps.withDelaysIfUnsupported(self, \.routes) {
+        $0.goBackToRoot()
+      }
     }
   }
 }

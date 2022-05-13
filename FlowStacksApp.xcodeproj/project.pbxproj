@@ -25,6 +25,8 @@
 		526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
 		526D9F7B26AF6C1700B6B882 /*  in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F7A26AF6BE900B6B882 /*  */; };
 		526D9F7C26AF6C1700B6B882 /*  in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F7A26AF6BE900B6B882 /*  */; };
+		77F136ED282E45E0008A6A02 /* ParentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */; };
+		77F136EE282E45E0008A6A02 /* ParentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,7 @@
 		526D9F2226AF661F00B6B882 /* VMCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		526D9F7A26AF6BE900B6B882 /*  */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ""; sourceTree = "<group>"; };
+		77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,7 @@
 		526D9F1D26AF661F00B6B882 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */,
 				526D9F3226AF667000B6B882 /* FlowStacksApp.swift */,
 				525C73362774BA6B009CBD67 /* NumberCoordinator.swift */,
 				526D9F2226AF661F00B6B882 /* VMCoordinator.swift */,
@@ -221,6 +225,7 @@
 			files = (
 				526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
+				77F136EE282E45E0008A6A02 /* ParentCoordinator.swift in Sources */,
 				525C733A2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
 				525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
 				525C7341277BC788009CBD67 /* ShowingCoordinator.swift in Sources */,
@@ -233,6 +238,7 @@
 			files = (
 				526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
+				77F136ED282E45E0008A6A02 /* ParentCoordinator.swift in Sources */,
 				525C733B2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
 				525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
 				525C7342277BC788009CBD67 /* ShowingCoordinator.swift in Sources */,
