@@ -43,13 +43,17 @@ struct NumberCoordinator: View {
           },
           goBack: index != 0 ? { routes.goBack() } : nil,
           goBackToRoot: {
-            $routes.withDelaysIfUnsupported {
-              $0.goBackToRoot()
+            Task { @MainActor in
+              await $routes.withDelaysIfUnsupported {
+                $0.goBackToRoot()
+              }
             }
           },
           goRandom: {
-            $routes.withDelaysIfUnsupported {
-              $0 = randomRoutes
+            Task { @MainActor in
+              await $routes.withDelaysIfUnsupported {
+                $0 = randomRoutes
+              }
             }
           }
         )
