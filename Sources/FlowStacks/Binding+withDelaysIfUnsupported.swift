@@ -70,7 +70,8 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     self.wrappedValue = steps.first!
     await self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
-  
+
+  @MainActor
   fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) async where Value == [Route<Screen>] {
     guard let firstStep = steps.first else {
       return
