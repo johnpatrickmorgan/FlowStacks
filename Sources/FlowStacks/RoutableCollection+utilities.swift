@@ -62,6 +62,7 @@ public extension RoutableCollection where Element: RouteProtocol {
   /// Goes back a given number of screens off the stack
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   mutating func goBack(_ count: Int = 1) {
+    guard self.count - count >= 0 else { return }
     removeLast(count)
   }
 
