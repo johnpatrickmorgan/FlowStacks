@@ -108,6 +108,7 @@ public enum RouteSteps {
     await withDelaysIfUnsupported(owner, keyPath, from: start, to: end)
   }
   
+  @MainActor
   fileprivate static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) async {
     let binding = Binding(
       get: { [weak owner] in owner?[keyPath: keyPath] ?? [] },
