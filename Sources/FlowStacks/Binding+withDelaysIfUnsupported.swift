@@ -57,6 +57,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   /// Any changes can be made to the routes passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @MainActor
   func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void) async where Value == [Route<Screen>] {
     let start = wrappedValue
     let end = apply(transform, to: start)
@@ -64,6 +65,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     await withDelaysIfUnsupported(from: start, to: end)
   }
   
+    @MainActor
   fileprivate func withDelaysIfUnsupported<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) async where Value == [Route<Screen>] {
     let steps = RouteSteps.calculateSteps(from: start, to: end)
     
@@ -102,6 +104,7 @@ public enum RouteSteps {
   /// Any changes can be made to the routes passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @MainActor
   public static func withDelaysIfUnsupported<Screen, Owner: AnyObject>(_ owner: Owner, _ keyPath: WritableKeyPath<Owner, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void) async {
     let start = owner[keyPath: keyPath]
     let end = apply(transform, to: start)
