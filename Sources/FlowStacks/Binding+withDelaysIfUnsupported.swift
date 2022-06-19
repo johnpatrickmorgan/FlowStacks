@@ -65,24 +65,25 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     await withDelaysIfUnsupported(from: start, to: end)
   }
   
-    @MainActor
+  @MainActor
   fileprivate func withDelaysIfUnsupported<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) async where Value == [Route<Screen>] {
     let steps = RouteSteps.calculateSteps(from: start, to: end)
     
     self.wrappedValue = steps.first!
     await self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
-
+  
   @MainActor
   fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) async where Value == [Route<Screen>] {
     guard let firstStep = steps.first else {
       return
     }
     self.wrappedValue = firstStep
-	do {
-		try await Task.sleep(nanoseconds: UInt64(0.65 * 1_000_000_000))
-		await scheduleRemainingSteps(steps: Array(steps.dropFirst()))
-	} catch {}
+    do {
+      try await Task.sleep(nanoseconds: UInt64(0.65 * 1_000_000_000))
+      await self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
+    }
+    catch {}
   }
 }
 
@@ -96,7 +97,7 @@ public enum RouteSteps {
     let start = owner[keyPath: keyPath]
     let end = apply(transform, to: start)
     Task { @MainActor in
-      await withDelaysIfUnsupported(owner, keyPath, from: start, to: end  )
+      await withDelaysIfUnsupported(owner, keyPath, from: start, to: end)
       onCompletion?()
     }
   }
@@ -130,11 +131,11 @@ public enum RouteSteps {
       .firstIndex(where: { $0.style != $1.style }) ?? pairs.endIndex
     let firstDivergingPresentationIndex = start[firstDivergingIndex ..< start.count]
       .firstIndex(where: { $0.isPresented }) ?? start.endIndex
-  
+    
     // Initial step is to change screen content without changing navigation structure.
     let initialStep = Array(end[..<firstDivergingIndex] + start[firstDivergingIndex...])
     var steps = [initialStep]
-  
+    
     // Dismiss extraneous presented stacks.
     while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
       var dismissed: Route<Screen>? = dismissStep.popLast()
@@ -144,7 +145,7 @@ public enum RouteSteps {
       }
       steps.append(dismissStep)
     }
-  
+    
     // Pop extraneous pushed screens.
     while var popStep = steps.last, popStep.count > firstDivergingIndex {
       var popped: Route<Screen>? = popStep.popLast()
@@ -153,18 +154,18 @@ public enum RouteSteps {
       }
       steps.append(popStep)
     }
-  
+    
     // Push or present each new step.
     while var newStep = steps.last, newStep.count < end.count {
       newStep.append(end[newStep.count])
       steps.append(newStep)
     }
-  
+    
     return steps
   }
 }
 
-fileprivate func apply<T>(_ transform: (inout T) -> Void, to input: T) -> T {
+private func apply<T>(_ transform: (inout T) -> Void, to input: T) -> T {
   var transformed = input
   transform(&transformed)
   return transformed
