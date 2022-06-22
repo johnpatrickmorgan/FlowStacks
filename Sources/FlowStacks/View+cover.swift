@@ -38,11 +38,22 @@ extension View {
   @ViewBuilder
   func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
     if asSheet {
-      self.sheet(
-        isPresented: isPresented,
-        onDismiss: nil,
-        content: content
-      )
+		if #available(iOS 14.5, *) {
+			self.sheet(
+				isPresented: isPresented,
+				onDismiss: nil,
+				content: content
+			)
+		} else {
+			self.background(
+				EmptyView()
+					.sheet(
+						isPresented: isPresented,
+						onDismiss: nil,
+						content: content
+					)
+			)
+		}
     } else {
       self.cover(
         isPresented: isPresented,
