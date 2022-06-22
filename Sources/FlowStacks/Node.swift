@@ -105,7 +105,7 @@ indirect enum Node<Screen, V: View>: View {
           onDismiss: onDismiss,
           content: { next }
         )
-        .cover(
+		.backport.cover(
           isPresented: coverBinding,
           onDismiss: onDismiss,
           content: { next }
@@ -117,7 +117,7 @@ indirect enum Node<Screen, V: View>: View {
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
             .hidden()
         )
-		.backported.present(
+		.backport.present(
           asSheet: asSheet,
           isPresented: asSheet ? sheetBinding : coverBinding,
           onDismiss: onDismiss,
