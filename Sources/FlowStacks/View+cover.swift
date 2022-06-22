@@ -31,35 +31,40 @@ extension View {
       }
     #endif
   }
+}
 
-  /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
-  /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
-  /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
-  @ViewBuilder
-  func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
-    if asSheet {
-		if #available(iOS 14.5, *) {
-			self.sheet(
-				isPresented: isPresented,
-				onDismiss: nil,
-				content: content
-			)
-		} else {
-			self.background(
-				EmptyView()
-					.sheet(
-						isPresented: isPresented,
-						onDismiss: nil,
-						content: content
-					)
-			)
-		}
-    } else {
-      self.cover(
-        isPresented: isPresented,
-        onDismiss: nil,
-        content: content
-      )
-    }
-  }
+public extension Backport where Content: View {
+
+	  /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
+	  /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
+	  /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
+	  @ViewBuilder
+	  func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content contentBuilder: @escaping () -> Content) -> some View {
+
+			if #available(iOS 14.5, *) {
+				content.sheet(
+					isPresented: isPresented,
+					onDismiss: nil,
+					content: contentBuilder
+				)
+			} else {
+				content.background(
+					EmptyView()
+						.sheet(
+							isPresented: isPresented,
+							onDismiss: nil,
+							content: contentBuilder
+						)
+				)
+			}
+
+	  }
+}
+
+public struct Backport<Content> {
+	let content: Content
+}
+
+public extension View {
+	var backport: Backport<Self> { Backport(content: self) }
 }
