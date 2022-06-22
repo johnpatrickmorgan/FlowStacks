@@ -35,8 +35,7 @@ extension Backport where Content: View {
 	  /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
 	  /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
 	  @ViewBuilder
-	  func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content contentBuilder: @escaping () -> Content) -> some View {
-
+	  func present<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content contentBuilder: @escaping () -> Content) -> some View {
 			if #available(iOS 14.5, *) {
 				content.sheet(
 					isPresented: isPresented,
@@ -53,7 +52,6 @@ extension Backport where Content: View {
 						)
 				)
 			}
-
 	  }
 }
 

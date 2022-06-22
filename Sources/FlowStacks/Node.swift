@@ -111,15 +111,13 @@ indirect enum Node<Screen, V: View>: View {
           content: { next }
         )
     } else {
-      let asSheet = next?.route?.style.isSheet ?? false
       screenView
         .background(
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
             .hidden()
         )
 		.backport.present(
-          asSheet: asSheet,
-          isPresented: asSheet ? sheetBinding : coverBinding,
+          isPresented: sheetBinding,
           onDismiss: onDismiss,
           content: { next }
         )
