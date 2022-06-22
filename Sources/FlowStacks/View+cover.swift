@@ -33,7 +33,7 @@ extension View {
   }
 }
 
-public extension Backport where Content: View {
+public extension Backported where Content: View {
 
 	  /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
 	  /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
@@ -61,10 +61,10 @@ public extension Backport where Content: View {
 	  }
 }
 
-public struct Backport<Content> {
+public struct Backported<Content> {
 	let content: Content
 }
 
 public extension View {
-	var backport: Backport<Self> { Backport(content: self) }
+	var backported: Backported<Self> { Backported(content: self) }
 }
