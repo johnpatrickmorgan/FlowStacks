@@ -36,7 +36,7 @@ extension Backport where Content: View {
 	  /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
 	  @ViewBuilder
 	  func present<Content: View>(asSheet: Bool, isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content contentBuilder: @escaping () -> Content) -> some View {
-		  if asSheet {
+
 			if #available(iOS 14.5, *) {
 				content.sheet(
 					isPresented: isPresented,
@@ -53,13 +53,7 @@ extension Backport where Content: View {
 						)
 				)
 			}
-		  } else {
-			  cover(
-				isPresented: isPresented,
-				onDismiss: nil,
-				content: contentBuilder
-			  )
-		  }
+
 	  }
 }
 
