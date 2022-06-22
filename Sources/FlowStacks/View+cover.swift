@@ -39,7 +39,7 @@ extension Backport where Content: View {
 			if #available(iOS 14.5, *) {
 				content.sheet(
 					isPresented: isPresented,
-					onDismiss: nil,
+					onDismiss: onDismiss,
 					content: contentBuilder
 				)
 			} else {
@@ -47,7 +47,7 @@ extension Backport where Content: View {
 					EmptyView()
 						.sheet(
 							isPresented: isPresented,
-							onDismiss: nil,
+							onDismiss: onDismiss,
 							content: contentBuilder
 						)
 				)
