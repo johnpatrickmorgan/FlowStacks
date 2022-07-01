@@ -25,6 +25,8 @@
 		526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
 		526D9F7B26AF6C1700B6B882 /*  in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F7A26AF6BE900B6B882 /*  */; };
 		526D9F7C26AF6C1700B6B882 /*  in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F7A26AF6BE900B6B882 /*  */; };
+		52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
+		52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		77F136ED282E45E0008A6A02 /* ParentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */; };
 		77F136EE282E45E0008A6A02 /* ParentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */; };
 /* End PBXBuildFile section */
@@ -39,6 +41,8 @@
 		526D9F2226AF661F00B6B882 /* VMCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		526D9F7A26AF6BE900B6B882 /*  */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ""; sourceTree = "<group>"; };
+		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -93,6 +97,7 @@
 		526D9F1B26AF661F00B6B882 /* FlowStacksApp */ = {
 			isa = PBXGroup;
 			children = (
+				52C5CCDB286E5D780075ABA7 /* Info.plist */,
 				526D9F1C26AF661F00B6B882 /* Assets.xcassets */,
 				526D9F1D26AF661F00B6B882 /* Shared */,
 			);
@@ -108,6 +113,7 @@
 				526D9F2226AF661F00B6B882 /* VMCoordinator.swift */,
 				525C7340277BC788009CBD67 /* ShowingCoordinator.swift */,
 				525C73392774BDB7009CBD67 /* BindingCoordinator.swift */,
+				52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -226,6 +232,7 @@
 				526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				526D9F2E26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				77F136EE282E45E0008A6A02 /* ParentCoordinator.swift in Sources */,
+				52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */,
 				525C733A2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
 				525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
 				525C7341277BC788009CBD67 /* ShowingCoordinator.swift in Sources */,
@@ -239,6 +246,7 @@
 				526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */,
 				77F136ED282E45E0008A6A02 /* ParentCoordinator.swift in Sources */,
+				52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */,
 				525C733B2774BDB7009CBD67 /* BindingCoordinator.swift in Sources */,
 				525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
 				525C7342277BC788009CBD67 /* ShowingCoordinator.swift in Sources */,
@@ -369,6 +377,7 @@
 				DEVELOPMENT_TEAM = QJAU94J65Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FlowStacksApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -399,6 +408,7 @@
 				DEVELOPMENT_TEAM = QJAU94J65Z;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FlowStacksApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -434,6 +444,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FlowStacksApp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -463,6 +474,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FlowStacksApp/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

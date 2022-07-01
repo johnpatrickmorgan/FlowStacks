@@ -57,14 +57,22 @@ struct NumberCoordinator: View {
         EmptyView()
       }
     }
-    .onChange(of: routes) { [oldRoutes = routes] newRoutes in
-      let shownRoutes = newRoutes.suffix(from: min(newRoutes.endIndex, oldRoutes.endIndex))
-      let unshownRoutes = oldRoutes.suffix(from: min(oldRoutes.endIndex, newRoutes.endIndex)).reversed()
-      for route in shownRoutes {
-        print("Showed \(route.screen)")
-      }
-      for route in unshownRoutes {
-        print("Unshowed \(route.screen)")
+    .onOpenURL { url in
+      guard let deeplink = Deeplink(url: url) else { return }
+      follow(deeplink)
+    }
+  }
+  
+  private func follow(_ deeplink: Deeplink) {
+    guard case .numberCoordinator(let link) = deeplink else {
+      return
+    }
+    switch link {
+    case .numbers(let numbers):
+      $routes.withDelaysIfUnsupported {
+        for number in numbers {
+          $0.push(.number(number))
+        }
       }
     }
   }
