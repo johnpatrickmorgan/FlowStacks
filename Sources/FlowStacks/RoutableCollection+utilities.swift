@@ -66,7 +66,7 @@ public extension RoutableCollection where Element: RouteProtocol {
       self.count - count >= 0,
       "Can't go back\(count == 1 ? "" : " \(count) screens") - the screen count is \(self.count)"
     )
-    guard self.count - count >= 0 else { return }
+    guard self.count - count >= 0, count > 0 else { return }
     removeLast(count)
   }
 
