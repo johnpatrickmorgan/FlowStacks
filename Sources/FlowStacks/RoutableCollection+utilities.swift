@@ -63,10 +63,10 @@ public extension RoutableCollection where Element: RouteProtocol {
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   mutating func goBack(_ count: Int = 1) {
     assert(
-      self.count - count >= 0,
+      self.count - count >= 0 && count >= 0,
       "Can't go back\(count == 1 ? "" : " \(count) screens") - the screen count is \(self.count)"
     )
-    guard self.count - count >= 0, count > 0 else { return }
+    guard self.count - count >= 0, count >= 0 else { return }
     removeLast(count)
   }
 
