@@ -23,8 +23,6 @@
 		526D9F2F26AF661F00B6B882 /* VMCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F2226AF661F00B6B882 /* VMCoordinator.swift */; };
 		526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
 		526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
-		526D9F7B26AF6C1700B6B882 /*  in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F7A26AF6BE900B6B882 /*  */; };
-		526D9F7C26AF6C1700B6B882 /*  in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F7A26AF6BE900B6B882 /*  */; };
 		52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		77F136ED282E45E0008A6A02 /* ParentCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */; };
@@ -40,7 +38,7 @@
 		526D9F1C26AF661F00B6B882 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		526D9F2226AF661F00B6B882 /* VMCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
-		526D9F7A26AF6BE900B6B882 /*  */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ""; sourceTree = "<group>"; };
+		52937A3F28904C8B001B4EF3 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; path=""; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentCoordinator.swift; sourceTree = "<group>"; };
@@ -71,7 +69,7 @@
 		5241BF2626AA1D3A002D6892 = {
 			isa = PBXGroup;
 			children = (
-				526D9F7A26AF6BE900B6B882 /*  */,
+				52937A3E28904C8B001B4EF3 /* Packages */,
 				526D9F1B26AF661F00B6B882 /* FlowStacksApp */,
 				5241BF3426AA1D3B002D6892 /* Products */,
 				5241BF6D26AA1E8A002D6892 /* Frameworks */,
@@ -116,6 +114,14 @@
 				52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */,
 			);
 			path = Shared;
+			sourceTree = "<group>";
+		};
+		52937A3E28904C8B001B4EF3 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				52937A3F28904C8B001B4EF3 /* FlowStacks */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -209,7 +215,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				526D9F2426AF661F00B6B882 /* Assets.xcassets in Resources */,
-				526D9F7B26AF6C1700B6B882 /*  in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,7 +223,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				526D9F2526AF661F00B6B882 /* Assets.xcassets in Resources */,
-				526D9F7C26AF6C1700B6B882 /*  in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
