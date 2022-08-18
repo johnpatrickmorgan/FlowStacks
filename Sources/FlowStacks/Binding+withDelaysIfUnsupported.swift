@@ -73,6 +73,34 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
     await self.scheduleRemainingSteps(steps: Array(steps.dropFirst()))
   }
   
+  /// Shows the inital root screen. Pops or dismisses any screens within routes except the inital one.
+  @_disfavoredOverload
+  func showRootWithDelaysIfUnsupported<Screen>(onCompletion: (() -> Void)? = nil) where Value == [Route<Screen>] {
+    Task { @MainActor in
+      await showRootWithDelaysIfUnsupported()
+      onCompletion?()
+    }
+  }
+  
+  /// Shows the inital root screen. Pops or dismisses any screens within routes except the inital one.
+  @MainActor
+  func showRootWithDelaysIfUnsupported<Screen>() async where Value == [Route<Screen>] {
+    await withDelaysIfUnsupported { routes in
+      showRoot(routes: &routes)
+    }
+  }
+    
+  fileprivate func showRoot<Screen>(routes: inout [Route<Screen>]) {
+    let presentedOrPushedScreens = routes.dropFirst()
+    guard presentedOrPushedScreens.count > 0 else { return }
+    if presentedOrPushedScreens.contains(where: { $0.isPresented }) {
+      routes.dismiss()
+    }
+    if presentedOrPushedScreens.contains(where: { !$0.isPresented }) {
+      routes.goBackToRoot()
+    }
+  }
+  
   @MainActor
   fileprivate func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]]) async where Value == [Route<Screen>] {
     guard let firstStep = steps.first else {
