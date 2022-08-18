@@ -84,6 +84,7 @@ public extension RoutableCollection where Element: RouteProtocol {
   /// Goes back to the root screen (index 0). The resulting screen count
   /// will be 1.
   mutating func goBackToRoot() {
+    guard self.count > 1 else { return }
     goBackTo(index: 0)
   }
 
