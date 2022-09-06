@@ -24,6 +24,16 @@ indirect enum Node<Screen, V: View>: View {
       )
     }
   }
+
+  private var isInNavigationStack: Bool {
+    switch self {
+    case .route(.push, _, _, _, _):
+      return true
+    default:
+      return route?.embedInNavigationView ?? false
+    }
+  }
+
   
   private var pushBinding: Binding<Bool> {
     switch next {
@@ -137,11 +147,11 @@ indirect enum Node<Screen, V: View>: View {
   var body: some View {
     if route?.embedInNavigationView ?? false {
       NavigationView {
-        unwrappedBody(withNavigation: true)
+        unwrappedBody(withNavigation: isInNavigationStack)
       }
       .navigationViewStyle(supportedNavigationViewStyle)
     } else {
-      unwrappedBody(withNavigation: false)
+      unwrappedBody(withNavigation: isInNavigationStack)
     }
   }
 }
