@@ -276,11 +276,25 @@ public extension RoutableCollection where Element: RouteProtocol {
     var index = endIndex - 1
     var dismissed = 0
     while dismissed < count, indices.contains(index) {
+      assert(
+        index > 0,
+        "Can't dismiss\(count == 1 ? "" : " \(count) screens") - the number of presented screens is \(dismissed)"
+      )
+      guard index > 0 else { return }
+      
       if self[index].isPresented {
         dismissed += 1
       }
       index -= 1
     }
     goBackTo(index: index)
+  }
+  
+  /// Dismisses all presented sheets and modals, without popping any pushed screens in the bottommost
+  /// presentation layer.
+  mutating func dismissAll() {
+    let count = self.dropFirst().filter { $0.isPresented }.count
+    guard count > 0 else { return }
+    dismiss(count: count)
   }
 }
