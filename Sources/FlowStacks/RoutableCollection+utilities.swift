@@ -186,6 +186,15 @@ public extension RoutableCollection where Element: RouteProtocol {
   mutating func popToRoot() {
     popTo(index: 0)
   }
+  
+  /// Pops all screens in the current navigation stack only, without dismissing any screens.
+  mutating func popToCurrentNavigationRoot() {
+    var index = endIndex - 1
+    while indices.contains(index), !self[index].isPresented, index > 0 {
+      index -= 1
+    }
+    goBackTo(index: index)
+  }
 
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
