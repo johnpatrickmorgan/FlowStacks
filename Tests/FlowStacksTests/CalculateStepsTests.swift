@@ -1,7 +1,7 @@
 @testable import FlowStacks
 import XCTest
 
-final class FlowStacksTests: XCTestCase {
+final class CalculateStepsTests: XCTestCase {
   typealias RouterState = [Route<Int>]
   
   func testPushOneAtATime() {
