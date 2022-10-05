@@ -1,94 +1,73 @@
 import Foundation
 import SwiftUI
 
-/// A view that represents a linked list of routes, each pushing or presenting the next in
-/// the list.
-indirect enum Node<Screen, V: View>: View {
-  case route(Route<Screen>, next: Node<Screen, V>, allRoutes: Binding<[Route<Screen>]>, index: Int, buildView: (Screen) -> V)
-  case end
-  
+struct Node<Screen>: View {
+  let allScreens: [Route<Screen>]
+  let truncateToIndex: (Int) -> Void
+  let index: Int
+  let screen: Route<Screen>?
+
+  @EnvironmentObject var pathHolder: PathHolder
+  @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
+
+  init(allScreens: [Route<Screen>], truncateToIndex: @escaping (Int) -> Void, index: Int) {
+    self.allScreens = allScreens
+    self.truncateToIndex = truncateToIndex
+    self.index = index
+    self.screen = allScreens[safe: index]
+  }
+
+  private var nextRoute: Route<Screen>? {
+    return allScreens[safe: index + 1]
+  }
+
   private var isActiveBinding: Binding<Bool> {
-    switch self {
-    case .end, .route(_, next: .end, _, _, _):
-      return .constant(false)
-    case .route(_, .route, let allRoutes, let index, _):
-      return Binding(
-        get: {
-          allRoutes.wrappedValue.count > index + 1
-        },
-        set: { isShowing in
-          guard !isShowing else { return }
-          guard allRoutes.wrappedValue.count > index + 1 else { return }
-          allRoutes.wrappedValue = Array(allRoutes.wrappedValue.prefix(index + 1))
-        }
-      )
-    }
+    return Binding(
+      get: { allScreens.count > index + 1 },
+      set: { isShowing in
+        guard !isShowing else { return }
+        guard allScreens.count > index + 1 else { return }
+        truncateToIndex(index + 1)
+      }
+    )
   }
-  
+
   private var pushBinding: Binding<Bool> {
-    switch next {
-    case .route(.push, _, _, _, _):
-      return isActiveBinding
-    default:
+    guard case .push = nextRoute?.style else {
       return .constant(false)
     }
+    return isActiveBinding
   }
-  
+
   private var sheetBinding: Binding<Bool> {
-    switch next {
-    case .route(.sheet, _, _, _, _):
-      return isActiveBinding
-    default:
+    guard case .sheet = nextRoute?.style else {
       return .constant(false)
+    }
+    return isActiveBinding
+  }
+
+  private var coverBinding: Binding<Bool> {
+    guard case .cover = nextRoute?.style else {
+      return .constant(false)
+    }
+    return isActiveBinding
+  }
+
+  var next: some View {
+    Node(allScreens: allScreens, truncateToIndex: truncateToIndex, index: index + 1)
+      .environmentObject(pathHolder)
+      .environmentObject(destinationBuilder)
+  }
+
+  @ViewBuilder
+  var screenView: some View {
+    if let route = allScreens[safe: index] ?? screen {
+      DestinationBuilderView(data: route.screen, index: index, style: route.style)
+    } else {
+      EmptyView()
     }
   }
 
-  private var onDismiss: (() -> Void)? {
-    switch next {
-    case .route(.sheet(_, _, let onDismiss), _, _, _, _), .route(.cover(_, _, let onDismiss), _, _, _, _):
-      return onDismiss
-    default:
-      return nil
-    }
-  }
-  
-  private var coverBinding: Binding<Bool> {
-    switch next {
-    case .route(.cover, _, _, _, _):
-      return isActiveBinding
-    default:
-      return .constant(false)
-    }
-  }
-  
-  private var route: Route<Screen>? {
-    switch self {
-    case .end:
-      return nil
-    case .route(let route, _, _, _, _):
-      return route
-    }
-  }
-  
-  private var next: Node? {
-    switch self {
-    case .end:
-      return nil
-    case .route(_, let next, _, _, _):
-      return next
-    }
-  }
-  
-  @ViewBuilder
-  private var screenView: some View {
-    switch self {
-    case .end:
-      EmptyView()
-    case .route(let route, _, _, _, let buildView):
-      buildView(route.screen)
-    }
-  }
-  
   @ViewBuilder
   private var unwrappedBody: some View {
     /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
@@ -102,16 +81,16 @@ indirect enum Node<Screen, V: View>: View {
         )
         .sheet(
           isPresented: sheetBinding,
-          onDismiss: onDismiss,
+          onDismiss: nil,
           content: { next }
         )
         .cover(
           isPresented: coverBinding,
-          onDismiss: onDismiss,
+          onDismiss: nil,
           content: { next }
         )
     } else {
-      let asSheet = next?.route?.style.isSheet ?? false
+      let asSheet = nextRoute?.style.isSheet ?? false
       screenView
         .background(
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
@@ -120,14 +99,14 @@ indirect enum Node<Screen, V: View>: View {
         .present(
           asSheet: asSheet,
           isPresented: asSheet ? sheetBinding : coverBinding,
-          onDismiss: onDismiss,
+          onDismiss: nil,
           content: { next }
         )
     }
   }
-  
+
   var body: some View {
-    if route?.embedInNavigationView ?? false {
+    if screen?.withNavigation ?? false {
       NavigationView {
         unwrappedBody
       }
@@ -138,9 +117,29 @@ indirect enum Node<Screen, V: View>: View {
   }
 }
 
+extension Collection {
+  /// Returns the element at the specified index if it is within bounds, otherwise nil.
+  subscript(safe index: Index) -> Element? {
+    return indices.contains(index) ? self[index] : nil
+  }
+}
+
+extension MutableCollection {
+  /// Returns the element at the specified index if it is within bounds, otherwise nil.
+  subscript(safe index: Index) -> Element? {
+    get {
+      return indices.contains(index) ? self[index] : nil
+    }
+    set {
+      guard let newValue, indices.contains(index) else { return }
+      self[index] = newValue
+    }
+  }
+}
+
 /// There are spurious state updates when using the `column` navigation view style, so
 /// the navigation view style is forced to `stack` where possible.
-private var supportedNavigationViewStyle: some NavigationViewStyle {
+var supportedNavigationViewStyle: some NavigationViewStyle {
   #if os(macOS)
     .automatic
   #else

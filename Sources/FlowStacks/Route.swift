@@ -9,28 +9,28 @@ public enum Route<Screen> {
   
   /// A sheet presentation.
   /// - Parameter screen: the screen to be shown.
-  /// - Parameter embedInNavigationView: whether the presented screen should be embedded in a `NavigationView`.
-  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
-  case sheet(Screen, embedInNavigationView: Bool, onDismiss: (() -> Void)? = nil)
+  /// - Parameter withNavigation: whether the presented screen should be embedded in a `NavigationView`.
+  case sheet(Screen, withNavigation: Bool)
   
   /// A full-screen cover presentation.
   /// - Parameter screen: the screen to be shown.
-  /// - Parameter embedInNavigationView: whether the presented screen should be embedded in a `NavigationView`.
-  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
+  /// - Parameter withNavigation: whether the presented screen should be embedded in a `NavigationView`.
   @available(OSX, unavailable, message: "Not available on OS X.")
-  case cover(Screen, embedInNavigationView: Bool, onDismiss: (() -> Void)? = nil)
+  case cover(Screen, withNavigation: Bool)
   
-  /// The root of the stack. The presentation style is irrelevant as it will not be presented.
-  /// - Parameter screen: the screen to be shown.
-  public static func root(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
-    return .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: nil)
+  public static func sheet(_ screen: Screen) -> Route {
+    return .sheet(screen, withNavigation: false)
+  }
+  
+  public static func cover(_ screen: Screen) -> Route {
+    return .cover(screen, withNavigation: false)
   }
   
   /// The screen to be shown.
   public var screen: Screen {
     get {
       switch self {
-      case .push(let screen), .sheet(let screen, _, _), .cover(let screen, _, _):
+      case .push(let screen), .sheet(let screen, _), .cover(let screen, _):
         return screen
       }
     }
@@ -38,24 +38,24 @@ public enum Route<Screen> {
       switch self {
       case .push:
         self = .push(newValue)
-      case .sheet(_, let embedInNavigationView, let onDismiss):
-        self = .sheet(newValue, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
+      case .sheet(_, let withNavigation):
+        self = .sheet(newValue, withNavigation: withNavigation)
         #if os(macOS)
         #else
-        case .cover(_, let embedInNavigationView, let onDismiss):
-          self = .cover(newValue, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
+        case .cover(_, let withNavigation):
+          self = .cover(newValue, withNavigation: withNavigation)
       #endif
       }
     }
   }
   
   /// Whether the presented screen should be embedded in a `NavigationView`.
-  public var embedInNavigationView: Bool {
+  public var withNavigation: Bool {
     switch self {
     case .push:
       return false
-    case .sheet(_, let embedInNavigationView, _), .cover(_, let embedInNavigationView, _):
-      return embedInNavigationView
+    case .sheet(_, let withNavigation), .cover(_, let withNavigation):
+      return withNavigation
     }
   }
   
@@ -69,26 +69,60 @@ public enum Route<Screen> {
     }
   }
   
+  /// Whether the route is pushed, presented as a sheet or presented as a full-screen
+  /// cover.
+  public var style: RouteStyle {
+    switch self {
+    case .push:
+      return .push
+    case .sheet(_, let withNavigation):
+      return .sheet(withNavigation: withNavigation)
+    case .cover(_, let withNavigation):
+      return .cover(withNavigation: withNavigation)
+    }
+  }
+  
+  public init(screen: Screen, style: RouteStyle) {
+    switch style {
+    case .push:
+      self = .push(screen)
+    case .sheet(let withNavigation):
+      self = .sheet(screen, withNavigation: withNavigation)
+    case .cover(let withNavigation):
+      self = .cover(screen, withNavigation: withNavigation)
+    }
+  }
+  
   public func map<NewScreen>(_ transform: (Screen) -> NewScreen) -> Route<NewScreen> {
     switch self {
     case .push:
       return .push(transform(screen))
-    case .sheet(_, let embedInNavigationView, let onDismiss):
-      return .sheet(transform(screen), embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
-#if os(macOS)
-#else
-    case .cover(_, let embedInNavigationView, let onDismiss):
-      return .cover(transform(screen), embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
-#endif
+    case .sheet(_, let withNavigation):
+      return .sheet(transform(screen), withNavigation: withNavigation)
+      #if os(macOS)
+      #else
+      case .cover(_, let withNavigation):
+        return .cover(transform(screen), withNavigation: withNavigation)
+    #endif
     }
   }
 }
 
 extension Route: Equatable where Screen: Equatable {
   /// Compares two Routes for equality, based on screen equality and equality of presentation styles.
-  /// Note that any `onDismiss` closures are ignored when checking for equality.
   /// - Returns: A Bool indicating if the two are equal.
   public static func == (lhs: Route, rhs: Route) -> Bool {
     return lhs.style == rhs.style && lhs.screen == rhs.screen
   }
 }
+
+extension Route: Hashable where Screen: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    screen.hash(into: &hasher)
+    style.hash(into: &hasher)
+  }
+}
+
+extension Route: Encodable where Screen: Encodable {}
+
+extension Route: Decodable where Screen: Decodable {}

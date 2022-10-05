@@ -1,53 +1,117 @@
 import Foundation
 import SwiftUI
 
-/// Router converts an array of pushed / presented routes into a view.
-public struct Router<Screen, ScreenView: View>: View {
-  /// The array of routes that represents the navigation stack.
-  @Binding var routes: [Route<Screen>]
+struct Router<Screen, RootView: View>: View {
+  let rootView: RootView
+  let withNavigation: Bool
 
-  /// A closure that builds a `ScreenView` from a `Screen`and its index.
-  @ViewBuilder var buildView: (Screen, Int) -> ScreenView
+  @Binding var screens: [Route<Screen>]
+  @EnvironmentObject var pathHolder: PathHolder
+  @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
 
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a `Screen` and its index.
-  public init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
-    self._routes = routes
-    self.buildView = buildView
+  public init(rootView: RootView, screens: Binding<[Route<Screen>]>, withNavigation: Bool = false) {
+    self.rootView = rootView
+    self._screens = screens
+    self.withNavigation = withNavigation
   }
 
-  public var body: some View {
-    routes
-      .enumerated()
-      .reversed()
-      .reduce(Node<Screen, ScreenView>.end) { nextNode, new in
-        let (index, route) = new
-        return Node<Screen, ScreenView>.route(
-          route,
-          next: nextNode,
-          allRoutes: $routes,
-          index: index,
-          buildView: { buildView($0, index) }
-        )
+  var pushedScreens: some View {
+    Node(allScreens: screens, truncateToIndex: { screens = Array(screens.prefix($0)) }, index: 0)
+      .environmentObject(pathHolder)
+      .environmentObject(destinationBuilder)
+  }
+
+  private var nextRoute: Route<Screen>? {
+    return screens.first
+  }
+
+  private var isActiveBinding: Binding<Bool> {
+    screens.isEmpty ? .constant(false) : Binding(
+      get: { !screens.isEmpty },
+      set: { isShowing in
+        guard !isShowing else { return }
+        guard !screens.isEmpty else { return }
+        screens = []
       }
+    )
   }
-}
 
-public extension Router {
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a binding to a `Screen` and its index.
-  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>, Int) -> ScreenView) {
-    self._routes = routes
-    self.buildView = { _, index in
-      let binding = Binding<Screen>(
-        get: { routes.wrappedValue[index].screen },
-        set: { routes.wrappedValue[index].screen = $0 }
-      )
-      return buildView(binding, index)
+  private var pushBinding: Binding<Bool> {
+    guard case .push = nextRoute?.style else {
+      return .constant(false)
+    }
+    return isActiveBinding
+  }
+
+  private var sheetBinding: Binding<Bool> {
+    guard case .sheet = nextRoute?.style else {
+      return .constant(false)
+    }
+    return isActiveBinding
+  }
+
+  private var coverBinding: Binding<Bool> {
+    guard case .cover = nextRoute?.style else {
+      return .constant(false)
+    }
+    return isActiveBinding
+  }
+
+  var next: some View {
+    Node(allScreens: screens, truncateToIndex: truncateToIndex, index: 0)
+      .environmentObject(pathHolder)
+      .environmentObject(destinationBuilder)
+  }
+
+  func truncateToIndex(_ index: Int) {
+    screens = Array(screens.prefix(index))
+  }
+
+  @ViewBuilder
+  private var unwrappedBody: some View {
+    /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
+    /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
+    /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
+    if #available(iOS 14.5, *) {
+      rootView
+        .background(
+          NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
+            .hidden()
+        )
+        .sheet(
+          isPresented: sheetBinding,
+          onDismiss: nil,
+          content: { next }
+        )
+        .cover(
+          isPresented: coverBinding,
+          onDismiss: nil,
+          content: { next }
+        )
+    } else {
+      let asSheet = nextRoute?.style.isSheet ?? false
+      rootView
+        .background(
+          NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
+            .hidden()
+        )
+        .present(
+          asSheet: asSheet,
+          isPresented: asSheet ? sheetBinding : coverBinding,
+          onDismiss: nil,
+          content: { next }
+        )
+    }
+  }
+
+  var body: some View {
+    if withNavigation {
+      NavigationView {
+        unwrappedBody
+      }
+      .navigationViewStyle(supportedNavigationViewStyle)
+    } else {
+      unwrappedBody
     }
   }
 }

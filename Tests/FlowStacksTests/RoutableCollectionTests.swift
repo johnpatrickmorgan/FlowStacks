@@ -6,8 +6,7 @@ final class RoutableCollectionTests: XCTestCase {
   
   func testPopToCurrentNavigationRootPresented() {
     var routes: RouterState = [
-      .root(1, embedInNavigationView: true),
-      .sheet(-1, embedInNavigationView: true),
+      .sheet(-1, withNavigation: true),
       .push(-2),
       .push(-3),
       .push(-4)
@@ -16,15 +15,13 @@ final class RoutableCollectionTests: XCTestCase {
     routes.popToCurrentNavigationRoot()
     
     let expectedResult: RouterState = [
-      .root(1, embedInNavigationView: true),
-      .sheet(-1, embedInNavigationView: true)
+      .sheet(-1, withNavigation: true)
     ]
     XCTAssertEqual(routes, expectedResult)
   }
   
   func testPopToCurrentNavigationRootNotPresented() {
     var routes: RouterState = [
-      .root(1, embedInNavigationView: true),
       .push(-2),
       .push(-3),
       .push(-4)
@@ -33,26 +30,23 @@ final class RoutableCollectionTests: XCTestCase {
     routes.popToCurrentNavigationRoot()
     
     let expectedResult: RouterState = [
-      .root(1, embedInNavigationView: true),
     ]
     XCTAssertEqual(routes, expectedResult)
   }
   
   func testDismissAll() {
     var routes: RouterState = [
-      .root(1, embedInNavigationView: true),
       .push(-2),
-      .sheet(3, embedInNavigationView: true),
-      .sheet(4, embedInNavigationView: true),
-      .sheet(5, embedInNavigationView: true),
-      .sheet(6, embedInNavigationView: true),
+      .sheet(3, withNavigation: true),
+      .sheet(4, withNavigation: true),
+      .sheet(5, withNavigation: true),
+      .sheet(6, withNavigation: true),
       .push(-4)
     ]
     
     routes.dismissAll()
     
     let expectedResult: RouterState = [
-      .root(1, embedInNavigationView: true),
       .push(-2),
     ]
     XCTAssertEqual(routes, expectedResult)
@@ -60,7 +54,6 @@ final class RoutableCollectionTests: XCTestCase {
   
   func testDismissAllNoOpWithOnlyPushes() {
     var routes: RouterState = [
-      .root(1, embedInNavigationView: true),
       .push(2),
       .push(3)
     ]
@@ -68,7 +61,6 @@ final class RoutableCollectionTests: XCTestCase {
     routes.dismissAll()
     
     let expectedResult: RouterState = [
-      .root(1, embedInNavigationView: true),
       .push(2),
       .push(3)
     ]
