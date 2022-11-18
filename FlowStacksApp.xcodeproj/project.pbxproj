@@ -19,6 +19,8 @@
 		526D9F2526AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
 		526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
 		526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
+		52AB392729115916008E90E9 /* ArrayBindingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5293FD2E29113B18003D8A35 /* ArrayBindingFlow.swift */; };
+		52AB392829115916008E90E9 /* ArrayBindingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5293FD2E29113B18003D8A35 /* ArrayBindingFlow.swift */; };
 		52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 /* End PBXBuildFile section */
@@ -30,7 +32,8 @@
 		525C73362774BA6B009CBD67 /* NumberFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberFlow.swift; sourceTree = "<group>"; };
 		526D9F1C26AF661F00B6B882 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
-		5293FD2D290C87FE003D8A35 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; sourceTree = "<group>"; };
+		5293FD2E29113B18003D8A35 /* ArrayBindingFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayBindingFlow.swift; sourceTree = "<group>"; };
+		52B69EDB2911809C009915D6 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -97,6 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				526D9F3226AF667000B6B882 /* FlowStacksApp.swift */,
+				5293FD2E29113B18003D8A35 /* ArrayBindingFlow.swift */,
 				525C73362774BA6B009CBD67 /* NumberFlow.swift */,
 				520327FB290B372A00AD0708 /* EmojiFlow.swift */,
 				52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */,
@@ -107,7 +111,7 @@
 		52937A3E28904C8B001B4EF3 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				5293FD2D290C87FE003D8A35 /* FlowStacks */,
+				52B69EDB2911809C009915D6 /* FlowStacks */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -221,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52AB392729115916008E90E9 /* ArrayBindingFlow.swift in Sources */,
 				526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */,
 				525C73372774BA6B009CBD67 /* NumberFlow.swift in Sources */,
@@ -232,6 +237,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52AB392829115916008E90E9 /* ArrayBindingFlow.swift in Sources */,
 				526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */,
 				52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */,
 				525C73382774BA6B009CBD67 /* NumberFlow.swift in Sources */,

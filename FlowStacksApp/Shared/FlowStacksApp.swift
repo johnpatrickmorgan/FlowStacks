@@ -6,6 +6,7 @@ struct FlowStacksApp: App {
   enum Tab: Hashable {
     case numberFlow
     case emojiFlow
+    case arrayBinding
   }
   
   @State var selectedTab: Tab = .numberFlow
@@ -19,6 +20,9 @@ struct FlowStacksApp: App {
         EmojiFlow()
           .tabItem { Text("Emoji") }
           .tag(Tab.emojiFlow)
+        ArrayBindingFlow()
+          .tabItem { Text("Array") }
+          .tag(Tab.arrayBinding)
       }.onOpenURL { url in
         guard let deeplink = Deeplink(url: url) else { return }
         follow(deeplink)

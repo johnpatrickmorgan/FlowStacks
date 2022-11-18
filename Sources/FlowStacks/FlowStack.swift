@@ -19,7 +19,7 @@ public struct FlowStack<Root: View, Data: Hashable>: View {
         path.wrappedValue = newValue.map {
           $0.map { screen in
             guard let data = screen as? Data else {
-              fatalError("Cannot add \(type(of: screen)) to stack of \(Data.self)")
+              fatalError("Cannot add \(type(of: screen.base)) to stack of \(Data.self)")
             }
             return data
           }
