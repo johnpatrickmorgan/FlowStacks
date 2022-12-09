@@ -5,28 +5,22 @@ enum ScreenData: Hashable {
   case numberList(NumberList)
   case number(Int)
   case emojiVisualisation(EmojiVisualisation)
-  case childFlow(text: String)
-  case childFlowScreen(ChildFlowScreen)
 }
 
 struct ArrayBindingFlow: View {
   @State var routes: [Route<ScreenData>] = []
-  
+
   var body: some View {
     FlowStack($routes) {
       HomeView()
         .flowDestination(for: ScreenData.self) { screenData in
-          switch (screenData) {
+          switch screenData {
           case .numberList(let numberList):
             NumberListView(numberList: numberList)
           case .number(let number):
             NumberView(number: number)
           case .emojiVisualisation(let visualisation):
             EmojiView(visualisation: visualisation)
-          case .childFlow(let text):
-            ChildFlow(text: text)
-          case .childFlowScreen(let childFlowScreen):
-            fatalError()
           }
         }
     }
@@ -107,49 +101,5 @@ private struct EmojiView: View {
   var body: some View {
     Text(visualisation.text)
       .navigationTitle("Visualise \(visualisation.count)")
-    FlowLink(ScreenData.childFlow(text: visualisation.text), style: .sheet(withNavigation: true)) {
-      Text("Present text editor")
-    }
-  }
-}
-
-enum ChildFlowScreen: Hashable {
-  case edit(String)
-}
-
-private struct ChildFlow: View {
-  @State var text: String
-  
-  var body: some View {
-    VStack {
-      Text(text)
-      FlowLink(ChildFlowScreen.edit(text), style: .push, label: { Text("Edit text" )})
-    }
-      .flowDestination(for: ChildFlowScreen.self, destination: { screen in
-        switch screen {
-        case .edit:
-          EditTextView(text: text, onConfirm: onConfirm)
-        }
-      })
-  }
-  
-  func onConfirm(newText: String) {
-    text = newText
-  }
-}
-
-private struct EditTextView: View {
-  @EnvironmentObject var navigator: FlowNavigator<ChildFlowScreen>
-  @State var text: String
-  let onConfirm: (String) -> Void
-  
-  var body: some View {
-    VStack {
-      TextField("Edit", text: $text)
-      Button("Confirm") {
-        onConfirm(text)
-        navigator.goBack()
-      }
-    }
   }
 }
