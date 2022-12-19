@@ -1,7 +1,7 @@
 import FlowStacks
 import SwiftUI
 
-struct EmojiFlow: View {
+struct NoBindingFlow: View {
   var body: some View {
     FlowStack {
       HomeView()

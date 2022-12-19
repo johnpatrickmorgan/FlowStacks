@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public struct FlowStack<Root: View, Data: Hashable>: View {
+public struct FlowStack<Root: View, Data>: View {
   let withNavigation: Bool
   var unownedPath: Binding<[Route<Data>]>?
   @State var ownedPath: [Route<Data>] = []
@@ -12,14 +12,18 @@ public struct FlowStack<Root: View, Data: Hashable>: View {
     unownedPath ?? $ownedPath
   }
 
-  var erasedPath: Binding<[Route<AnyHashable>]> {
+  var erasedPath: Binding<[Route<Any>]> {
     return Binding(
       get: { path.wrappedValue.map { $0.map { $0 } } },
       set: { newValue in
         path.wrappedValue = newValue.map {
           $0.map { screen in
             guard let data = screen as? Data else {
-              fatalError("Cannot add \(type(of: screen.base)) to stack of \(Data.self)")
+              if let anyHashable = screen as? AnyHashable {
+                fatalError("Cannot add \(type(of: anyHashable.base)) to stack of \(Data.self)")
+              } else {
+                fatalError("Cannot add \(type(of: screen)) to stack of \(Data.self)")
+              }
             }
             return data
           }

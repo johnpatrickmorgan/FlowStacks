@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 
 public extension View {
-  func flowDestination<D: Hashable, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (D, Int, RouteStyle) -> C) -> some View {
+  func flowDestination<D, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (D, Int, RouteStyle) -> C) -> some View {
     return modifier(
       DestinationBuilderModifier(
         typedDestinationBuilder: { data, index, style in
@@ -12,7 +12,7 @@ public extension View {
     )
   }
 
-  func flowDestination<D: Hashable, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>, Int, RouteStyle) -> C) -> some View {
+  func flowDestination<D, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>, Int, RouteStyle) -> C) -> some View {
     return modifier(
       DestinationBuilderBindingModifier(
         builder: { binding, index, style in
@@ -22,16 +22,16 @@ public extension View {
     )
   }
 
-  func flowDestination<D: Hashable, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (D) -> C) -> some View {
+  func flowDestination<D, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (D) -> C) -> some View {
     return flowDestination(for: pathElementType, destination: { data, _, _ in builder(data) })
   }
 
-  func flowDestination<D: Hashable, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>) -> C) -> some View {
+  func flowDestination<D, C: View>(for pathElementType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>) -> C) -> some View {
     return flowDestination(for: pathElementType, destination: { binding, _, _ in builder(binding) })
   }
 }
 
-struct DestinationBuilderBindingModifier<TypedData: Hashable>: ViewModifier {
+struct DestinationBuilderBindingModifier<TypedData>: ViewModifier {
   let builder: (Binding<TypedData>, Int, RouteStyle) -> AnyView
 
   @EnvironmentObject var navigator: FlowNavigator<TypedData>

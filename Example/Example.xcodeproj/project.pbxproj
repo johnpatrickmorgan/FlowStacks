@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		527CE1C32950BC300092AEC1 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527CE1C22950BC300092AEC1 /* NumberVMFlow.swift */; };
 		52A7E4362943F197002D2B5E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A7E4352943F197002D2B5E /* Assets.xcassets */; };
 		52A7E43A2943F197002D2B5E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52A7E4392943F197002D2B5E /* Preview Assets.xcassets */; };
 		52A7E4442943F197002D2B5E /* ExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E4432943F197002D2B5E /* ExampleTests.swift */; };
@@ -15,7 +16,7 @@
 		52A7E4642943F204002D2B5E /* NumberFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E45F2943F204002D2B5E /* NumberFlow.swift */; };
 		52A7E4652943F204002D2B5E /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E4602943F204002D2B5E /* FlowStacksApp.swift */; };
 		52A7E4662943F204002D2B5E /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E4612943F204002D2B5E /* Deeplink.swift */; };
-		52A7E4672943F204002D2B5E /* EmojiFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E4622943F204002D2B5E /* EmojiFlow.swift */; };
+		52A7E4672943F204002D2B5E /* NoBindingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E4622943F204002D2B5E /* NoBindingFlow.swift */; };
 		52A7E4682943F204002D2B5E /* ArrayBindingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52A7E4632943F204002D2B5E /* ArrayBindingFlow.swift */; };
 		52A7E46B2943F239002D2B5E /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52A7E46A2943F239002D2B5E /* FlowStacks */; };
 		52A7E46E2943F2D5002D2B5E /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 52A7E46D2943F2D5002D2B5E /* SwiftUINavigation */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		527CE1C22950BC300092AEC1 /* NumberVMFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberVMFlow.swift; sourceTree = "<group>"; };
 		52A7E42E2943F194002D2B5E /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52A7E4352943F197002D2B5E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52A7E4372943F197002D2B5E /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
@@ -52,7 +54,7 @@
 		52A7E45F2943F204002D2B5E /* NumberFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberFlow.swift; sourceTree = "<group>"; };
 		52A7E4602943F204002D2B5E /* FlowStacksApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		52A7E4612943F204002D2B5E /* Deeplink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
-		52A7E4622943F204002D2B5E /* EmojiFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiFlow.swift; sourceTree = "<group>"; };
+		52A7E4622943F204002D2B5E /* NoBindingFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoBindingFlow.swift; sourceTree = "<group>"; };
 		52A7E4632943F204002D2B5E /* ArrayBindingFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayBindingFlow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -153,9 +155,10 @@
 			isa = PBXGroup;
 			children = (
 				52A7E45F2943F204002D2B5E /* NumberFlow.swift */,
+				527CE1C22950BC300092AEC1 /* NumberVMFlow.swift */,
 				52A7E4602943F204002D2B5E /* FlowStacksApp.swift */,
 				52A7E4612943F204002D2B5E /* Deeplink.swift */,
-				52A7E4622943F204002D2B5E /* EmojiFlow.swift */,
+				52A7E4622943F204002D2B5E /* NoBindingFlow.swift */,
 				52A7E4632943F204002D2B5E /* ArrayBindingFlow.swift */,
 			);
 			path = Shared;
@@ -306,10 +309,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				52A7E4662943F204002D2B5E /* Deeplink.swift in Sources */,
+				527CE1C32950BC300092AEC1 /* NumberVMFlow.swift in Sources */,
 				52A7E4682943F204002D2B5E /* ArrayBindingFlow.swift in Sources */,
 				52A7E4652943F204002D2B5E /* FlowStacksApp.swift in Sources */,
 				52A7E4642943F204002D2B5E /* NumberFlow.swift in Sources */,
-				52A7E4672943F204002D2B5E /* EmojiFlow.swift in Sources */,
+				52A7E4672943F204002D2B5E /* NoBindingFlow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

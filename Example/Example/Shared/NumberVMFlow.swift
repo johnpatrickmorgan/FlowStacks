@@ -1,0 +1,146 @@
+import Combine
+import FlowStacks
+import SwiftUI
+import SwiftUINavigation
+
+// NumberVMFlow
+
+struct NumberVMFlow: View {
+  @ObservedObject var viewModel: ViewModel
+  
+  var body: some View {
+    FlowStack($viewModel.routes, withNavigation: true) {
+      NumberVMView(viewModel: viewModel.initialScreenViewModel)
+        .flowDestination(for: ScreenViewModel.self) { screenVM in
+          if case .number(let vm) = screenVM {
+            NumberVMView(viewModel: vm)
+          }
+        }
+    }
+    .onOpenURL { url in
+      viewModel.open(url)
+    }
+  }
+}
+
+extension NumberVMFlow {
+  class ViewModel: ObservableObject {
+    let initialScreenViewModel: NumberVMView.ViewModel
+    @Published var routes: Routes<ScreenViewModel>
+    
+    init(initialNumber: Int, routes: Routes<ScreenViewModel> = []) {
+      self.initialScreenViewModel = .init(number: initialNumber)
+      self.routes = routes
+      
+      initialScreenViewModel.goRandom = goRandom
+    }
+    
+    func open(_ url: URL) {
+      guard let deepLink = Deeplink(url: url) else {
+        return
+      }
+      follow(deepLink)
+    }
+    
+    func follow(_ deeplink: Deeplink) {
+      guard case .numberFlow(let link) = deeplink else {
+        return
+      }
+      switch link {
+      case .numbers(let numbers):
+        withDelaysIfUnsupported(\.routes) {
+          for number in numbers {
+            $0.push(.number(.init(number: number, goRandom: goRandom)))
+          }
+        }
+      }
+    }
+    
+    func goRandom() {
+      func screenViewModel(_ number: Int) -> ScreenViewModel {
+        .number(.init(number: number, goRandom: goRandom))
+      }
+      let options: [[Route<ScreenViewModel>]] = [
+        [],
+        [
+          .push(screenViewModel(1)),
+        ],
+        [
+          .push(screenViewModel(1)),
+          .push(screenViewModel(2)),
+          .push(screenViewModel(3)),
+        ],
+        [
+          .push(screenViewModel(1)),
+          .push(screenViewModel(2)),
+          .sheet(screenViewModel(3), withNavigation: true),
+          .push(screenViewModel(4)),
+        ],
+        [
+          .sheet(screenViewModel(1), withNavigation: true),
+          .push(screenViewModel(2)),
+          .sheet(screenViewModel(3), withNavigation: true),
+          .push(screenViewModel(4)),
+        ],
+      ]
+      withDelaysIfUnsupported(\.routes) {
+        $0 = options.randomElement()!
+      }
+    }
+  }
+}
+
+// ScreenVM
+
+enum ScreenViewModel {
+  case number(NumberVMView.ViewModel)
+}
+
+// NumberVMView
+
+struct NumberVMView: View {
+  @ObservedObject var viewModel: ViewModel
+  @EnvironmentObject var navigator: FlowNavigator<ScreenViewModel>
+  
+  var body: some View {
+    VStack(spacing: 8) {
+      Stepper("\(viewModel.number)", value: $viewModel.number)
+      FlowLink(viewModel.doubleViewModel(), style: .cover(withNavigation: true), label: { Text("Present Double (cover)") })
+      FlowLink(viewModel.doubleViewModel(), style: .sheet(withNavigation: true), label: { Text("Present Double (sheet)") })
+      FlowLink(viewModel.incrementedViewModel(), style: .push, label: { Text("Push next") })
+      if let goRandom = viewModel.goRandom {
+        Button("Go random", action: goRandom)
+      }
+      if !navigator.isEmpty {
+        Button("Go back", action: { navigator.goBack() })
+      }
+      Button("Go back to root", action: {
+        navigator.withDelaysIfUnsupported {
+          $0.goBackToRoot()
+        }
+      })
+    }
+    .padding()
+    .navigationTitle("\(viewModel.number)")
+  }
+}
+
+extension NumberVMView {
+  class ViewModel: ObservableObject {
+    @Published var number: Int
+    var goRandom: (() -> Void)?
+    
+    init(number: Int, goRandom: (() -> Void)? = nil) {
+      self.number = number
+      self.goRandom = goRandom
+    }
+    
+    func doubleViewModel() -> ScreenViewModel {
+      .number(.init(number: number * 2, goRandom: goRandom))
+    }
+    
+    func incrementedViewModel() -> ScreenViewModel {
+      .number(.init(number: number + 1, goRandom: goRandom))
+    }
+  }
+}

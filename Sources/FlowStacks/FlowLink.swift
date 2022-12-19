@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-public struct FlowLink<P: Hashable, Label: View>: View {
+public struct FlowLink<P, Label: View>: View {
   var value: Route<P>?
   var label: Label
 
@@ -21,7 +21,7 @@ public struct FlowLink<P: Hashable, Label: View>: View {
     Button(
       action: {
         guard let value = value else { return }
-        pathHolder.path.wrappedValue.append(value.map { $0 as AnyHashable })
+        pathHolder.path.wrappedValue.append(value.map { $0 as Any })
       },
       label: { label }
     )

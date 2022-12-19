@@ -5,7 +5,8 @@ import SwiftUI
 struct FlowStacksApp: App {
   enum Tab: Hashable {
     case numberFlow
-    case emojiFlow
+    case numberVMFlow
+    case noBinding
     case arrayBinding
   }
   
@@ -17,9 +18,12 @@ struct FlowStacksApp: App {
         NumberFlow()
           .tabItem { Text("Numbers") }
           .tag(Tab.numberFlow)
-        EmojiFlow()
-          .tabItem { Text("Emoji") }
-          .tag(Tab.emojiFlow)
+        NumberVMFlow(viewModel: .init(initialNumber: 42))
+          .tabItem { Text("Numbers VM") }
+          .tag(Tab.numberVMFlow)
+        NoBindingFlow()
+          .tabItem { Text("No binding") }
+          .tag(Tab.noBinding)
         ArrayBindingFlow()
           .tabItem { Text("Array") }
           .tag(Tab.arrayBinding)

@@ -22,6 +22,10 @@ public enum Route<Screen> {
     return .sheet(screen, withNavigation: false)
   }
   
+  /// A full-screen cover presentation.
+  /// - Parameter screen: the screen to be shown.
+  /// - Parameter withNavigation: whether the presented screen should be embedded in a `NavigationView`.
+  @available(OSX, unavailable, message: "Not available on OS X.")
   public static func cover(_ screen: Screen) -> Route {
     return .cover(screen, withNavigation: false)
   }
