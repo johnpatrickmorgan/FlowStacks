@@ -40,13 +40,13 @@ extension View {
     if asSheet {
       self.sheet(
         isPresented: isPresented,
-        onDismiss: nil,
+        onDismiss: onDismiss,
         content: content
       )
     } else {
       self.cover(
         isPresented: isPresented,
-        onDismiss: nil,
+        onDismiss: onDismiss,
         content: content
       )
     }
