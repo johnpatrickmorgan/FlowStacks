@@ -56,7 +56,7 @@ public extension View {
       case .root:
         self
       case .screen(let screen):
-        buildView(screen, index - 1)
+        buildView(screen, index - 1).environmentObject(FlowNavigator<Screen>(routes))
       }
     }.environmentObject(FlowNavigator<Screen>(routes))
   }

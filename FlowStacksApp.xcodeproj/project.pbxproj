@@ -30,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		521678E22A2FD6AE00954579 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; sourceTree = "<group>"; };
 		5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		525C73362774BA6B009CBD67 /* NumberCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCoordinator.swift; sourceTree = "<group>"; };
@@ -38,7 +39,6 @@
 		526D9F1C26AF661F00B6B882 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		526D9F2226AF661F00B6B882 /* VMCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VMCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
-		52937A3F28904C8B001B4EF3 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentCoordinator.swift; sourceTree = "<group>"; };
@@ -66,10 +66,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		521678E12A2FD6AE00954579 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				521678E22A2FD6AE00954579 /* FlowStacks */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		5241BF2626AA1D3A002D6892 = {
 			isa = PBXGroup;
 			children = (
-				52937A3E28904C8B001B4EF3 /* Packages */,
+				521678E12A2FD6AE00954579 /* Packages */,
 				526D9F1B26AF661F00B6B882 /* FlowStacksApp */,
 				5241BF3426AA1D3B002D6892 /* Products */,
 				5241BF6D26AA1E8A002D6892 /* Frameworks */,
@@ -114,14 +122,6 @@
 				52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */,
 			);
 			path = Shared;
-			sourceTree = "<group>";
-		};
-		52937A3E28904C8B001B4EF3 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				52937A3F28904C8B001B4EF3 /* FlowStacks */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

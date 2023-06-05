@@ -5,9 +5,14 @@ import SwiftUI
 /// pushing, presenting and going back.
 @MainActor
 public class FlowNavigator<Screen>: ObservableObject {
-  @Binding public var routes: [Route<Screen>]
+  var routesBinding: Binding<[Route<Screen>]>
 
-  public init(_ routes: Binding<[Route<Screen>]>) {
-    self._routes = routes
+  public var routes: [Route<Screen>] {
+    get { routesBinding.wrappedValue }
+    set { routesBinding.wrappedValue = newValue }
+  }
+
+  public init(_ routesBinding: Binding<[Route<Screen>]>) {
+    self.routesBinding = routesBinding
   }
 }
