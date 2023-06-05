@@ -32,6 +32,7 @@ public struct Router<Screen, ScreenView: View>: View {
           buildView: { buildView($0, index) }
         )
       }
+      .environmentObject(FlowNavigator($routes))
   }
 }
 

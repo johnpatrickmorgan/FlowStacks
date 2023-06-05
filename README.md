@@ -89,6 +89,25 @@ The routes array can be managed using normal Array methods, but a number of conv
 
 If the user taps the back button, the routes array will be automatically updated to reflect the new navigation state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as will swiping to dismiss a sheet.
 
+### FlowNavigator
+
+The example above passes closures to screen views for presenting new screens and going back. However, passing closures can soon become unwieldy if you need to pass them down through multiple layers of views. Instead, a `FlowNavigator` object is available through the environment, giving access to the current routes array and the ability to update it via all its convenience methods. It can be accessed via the environment from any view within the router, e.g.:
+
+```swift
+@EnvironmentObject var navigator: FlowNavigator<ScreenType>
+
+var body: some View {
+  VStack {
+    Button("View detail") {
+      navigator.push(.detail)
+    }
+    Button("Go back to root") {
+      navigator.goBackToRoot()
+    }
+  }
+}
+```
+
 ### Bindings
 
 The Router can be configured to work with a binding to the screen state, rather than just a read-only value - just add `$` before the screen argument in the view-builder closure. The screen itself can then be responsible for updating its state within the routes array. Normally an enum is used to represent the screen, so it might be necessary to further extract the associated value for a particular screen as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
