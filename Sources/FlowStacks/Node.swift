@@ -6,7 +6,7 @@ import SwiftUI
 indirect enum Node<Screen, V: View>: View {
   case route(Route<Screen>, next: Node<Screen, V>, allRoutes: Binding<[Route<Screen>]>, index: Int, buildView: (Screen) -> V)
   case end
-  
+
   private var isActiveBinding: Binding<Bool> {
     switch self {
     case .end, .route(_, next: .end, _, _, _):
@@ -24,7 +24,7 @@ indirect enum Node<Screen, V: View>: View {
       )
     }
   }
-  
+
   private var pushBinding: Binding<Bool> {
     switch next {
     case .route(.push, _, _, _, _):
@@ -33,7 +33,7 @@ indirect enum Node<Screen, V: View>: View {
       return .constant(false)
     }
   }
-  
+
   private var sheetBinding: Binding<Bool> {
     switch next {
     case .route(.sheet, _, _, _, _):
@@ -51,7 +51,7 @@ indirect enum Node<Screen, V: View>: View {
       return nil
     }
   }
-  
+
   private var coverBinding: Binding<Bool> {
     switch next {
     case .route(.cover, _, _, _, _):
@@ -60,7 +60,7 @@ indirect enum Node<Screen, V: View>: View {
       return .constant(false)
     }
   }
-  
+
   private var route: Route<Screen>? {
     switch self {
     case .end:
@@ -69,7 +69,7 @@ indirect enum Node<Screen, V: View>: View {
       return route
     }
   }
-  
+
   private var next: Node? {
     switch self {
     case .end:
@@ -78,7 +78,7 @@ indirect enum Node<Screen, V: View>: View {
       return next
     }
   }
-  
+
   @ViewBuilder
   private var screenView: some View {
     switch self {
@@ -88,14 +88,17 @@ indirect enum Node<Screen, V: View>: View {
       buildView(route.screen)
     }
   }
-  
+
   @ViewBuilder
   private var unwrappedBody: some View {
     /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
     /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
     /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
     if #available(iOS 14.5, *) {
-      screenView
+      // We wrap the screenView in a ZStack to ensure the NavigationLink is attached
+      // to something with a stable identity.
+      // https://github.com/johnpatrickmorgan/FlowStacks/discussions/57#discussioncomment-6276362
+      ZStack { screenView }
         .background(
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
             .hidden()
@@ -125,7 +128,7 @@ indirect enum Node<Screen, V: View>: View {
         )
     }
   }
-  
+
   var body: some View {
     if route?.embedInNavigationView ?? false {
       NavigationView {
