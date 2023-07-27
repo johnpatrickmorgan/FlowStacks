@@ -57,6 +57,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */,
+				52E2C8F62A7268AB0042C495 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,6 +161,7 @@
 			name = "FlowStacksApp (macOS)";
 			packageProductDependencies = (
 				525C7343277BCDDA009CBD67 /* SwiftUINavigation */,
+				52E2C8F52A7268AB0042C495 /* FlowStacks */,
 			);
 			productName = "FlowStacksApp (macOS)";
 			productReference = 5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */;
