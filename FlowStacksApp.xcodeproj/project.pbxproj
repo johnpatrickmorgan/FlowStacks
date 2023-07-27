@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5241BF6F26AA1E8A002D6892 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 5241BF6E26AA1E8A002D6892 /* FlowStacks */; };
-		5241BF7126AA1E8F002D6892 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 5241BF7026AA1E8F002D6892 /* FlowStacks */; };
 		525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C733427729300009CBD67 /* SwiftUINavigation */; };
 		525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
@@ -30,7 +28,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		521678E22A2FD6AE00954579 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; sourceTree = "<group>"; };
 		5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		525C73362774BA6B009CBD67 /* NumberCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCoordinator.swift; sourceTree = "<group>"; };
@@ -41,6 +38,7 @@
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
+		52E2C8F02A7265A00042C495 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; path = .; sourceTree = "<group>"; };
 		77F136EC282E45DF008A6A02 /* ParentCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParentCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -50,7 +48,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */,
-				5241BF7126AA1E8F002D6892 /* FlowStacks in Frameworks */,
+				52E2C8F62A7268AB0042C495 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,7 +57,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */,
-				5241BF6F26AA1E8A002D6892 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +66,7 @@
 		521678E12A2FD6AE00954579 /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				521678E22A2FD6AE00954579 /* FlowStacks */,
+				52E2C8F02A7265A00042C495 /* FlowStacks */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -141,8 +138,8 @@
 			);
 			name = "FlowStacksApp (iOS)";
 			packageProductDependencies = (
-				5241BF7026AA1E8F002D6892 /* FlowStacks */,
 				525C733427729300009CBD67 /* SwiftUINavigation */,
+				52E2C8F52A7268AB0042C495 /* FlowStacks */,
 			);
 			productName = "FlowStacksApp (iOS)";
 			productReference = 5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */;
@@ -162,7 +159,6 @@
 			);
 			name = "FlowStacksApp (macOS)";
 			packageProductDependencies = (
-				5241BF6E26AA1E8A002D6892 /* FlowStacks */,
 				525C7343277BCDDA009CBD67 /* SwiftUINavigation */,
 			);
 			productName = "FlowStacksApp (macOS)";
@@ -544,14 +540,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		5241BF6E26AA1E8A002D6892 /* FlowStacks */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FlowStacks;
-		};
-		5241BF7026AA1E8F002D6892 /* FlowStacks */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FlowStacks;
-		};
 		525C733427729300009CBD67 /* SwiftUINavigation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
@@ -561,6 +549,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
 			productName = SwiftUINavigation;
+		};
+		52E2C8F52A7268AB0042C495 /* FlowStacks */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlowStacks;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
