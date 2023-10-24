@@ -14,7 +14,11 @@ indirect enum Node<Screen, V: View>: View {
     case .route(_, .route, let allRoutes, let index, _):
       return Binding(
         get: {
-          allRoutes.wrappedValue.count > index + 1
+          if #available(iOS 17.0, *) {
+            allRoutes.wrappedValue.count != index + 1
+          } else {
+            allRoutes.wrappedValue.count > index + 1
+          }
         },
         set: { isShowing in
           guard !isShowing else { return }
