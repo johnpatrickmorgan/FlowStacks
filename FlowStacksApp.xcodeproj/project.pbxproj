@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		523FF3102A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
+		523FF3112A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
 		525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C733427729300009CBD67 /* SwiftUINavigation */; };
 		525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
@@ -47,8 +49,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				523FF3102A79998800411CF7 /* FlowStacks in Frameworks */,
 				525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */,
-				52E2C8F62A7268AB0042C495 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +59,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */,
-				52E2C8F62A7268AB0042C495 /* FlowStacks in Frameworks */,
+				523FF3112A79998800411CF7 /* FlowStacks in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
