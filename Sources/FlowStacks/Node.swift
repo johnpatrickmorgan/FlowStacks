@@ -15,9 +15,9 @@ indirect enum Node<Screen, V: View>: View {
       return Binding(
         get: {
           if #available(iOS 17.0, *) {
-            allRoutes.wrappedValue.count != index + 1
+            return allRoutes.wrappedValue.count != index + 1
           } else {
-            allRoutes.wrappedValue.count > index + 1
+            return allRoutes.wrappedValue.count > index + 1
           }
         },
         set: { isShowing in
