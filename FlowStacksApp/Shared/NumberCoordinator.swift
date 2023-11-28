@@ -48,6 +48,7 @@ struct NumberCoordinator: View {
     }
   }
 
+  @MainActor
   private func follow(_ deeplink: Deeplink) {
     guard case .numberCoordinator(let link) = deeplink else {
       return

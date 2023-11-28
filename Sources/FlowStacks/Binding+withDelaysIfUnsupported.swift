@@ -45,6 +45,7 @@ public extension Binding where Value: Collection, Value.Element: RouteProtocol {
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages. An async version of this function is also available.
   @_disfavoredOverload
+  @MainActor
   func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) where Value == [Route<Screen>] {
     let start = wrappedValue
     let end = apply(transform, to: start)
