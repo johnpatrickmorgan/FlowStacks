@@ -99,10 +99,7 @@ indirect enum Node<Screen, V: View>: View {
     /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
     /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
     if #available(iOS 14.5, *) {
-      // We wrap the screenView in a ZStack to ensure the NavigationLink is attached
-      // to something with a stable identity.
-      // https://github.com/johnpatrickmorgan/FlowStacks/discussions/57#discussioncomment-6276362
-      ZStack { screenView }
+      screenView
         .background(
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
             .hidden()
