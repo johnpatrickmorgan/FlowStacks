@@ -103,6 +103,7 @@ indirect enum Node<Screen, V: View>: View {
         .background(
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
             .hidden()
+            .disabled(!isTopScreen)
         )
         .sheet(
           isPresented: sheetBinding,
@@ -144,7 +145,7 @@ indirect enum Node<Screen, V: View>: View {
 
 /// There are spurious state updates when using the `column` navigation view style, so
 /// the navigation view style is forced to `stack` where possible.
-private var supportedNavigationViewStyle: some NavigationViewStyle {
+var supportedNavigationViewStyle: some NavigationViewStyle {
   #if os(macOS)
     .automatic
   #else

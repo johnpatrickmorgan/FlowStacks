@@ -19,19 +19,7 @@ public struct Router<Screen, ScreenView: View>: View {
   }
 
   public var body: some View {
-    routes
-      .enumerated()
-      .reversed()
-      .reduce(Node<Screen, ScreenView>.end) { nextNode, new in
-        let (index, route) = new
-        return Node<Screen, ScreenView>.route(
-          route,
-          next: nextNode,
-          allRoutes: $routes,
-          index: index,
-          buildView: { buildView($0, index) }
-        )
-      }
+    NewNode(allScreens: $routes, truncateToIndex: { index in routes = Array(routes.prefix(index)) }, index: 0, buildView: buildView)
       .environmentObject(FlowNavigator($routes))
   }
 }
