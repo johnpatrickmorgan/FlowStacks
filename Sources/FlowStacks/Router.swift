@@ -34,4 +34,14 @@ public extension Router {
     self._routes = routes
     self.buildView = { buildView($0.wrappedValue, $1) }
   }
+  
+  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>) -> ScreenView) {
+    self._routes = routes
+    self.buildView = { screen, _ in buildView(screen) }
+  }
+  
+  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
+    self._routes = routes
+    self.buildView = { $screen, _ in buildView(screen) }
+  }
 }
