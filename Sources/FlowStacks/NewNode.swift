@@ -10,7 +10,7 @@ import SwiftUI
 
 struct NewNode<Screen, V: View>: View {
   @Binding var allScreens: [Route<Screen>]
-  let buildView: (Screen, Int) -> V
+  let buildView: (Binding<Screen>, Int) -> V
   let truncateToIndex: (Int) -> Void
   let index: Int
   let screen: Screen?
@@ -18,7 +18,7 @@ struct NewNode<Screen, V: View>: View {
 
   @State var isAppeared = false
 
-  init(allScreens: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, buildView: @escaping (Screen, Int) -> V) {
+  init(allScreens: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, buildView: @escaping (Binding<Screen>, Int) -> V) {
     _allScreens = allScreens
     self.truncateToIndex = truncateToIndex
     self.index = index
@@ -49,7 +49,11 @@ struct NewNode<Screen, V: View>: View {
   @ViewBuilder
   var content: some View {
     if let screen = allScreens[safe: index]?.screen ?? screen {
-      buildView(screen, index)
+      let screenBinding = Binding<Screen>(
+        get: { allScreens[safe: index]?.screen ?? screen },
+        set: { allScreens[index].screen = $0 }
+      )
+      buildView(screenBinding, index)
         .pushing(isActive: nextRouteStyle == .push ? isActiveBinding : .constant(false), destination: next)
         .fullScreenCover(isActive: (nextRouteStyle?.isCover ?? false) ? isActiveBinding : .constant(false), destination: next)
         .sheet(isActive: (nextRouteStyle?.isSheet ?? false) ? isActiveBinding : .constant(false), destination: next)
