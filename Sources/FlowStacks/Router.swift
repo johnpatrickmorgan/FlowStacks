@@ -20,7 +20,7 @@ public struct Router<Screen, ScreenView: View>: View {
   }
   
   public var body: some View {
-    NewNode(allScreens: $routes, truncateToIndex: { index in routes = Array(routes.prefix(index)) }, index: 0, buildView: buildView)
+    Node(allScreens: $routes, truncateToIndex: { index in routes = Array(routes.prefix(index)) }, index: 0, buildView: buildView)
       .environmentObject(FlowNavigator($routes))
   }
 }
