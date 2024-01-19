@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct NavigationLinkModifier<Destination: View>: ViewModifier {
+struct PushingModifier<Destination: View>: ViewModifier {
   @Binding var isActiveBinding: Bool
   var destination: Destination
   
@@ -27,6 +27,6 @@ struct NavigationLinkModifier<Destination: View>: ViewModifier {
 
 extension View {
   func pushing<Destination: View>(isActive: Binding<Bool>, destination: Destination) -> some View {
-    return modifier(NavigationLinkModifier(isActiveBinding: isActive, destination: destination))
+    return modifier(PushingModifier(isActiveBinding: isActive, destination: destination))
   }
 }

@@ -103,7 +103,6 @@ indirect enum Node<Screen, V: View>: View {
         .background(
           NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
             .hidden()
-//            .disabled(!isTopScreen)
         )
         .sheet(
           isPresented: sheetBinding,

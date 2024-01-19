@@ -13,12 +13,30 @@ struct FullScreenCoverModifier<Destination: View>: ViewModifier {
   var destination: Destination
 
   func body(content: Content) -> some View {
+  #if os(macOS)
     content
-      .cover(
-        isPresented: $isActiveBinding,
-        onDismiss: nil,
-        content: { destination }
-      )
+        .sheet(
+          isPresented: $isActiveBinding,
+          onDismiss: nil,
+          content: { destination }
+        )
+  #else
+      if #available(iOS 14.0, tvOS 14.0, macOS 99.9, *) {
+        content
+          .fullScreenCover(
+            isPresented: $isActiveBinding,
+            onDismiss: nil,
+            content: { destination }
+          )
+      } else {
+        content
+          .sheet(
+            isPresented: $isActiveBinding,
+            onDismiss: nil,
+            content: { destination }
+          )
+      }
+  #endif
   }
 }
 

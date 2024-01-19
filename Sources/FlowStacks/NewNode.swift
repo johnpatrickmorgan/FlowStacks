@@ -54,9 +54,15 @@ struct NewNode<Screen, V: View>: View {
         set: { allScreens[index].screen = $0 }
       )
       buildView(screenBinding, index)
-        .pushing(isActive: nextRouteStyle == .push ? isActiveBinding : .constant(false), destination: next)
-        .fullScreenCover(isActive: (nextRouteStyle?.isCover ?? false) ? isActiveBinding : .constant(false), destination: next)
-        .sheet(isActive: (nextRouteStyle?.isSheet ?? false) ? isActiveBinding : .constant(false), destination: next)
+        .pushing(
+          isActive: nextRouteStyle == .push ? isActiveBinding : .constant(false),
+          destination: next
+        )
+        .presenting(
+          sheetBinding: (nextRouteStyle?.isSheet ?? false) ? isActiveBinding : .constant(false),
+          coverBinding: (nextRouteStyle?.isCover ?? false) ? isActiveBinding : .constant(false),
+          destination: next
+        )
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }
     }
