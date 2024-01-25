@@ -12,6 +12,7 @@ struct PresentingModifier<Destination: View>: ViewModifier {
   @Binding var sheetBinding: Bool
   @Binding var coverBinding: Bool
   var destination: Destination
+  var onDismiss: (() -> Void)?
 
   func body(content: Content) -> some View {
     /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
@@ -21,12 +22,12 @@ struct PresentingModifier<Destination: View>: ViewModifier {
       content
         .sheet(
           isPresented: $sheetBinding,
-          onDismiss: nil,
+          onDismiss: onDismiss,
           content: { destination }
         )
         .cover(
           isPresented: $coverBinding,
-          onDismiss: nil,
+          onDismiss: onDismiss,
           content: { destination }
         )
       
@@ -35,14 +36,14 @@ struct PresentingModifier<Destination: View>: ViewModifier {
         content
           .sheet(
             isPresented: $sheetBinding,
-            onDismiss: nil,
+            onDismiss: onDismiss,
             content: { destination }
           )
       } else {
         content
           .cover(
             isPresented: $coverBinding,
-            onDismiss: nil,
+            onDismiss: onDismiss,
             content: { destination }
           )
       }
@@ -51,7 +52,7 @@ struct PresentingModifier<Destination: View>: ViewModifier {
 }
 
 extension View {
-  func presenting<Destination: View>(sheetBinding: Binding<Bool>, coverBinding: Binding<Bool>, destination: Destination) -> some View {
-    return modifier(PresentingModifier(sheetBinding: sheetBinding, coverBinding: coverBinding, destination: destination))
+  func presenting<Destination: View>(sheetBinding: Binding<Bool>, coverBinding: Binding<Bool>, destination: Destination, onDismiss: (() -> Void)?) -> some View {
+    return modifier(PresentingModifier(sheetBinding: sheetBinding, coverBinding: coverBinding, destination: destination, onDismiss: onDismiss))
   }
 }

@@ -38,8 +38,8 @@ struct Node<Screen, V: View>: View {
     Node(allScreens: $allScreens, truncateToIndex: truncateToIndex, index: index + 1, buildView: buildView)
   }
   
-  var nextRouteStyle: RouteStyle? {
-    allScreens[safe: index + 1]?.style
+  var nextRoute: Route<Screen>? {
+    allScreens[safe: index + 1]
   }
 
   @ViewBuilder
@@ -51,13 +51,14 @@ struct Node<Screen, V: View>: View {
       )
       buildView(screenBinding, index)
         .pushing(
-          isActive: nextRouteStyle == .push ? isActiveBinding : .constant(false),
+          isActive: nextRoute?.style == .push ? isActiveBinding : .constant(false),
           destination: next
         )
         .presenting(
-          sheetBinding: (nextRouteStyle?.isSheet ?? false) ? isActiveBinding : .constant(false),
-          coverBinding: (nextRouteStyle?.isCover ?? false) ? isActiveBinding : .constant(false),
-          destination: next
+          sheetBinding: (nextRoute?.style.isSheet ?? false) ? isActiveBinding : .constant(false),
+          coverBinding: (nextRoute?.style.isCover ?? false) ? isActiveBinding : .constant(false),
+          destination: next,
+          onDismiss: nextRoute?.onDismiss
         )
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }

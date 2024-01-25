@@ -59,6 +59,16 @@ public enum Route<Screen> {
     }
   }
   
+  /// The onDIsmiss closure to be called when a sheet or full-screen cover is dismissed.
+  public var onDismiss: (() -> Void)? {
+    switch self {
+    case .push:
+      return nil
+    case .sheet(_, _, let onDismiss), .cover(_, _, let onDismiss):
+      return onDismiss
+    }
+  }
+  
   /// Whether the route is presented (via a sheet or cover presentation).
   public var isPresented: Bool {
     switch self {
