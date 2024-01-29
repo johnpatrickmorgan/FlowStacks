@@ -11,15 +11,15 @@ class VMCoordinatorViewModel: ObservableObject {
   @Published var routes: Routes<Screen> = []
 
   init() {
-    routes.presentSheet(.home(.init(pickANumberSelected: showNumberList)))
+    routes.presentSheet(.home(.init(pickANumberSelected: showNumberList)), embedInNavigationView: true)
   }
 
   func showNumberList() {
-    routes.presentSheet(.numberList(.init(numberSelected: showNumber, cancel: dismiss)))
+    routes.push(.numberList(.init(numberSelected: showNumber, cancel: dismiss)))
   }
 
   func showNumber(_ number: Int) {
-    routes.presentSheet(.numberDetail(.init(number: number, cancel: goBackToRoot)))
+    routes.presentSheet(.numberDetail(.init(number: number, cancel: goBackToRoot)), embedInNavigationView: true)
   }
 
   func dismiss() {
@@ -111,12 +111,17 @@ struct NumberDetailView: View {
 
   @Environment(\.presentationMode) var presentationMode
 
+  @EnvironmentObject var navigator: FlowNavigator<VMCoordinatorViewModel.Screen>
+
   var body: some View {
     VStack {
       Text("\(viewModel.number)")
       Button("Go back to root", action: viewModel.cancel)
       Button("PresentationMode Dismiss") {
         presentationMode.wrappedValue.dismiss()
+      }
+      Button("Navigator Dismiss") {
+        navigator.goBack()
       }
     }
     .navigationTitle("Number \(viewModel.number)")

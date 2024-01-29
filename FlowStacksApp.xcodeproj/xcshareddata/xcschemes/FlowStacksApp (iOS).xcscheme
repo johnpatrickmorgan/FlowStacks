@@ -38,6 +38,16 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "5285BBAB2B6408F500197CE7"
+               BuildableName = "FlowStacksAppUITests.xctest"
+               BlueprintName = "FlowStacksAppUITests"
+               ReferencedContainer = "container:FlowStacksApp.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

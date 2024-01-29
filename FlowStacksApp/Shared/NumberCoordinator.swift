@@ -76,18 +76,23 @@ struct NumberView: View {
       Button("Present Double (cover)") {
         navigator.presentCover(.number(number * 2), embedInNavigationView: true)
       }
+      .accessibilityIdentifier("Present Double (cover) from \(number)")
       Button("Present Double (sheet)") {
         navigator.presentSheet(.number(number * 2), embedInNavigationView: true)
       }
+      .accessibilityIdentifier("Present Double (sheet) from \(number)")
       Button("Push next") {
         navigator.push(.number(number + 1))
       }
+      .accessibilityIdentifier("Push next from \(number)")
       if let goRandom = goRandom {
         Button("Go random", action: goRandom)
       }
       if navigator.routes.count > 1 {
         Button("Go back") { navigator.goBack() }
+          .accessibilityIdentifier("Go back from \(number)")
         Button("Go back to root") { navigator.goBackToRoot() }
+          .accessibilityIdentifier("Go back to root from \(number)")
       }
     }
     .padding()

@@ -1,144 +1,88 @@
 import Foundation
 import SwiftUI
 
-/// A view that represents a linked list of routes, each pushing or presenting the next in
-/// the list.
-indirect enum Node<Screen, V: View>: View {
-  case route(Route<Screen>, next: Node<Screen, V>, allRoutes: Binding<[Route<Screen>]>, index: Int, buildView: (Screen) -> V)
-  case end
+struct Node<Screen, V: View>: View {
+  @Binding var allScreens: [Route<Screen>]
+  let buildView: (Binding<Screen>, Int) -> V
+  let truncateToIndex: (Int) -> Void
+  let index: Int
+  let screen: Screen?
+  
+  // NOTE: even though this object is unused, its inclusion avoids a glitch when swiping to dismiss
+  // a sheet that's been presented from a pushed screen with a view model.
+  @EnvironmentObject var navigator: FlowNavigator<Screen>
+
+  @State var isAppeared = false
+
+  init(allScreens: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, buildView: @escaping (Binding<Screen>, Int) -> V) {
+    _allScreens = allScreens
+    self.truncateToIndex = truncateToIndex
+    self.index = index
+    self.buildView = buildView
+    screen = allScreens.wrappedValue[safe: index]?.screen
+  }
 
   private var isActiveBinding: Binding<Bool> {
-    switch self {
-    case .end, .route(_, next: .end, _, _, _):
-      return .constant(false)
-    case .route(_, .route, let allRoutes, let index, _):
-      return Binding(
-        get: {
-          if #available(iOS 17.0, *) {
-            return allRoutes.wrappedValue.count != index + 1
-          } else {
-            return allRoutes.wrappedValue.count > index + 1
-          }
-        },
-        set: { isShowing in
-          guard !isShowing else { return }
-          guard allRoutes.wrappedValue.count > index + 1 else { return }
-          allRoutes.wrappedValue = Array(allRoutes.wrappedValue.prefix(index + 1))
-        }
+    return Binding(
+      get: { allScreens.count > index + 1 },
+      set: { isShowing in
+        guard !isShowing else { return }
+        guard allScreens.count > index + 1 else { return }
+        guard isAppeared else { return }
+        truncateToIndex(index + 1)
+      }
+    )
+  }
+
+  var next: some View {
+    Node(allScreens: $allScreens, truncateToIndex: truncateToIndex, index: index + 1, buildView: buildView)
+  }
+  
+  var nextRoute: Route<Screen>? {
+    allScreens[safe: index + 1]
+  }
+
+  @ViewBuilder
+  var content: some View {
+    if let screen = allScreens[safe: index]?.screen ?? screen {
+      let screenBinding = Binding<Screen>(
+        get: { allScreens[safe: index]?.screen ?? screen },
+        set: { allScreens[index].screen = $0 }
       )
-    }
-  }
-
-  private var pushBinding: Binding<Bool> {
-    switch next {
-    case .route(.push, _, _, _, _):
-      return isActiveBinding
-    default:
-      return .constant(false)
-    }
-  }
-
-  private var sheetBinding: Binding<Bool> {
-    switch next {
-    case .route(.sheet, _, _, _, _):
-      return isActiveBinding
-    default:
-      return .constant(false)
-    }
-  }
-
-  private var onDismiss: (() -> Void)? {
-    switch next {
-    case .route(.sheet(_, _, let onDismiss), _, _, _, _), .route(.cover(_, _, let onDismiss), _, _, _, _):
-      return onDismiss
-    default:
-      return nil
-    }
-  }
-
-  private var coverBinding: Binding<Bool> {
-    switch next {
-    case .route(.cover, _, _, _, _):
-      return isActiveBinding
-    default:
-      return .constant(false)
-    }
-  }
-
-  private var route: Route<Screen>? {
-    switch self {
-    case .end:
-      return nil
-    case .route(let route, _, _, _, _):
-      return route
-    }
-  }
-
-  private var next: Node? {
-    switch self {
-    case .end:
-      return nil
-    case .route(_, let next, _, _, _):
-      return next
-    }
-  }
-
-  @ViewBuilder
-  private var screenView: some View {
-    switch self {
-    case .end:
-      EmptyView()
-    case .route(let route, _, _, _, let buildView):
-      buildView(route.screen)
-    }
-  }
-
-  @ViewBuilder
-  private var unwrappedBody: some View {
-    /// NOTE: On iOS 14.4 and below, a bug prevented multiple sheet/fullScreenCover modifiers being chained
-    /// on the same view, so we conditionally add the sheet/cover modifiers as a workaround. See
-    /// https://developer.apple.com/documentation/ios-ipados-release-notes/ios-ipados-14_5-release-notes
-    if #available(iOS 14.5, *) {
-      screenView
-        .background(
-          NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
-            .hidden()
+      buildView(screenBinding, index)
+        .pushing(
+          isActive: nextRoute?.style == .push ? isActiveBinding : .constant(false),
+          destination: next
         )
-        .sheet(
-          isPresented: sheetBinding,
-          onDismiss: onDismiss,
-          content: { next }
+        .presenting(
+          sheetBinding: (nextRoute?.style.isSheet ?? false) ? isActiveBinding : .constant(false),
+          coverBinding: (nextRoute?.style.isCover ?? false) ? isActiveBinding : .constant(false),
+          destination: next,
+          onDismiss: nextRoute?.onDismiss
         )
-        .cover(
-          isPresented: coverBinding,
-          onDismiss: onDismiss,
-          content: { next }
-        )
-    } else {
-      let asSheet = next?.route?.style.isSheet ?? false
-      screenView
-        .background(
-          NavigationLink(destination: next, isActive: pushBinding, label: EmptyView.init)
-            .hidden()
-        )
-        .present(
-          asSheet: asSheet,
-          isPresented: asSheet ? sheetBinding : coverBinding,
-          onDismiss: onDismiss,
-          content: { next }
-        )
+        .onAppear { isAppeared = true }
+        .onDisappear { isAppeared = false }
     }
   }
-
+  
   var body: some View {
+    let route = allScreens[safe: index]
     if route?.embedInNavigationView ?? false {
       NavigationView {
-        unwrappedBody
+        content
       }
       .navigationViewStyle(supportedNavigationViewStyle)
     } else {
-      unwrappedBody
+      content
     }
+  }
+}
+
+
+extension Collection {
+  /// Returns the element at the specified index if it is within bounds, otherwise nil.
+  subscript(safe index: Index) -> Element? {
+    return indices.contains(index) ? self[index] : nil
   }
 }
 
