@@ -19,7 +19,7 @@ class VMCoordinatorViewModel: ObservableObject {
   }
 
   func showNumber(_ number: Int) {
-    routes.presentSheet(.numberDetail(.init(number: number, cancel: goBackToRoot)))
+    routes.presentSheet(.numberDetail(.init(number: number, cancel: goBackToRoot)), embedInNavigationView: true)
   }
 
   func dismiss() {
@@ -112,7 +112,7 @@ struct NumberDetailView: View {
   @Environment(\.presentationMode) var presentationMode
 
   @EnvironmentObject var navigator: FlowNavigator<VMCoordinatorViewModel.Screen>
-  
+
   var body: some View {
     VStack {
       Text("\(viewModel.number)")
