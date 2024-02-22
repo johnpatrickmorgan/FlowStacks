@@ -7,18 +7,20 @@ struct Node<Screen, V: View>: View {
   let truncateToIndex: (Int) -> Void
   let index: Int
   let screen: Screen?
-  
+  let accentColor: Color?
+
   // NOTE: even though this object is unused, its inclusion avoids a glitch when swiping to dismiss
   // a sheet that's been presented from a pushed screen with a view model.
   @EnvironmentObject var navigator: FlowNavigator<Screen>
 
   @State var isAppeared = false
 
-  init(allScreens: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, buildView: @escaping (Binding<Screen>, Int) -> V) {
+  init(allScreens: Binding<[Route<Screen>]>, accentColor: Color?, truncateToIndex: @escaping (Int) -> Void, index: Int, buildView: @escaping (Binding<Screen>, Int) -> V) {
     _allScreens = allScreens
     self.truncateToIndex = truncateToIndex
     self.index = index
     self.buildView = buildView
+      self.accentColor = accentColor
     screen = allScreens.wrappedValue[safe: index]?.screen
   }
 
@@ -35,9 +37,9 @@ struct Node<Screen, V: View>: View {
   }
 
   var next: some View {
-    Node(allScreens: $allScreens, truncateToIndex: truncateToIndex, index: index + 1, buildView: buildView)
+      Node(allScreens: $allScreens, accentColor: accentColor, truncateToIndex: truncateToIndex, index: index + 1, buildView: buildView)
   }
-  
+
   var nextRoute: Route<Screen>? {
     allScreens[safe: index + 1]
   }
@@ -64,13 +66,14 @@ struct Node<Screen, V: View>: View {
         .onDisappear { isAppeared = false }
     }
   }
-  
+
   var body: some View {
     let route = allScreens[safe: index]
     if route?.embedInNavigationView ?? false {
       NavigationView {
         content
       }
+      .accentColor(accentColor)
       .navigationViewStyle(supportedNavigationViewStyle)
     } else {
       content
