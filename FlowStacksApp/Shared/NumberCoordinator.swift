@@ -28,7 +28,7 @@ struct NumberCoordinator: View {
   }
 
   var body: some View {
-    Router($routes) { $screen, _ in
+    Router($routes, navigationViewModifier: AccentColorModifier(color: .green)) { $screen, _ in
       if let number = Binding(unwrapping: $screen, case: /Screen.number) {
         NumberView(
           number: number,
@@ -120,3 +120,11 @@ struct NumberView: View {
     }
   }
 #endif
+
+struct AccentColorModifier: ViewModifier {
+  let color: Color
+
+  func body(content: Content) -> some View {
+    content.accentColor(color)
+  }
+}
