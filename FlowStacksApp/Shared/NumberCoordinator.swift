@@ -125,6 +125,10 @@ struct AccentColorModifier: ViewModifier {
   let color: Color
 
   func body(content: Content) -> some View {
-    content.accentColor(color)
+    if #available(iOS 16.0, *) {
+      content.tint(color)
+    } else {
+      content.accentColor(color)
+    }
   }
 }
