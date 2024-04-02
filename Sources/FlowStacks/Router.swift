@@ -43,7 +43,7 @@ public extension Router {
   /// Initializer for creating a Router using a binding to an array of screens.
   /// - Parameters:
   ///   - stack: A binding to an array of screens.
-  ///   - navigationViewModifier: Applied to each `NavigationView` created.   
+  ///   - navigationViewModifier: Applied to each `NavigationView` created.
   ///   - buildView: A closure that builds a `ScreenView` from a `Screen` binding.
   init(_ routes: Binding<[Route<Screen>]>, navigationViewModifier: Modifier, @ViewBuilder buildView: @escaping (Binding<Screen>) -> ScreenView) {
     _routes = routes
@@ -51,6 +51,11 @@ public extension Router {
     self.navigationViewModifier = navigationViewModifier
   }
 
+  /// Initializer for creating a Router using a binding to an array of screens.
+  /// - Parameters:
+  ///   - stack: A binding to an array of screens.
+  ///   - navigationViewModifier: Applied to each `NavigationView` created.
+  ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
   init(_ routes: Binding<[Route<Screen>]>, navigationViewModifier: Modifier, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
     _routes = routes
     self.buildView = { $screen, _ in buildView(screen) }
@@ -69,18 +74,30 @@ public extension Router where Modifier == UnchangedViewModifier {
     navigationViewModifier = UnchangedViewModifier()
   }
 
+  /// Initializer for creating a Router using a binding to an array of screens.
+  /// - Parameters:
+  ///   - stack: A binding to an array of screens.
+  ///   - buildView: A closure that builds a `ScreenView` from a binding to a`Screen`.
   init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>) -> ScreenView) {
     _routes = routes
     self.buildView = { screen, _ in buildView(screen) }
     navigationViewModifier = UnchangedViewModifier()
   }
 
+  /// Initializer for creating a Router using a binding to an array of screens.
+  /// - Parameters:
+  ///   - stack: A binding to an array of screens.
+  ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
   init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
     _routes = routes
     self.buildView = { $screen, _ in buildView(screen) }
     navigationViewModifier = UnchangedViewModifier()
   }
 
+  /// Initializer for creating a Router using a binding to an array of screens.
+  /// - Parameters:
+  ///   - stack: A binding to an array of screens.
+  ///   - buildView: A closure that builds a `ScreenView` from a binding to a`Screen` and its index.
   init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>, Int) -> ScreenView) {
     _routes = routes
     self.buildView = buildView
