@@ -9,7 +9,7 @@ public struct Router<Screen, ScreenView: View, Modifier: ViewModifier>: View {
   /// A closure that builds a `ScreenView` from a `Screen`and its index.
   @ViewBuilder var buildView: (Binding<Screen>, Int) -> ScreenView
 
-  /// A view modifier that is applied to any `NavigationView`s.
+  /// A view modifier that is applied to any `NavigationView`s created by the router.
   let navigationViewModifier: Modifier
 
   /// Initializer for creating a Router using a binding to an array of screens.
