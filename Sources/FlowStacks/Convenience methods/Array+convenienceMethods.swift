@@ -1,22 +1,16 @@
 import Foundation
 
-public extension RoutableCollection where Element: RouteProtocol {
+public extension Array where Element: RouteProtocol {
   /// Whether the Array of Routes is able to push new screens. If it is not possible to determine,
   /// `nil` will be returned, e.g. if there is no `NavigationView` in this routes stack but it's possible
-  /// it has been pushed onto a parent coordinator with a `NavigationView`.
+  /// a `NavigationView` has been added outside the FlowStack..
   var canPush: Bool? {
-    for (index, route) in zip(indices, self).reversed() {
+    for route in self.reversed() {
       switch route.style {
       case .push:
         continue
-      case .cover(let embedInNavigationView), .sheet(let embedInNavigationView):
-        if index > 0 {
-          return embedInNavigationView
-        } else {
-          // Once we reach the root screen, it's not possible to determine if the routes are being pushed onto a
-          // parent coordinator with a NavigationView, so we return nil rather than false.
-          return embedInNavigationView ? true : nil
-        }
+      case .cover(let withNavigation), .sheet(let withNavigation):
+        return withNavigation
       }
     }
     return nil
@@ -31,34 +25,34 @@ public extension RoutableCollection where Element: RouteProtocol {
       """
       Attempting to push a screen, but the most recently presented screen is not
       embedded in a `NavigationView`. Please ensure the root or most recently presented
-      route has `embedInNavigationView` set to `true`.
+      route has `withNavigation` set to `true`.
       """
     )
-    _append(element: .push(screen))
+    append(.push(screen))
   }
 
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
   /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
-  mutating func presentSheet(_ screen: Element.Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
-    _append(element: .sheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss))
+  mutating func presentSheet(_ screen: Element.Screen, withNavigation: Bool = false) {
+    append(.sheet(screen, withNavigation: withNavigation))
   }
 
   #if os(macOS)
   #else
-  /// Presents a new screen via a full-screen cover presentation.
-  /// - Parameter screen: The screen to push.
-  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed. 
-  @available(OSX, unavailable, message: "Not available on OS X.")
-  mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
-    _append(element: .cover(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss))
-  }
+    /// Presents a new screen via a full-screen cover presentation.
+    /// - Parameter screen: The screen to push.
+    /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
+    @available(OSX, unavailable, message: "Not available on OS X.")
+    mutating func presentCover(_ screen: Element.Screen, withNavigation: Bool = false) {
+      append(.cover(screen, withNavigation: withNavigation))
+    }
   #endif
 }
 
 // MARK: - Go back
 
-public extension RoutableCollection where Element: RouteProtocol {
+public extension Array where Element: RouteProtocol {
   /// Goes back a given number of screens off the stack
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   mutating func goBack(_ count: Int = 1) {
@@ -74,23 +68,22 @@ public extension RoutableCollection where Element: RouteProtocol {
     removeLast(count)
   }
 
-  /// Goes back to a given index in the array of screens. The resulting screen count
-  /// will be index + 1.
-  /// - Parameter index: The index that should become top of the stack.
+  /// Goes back to a given index in the array of screens. The resulting array's count
+  /// will be equal to index.
+  /// - Parameter index: The index that should become top of the stack, e.g. 0 for the root screen.
   mutating func goBackTo(index: Int) {
-    goBack(endIndex - 1 - index)
+    goBack(count - index)
   }
 
-  /// Goes back to the root screen (index 0). The resulting screen count
-  /// will be 1.
+  /// Goes back to the root screen (index 0). The resulting array's count will be 0.
   mutating func goBackToRoot() {
-    guard self.count > 1 else { return }
+    guard !isEmpty else { return }
     goBackTo(index: 0)
   }
 
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged.
+  /// the routes array will be unchanged.
   /// - Parameter condition: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a screen was found.
   @discardableResult
@@ -104,7 +97,7 @@ public extension RoutableCollection where Element: RouteProtocol {
 
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged.
+  /// the routes array will be unchanged.
   /// - Parameter condition: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a screen was found.
   @discardableResult
@@ -113,10 +106,10 @@ public extension RoutableCollection where Element: RouteProtocol {
   }
 }
 
-public extension RoutableCollection where Element: RouteProtocol, Element.Screen: Equatable {
+public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// equal to the given screen. If no screens are found,
-  /// the screens array will be unchanged.
+  /// the routes array will be unchanged.
   /// - Parameter screen: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
   @discardableResult
@@ -125,9 +118,9 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
   }
 }
 
-public extension RoutableCollection where Element: RouteProtocol, Element.Screen: Identifiable {
+public extension Array where Element: RouteProtocol, Element.Screen: Identifiable {
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
-  /// with the given ID. If no screens are found, the screens array will be unchanged.
+  /// with the given ID. If no screens are found, the routes array will be unchanged.
   /// - Parameter id: The id of the screen to goBack to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
   @discardableResult
@@ -136,7 +129,7 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
   }
 
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged.
   /// - Parameter screen: The screen to goBack to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
@@ -147,9 +140,9 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
 }
 
 /// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
-public extension RoutableCollection where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
+public extension Array where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged.
   /// - Parameter screen: The screen to goBack to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
@@ -161,7 +154,7 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
 
 // MARK: - Pop
 
-public extension RoutableCollection where Element: RouteProtocol {
+public extension Array where Element: RouteProtocol {
   /// Pops a given number of screens off the stack. Only screens that have been pushed will
   /// be popped.
   /// - Parameter count: The number of screens to go back. Defaults to 1.
@@ -172,11 +165,11 @@ public extension RoutableCollection where Element: RouteProtocol {
   }
 
   /// Pops to a given index in the array of screens. The resulting screen count
-  /// will be index + 1. Only screens that have been pushed will
+  /// will be equal to index. Only screens that have been pushed will
   /// be popped.
-  /// - Parameter index: The index that should become top of the stack.
+  /// - Parameter index: The index that should become top of the stack, e.g. 0 for the root.
   mutating func popTo(index: Int) {
-    let popCount = count - (index + 1)
+    let popCount = count - index
     pop(popCount)
   }
 
@@ -186,19 +179,19 @@ public extension RoutableCollection where Element: RouteProtocol {
   mutating func popToRoot() {
     popTo(index: 0)
   }
-  
+
   /// Pops all screens in the current navigation stack only, without dismissing any screens.
   mutating func popToCurrentNavigationRoot() {
     var index = endIndex - 1
-    while indices.contains(index), !self[index].isPresented, index > 0 {
+    while indices.contains(index), self[index].style.isPush {
       index -= 1
     }
-    goBackTo(index: index)
+    goBackTo(index: index + 1)
   }
 
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged. Only screens that have been pushed will
+  /// the routes array will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter condition: The predicate indicating which screen to pop to.
   /// - Returns: A `Bool` indicating whether a screen was found.
@@ -213,7 +206,7 @@ public extension RoutableCollection where Element: RouteProtocol {
 
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged. Only screens that have been pushed will
+  /// the routes array will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter condition: The predicate indicating which screen to pop to.
   /// - Returns: A `Bool` indicating whether a screen was found.
@@ -223,10 +216,10 @@ public extension RoutableCollection where Element: RouteProtocol {
   }
 }
 
-public extension RoutableCollection where Element: RouteProtocol, Element.Screen: Equatable {
+public extension Array where Element: RouteProtocol, Element.Screen: Equatable {
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// equal to the given screen. If no screens are found,
-  /// the screens array will be unchanged. Only screens that have been pushed will
+  /// the routes array will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter screen: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
@@ -236,9 +229,9 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
   }
 }
 
-public extension RoutableCollection where Element: RouteProtocol, Element.Screen: Identifiable {
+public extension Array where Element: RouteProtocol, Element.Screen: Identifiable {
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
-  /// with the given ID. If no screens are found, the screens array will be unchanged.
+  /// with the given ID. If no screens are found, the routes array will be unchanged.
   /// Only screens that have been pushed will
   /// be popped.
   /// - Parameter id: The id of the screen to goBack to.
@@ -249,7 +242,7 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
   }
 
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter screen: The screen to goBack to.
@@ -261,9 +254,9 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
 }
 
 /// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
-public extension RoutableCollection where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
+public extension Array where Element: RouteProtocol, Element.Screen: Identifiable & Equatable {
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter screen: The screen to pop to.
@@ -276,7 +269,7 @@ public extension RoutableCollection where Element: RouteProtocol, Element.Screen
 
 // MARK: - Dismiss
 
-public extension RoutableCollection where Element: RouteProtocol {
+public extension Array where Element: RouteProtocol {
   /// Dismisses a given number of presentation layers off the stack. Only screens that have been presented will
   /// be included in the count.
   /// - Parameter count: The number of presentation layers to go back. Defaults to 1.
@@ -286,11 +279,11 @@ public extension RoutableCollection where Element: RouteProtocol {
     var dismissed = 0
     while dismissed < count, indices.contains(index) {
       assert(
-        index > 0,
+        index >= 0,
         "Can't dismiss\(count == 1 ? "" : " \(count) screens") - the number of presented screens is \(dismissed)"
       )
-      guard index > 0 else { return }
-      
+      guard index >= 0 else { return }
+
       if self[index].isPresented {
         dismissed += 1
       }
@@ -298,11 +291,11 @@ public extension RoutableCollection where Element: RouteProtocol {
     }
     goBackTo(index: index)
   }
-  
+
   /// Dismisses all presented sheets and modals, without popping any pushed screens in the bottommost
   /// presentation layer.
   mutating func dismissAll() {
-    let count = self.dropFirst().filter { $0.isPresented }.count
+    let count = self.filter { $0.isPresented }.count
     guard count > 0 else { return }
     dismiss(count: count)
   }

@@ -1,34 +1,39 @@
-import Foundation
 import SwiftUI
 
-extension View {
-  /// A shim for presenting a full-screen cover that falls back on a sheet presentation on platforms
-  /// where fullScreenCover is unavailable.
-  @ViewBuilder
-  func cover<Content: View>(isPresented: Binding<Bool>, onDismiss: (() -> Void)? = nil, @ViewBuilder content: @escaping () -> Content) -> some View {
-    #if os(macOS)
-      self
+struct CoverModifier<Destination: View>: ViewModifier {
+  var isActiveBinding: Binding<Bool>
+  var destination: Destination
+
+  func body(content: Content) -> some View {
+    #if os(macOS) // Covers are unavailable on macOS
+      content
         .sheet(
-          isPresented: isPresented,
-          onDismiss: onDismiss,
-          content: content
+          isPresented: isActiveBinding,
+          onDismiss: nil,
+          content: { destination }
         )
     #else
       if #available(iOS 14.0, tvOS 14.0, macOS 99.9, *) {
-        self
+        content
           .fullScreenCover(
-            isPresented: isPresented,
-            onDismiss: onDismiss,
-            content: content
+            isPresented: isActiveBinding,
+            onDismiss: nil,
+            content: { destination }
           )
-      } else {
-        self
+      } else { // Covers are unavailable on prior versions
+        content
           .sheet(
-            isPresented: isPresented,
-            onDismiss: onDismiss,
-            content: content
+            isPresented: isActiveBinding,
+            onDismiss: nil,
+            content: { destination }
           )
       }
     #endif
+  }
+}
+
+extension View {
+  func cover<Destination: View>(isActive: Binding<Bool>, destination: Destination) -> some View {
+    return modifier(CoverModifier(isActiveBinding: isActive, destination: destination))
   }
 }

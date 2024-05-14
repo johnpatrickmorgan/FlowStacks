@@ -2,45 +2,29 @@ import FlowStacks
 import SwiftUI
 import SwiftUINavigation
 
-enum Screen {
-  case number(Int)
-  case other
-}
-
-extension Screen: ExpressibleByIntegerLiteral, Hashable {
-  init(integerLiteral value: Int) {
-    self = .number(value)
-  }
-}
-
 struct NumberCoordinator: View {
-  @State var routes: Routes<Screen> = [.root(0, embedInNavigationView: true)]
+  @State var routes: Routes<Int> = []
 
-  var randomRoutes: [Route<Screen>] {
-    let options: [[Route<Screen>]] = [
-      [.root(0, embedInNavigationView: true)],
-      [.root(0, embedInNavigationView: true), .push(1), .push(2), .push(3), .sheet(4, embedInNavigationView: true), .push(5)],
-      [.root(0, embedInNavigationView: true), .push(1), .push(2), .push(3)],
-      [.root(0, embedInNavigationView: true), .push(1), .sheet(2, embedInNavigationView: true), .push(3), .sheet(4, embedInNavigationView: true), .push(5)],
-      [.root(0, embedInNavigationView: true), .sheet(1, embedInNavigationView: true), .cover(2, embedInNavigationView: true), .push(3), .sheet(4, embedInNavigationView: true), .push(5)],
+  func goRandom() {
+    let options: [[Route<Int>]] = [
+      [],
+      [.push(1), .push(2), .push(3), .sheet(4, withNavigation: true), .push(5)],
+      [.push(1), .push(2), .push(3)],
+      [.push(1), .sheet(2, withNavigation: true), .push(3), .sheet(4, withNavigation: true), .push(5)],
+      [.sheet(1, withNavigation: true), .cover(2, withNavigation: true), .push(3), .sheet(4, withNavigation: true), .push(5)],
     ]
-    return options.randomElement()!
+    routes = options.randomElement()!
   }
 
   var body: some View {
-    Router($routes, navigationViewModifier: AccentColorModifier(color: .green)) { $screen, _ in
-      if let number = Binding(unwrapping: $screen, case: /Screen.number) {
-        NumberView(
-          number: number,
-          goRandom: {
-            $routes.withDelaysIfUnsupported {
-              $0 = randomRoutes
-            }
-          }
-        )
-      } else {
-        EmptyView()
-      }
+    FlowStack($routes, withNavigation: true) {
+      NumberView(number: 0, goRandom: goRandom)
+        .flowDestination(for: Int.self) { number in
+          NumberView(
+            number: number,
+            goRandom: goRandom
+          )
+        }
     }
     .onOpenURL { url in
       guard let deeplink = Deeplink(url: url) else { return }
@@ -50,39 +34,43 @@ struct NumberCoordinator: View {
 
   @MainActor
   private func follow(_ deeplink: Deeplink) {
-    guard case .numberCoordinator(let link) = deeplink else {
+    guard case let .numberCoordinator(link) = deeplink else {
       return
     }
     switch link {
-    case .numbers(let numbers):
+    case let .numbers(numbers):
       $routes.withDelaysIfUnsupported {
         for number in numbers {
-          $0.push(.number(number))
+          $0.push(number)
         }
       }
     }
   }
 }
 
-struct NumberView: View {
-  @Binding var number: Int
-  @EnvironmentObject var navigator: FlowNavigator<Screen>
+private struct NumberView: View {
+  @EnvironmentObject var navigator: FlowNavigator<Int>
 
+  var number: Int
   let goRandom: (() -> Void)?
+
+  init(number: Int, goRandom: (() -> Void)? = nil) {
+    self.number = number
+    self.goRandom = goRandom
+  }
 
   var body: some View {
     VStack(spacing: 8) {
-      Stepper("\(number)", value: $number)
       Button("Present Double (cover)") {
-        navigator.presentCover(.number(number * 2), embedInNavigationView: true)
+        navigator.presentCover(number * 2, withNavigation: true)
       }
       .accessibilityIdentifier("Present Double (cover) from \(number)")
       Button("Present Double (sheet)") {
-        navigator.presentSheet(.number(number * 2), embedInNavigationView: true)
+        navigator.presentSheet(number * 2, withNavigation: true)
       }
       .accessibilityIdentifier("Present Double (sheet) from \(number)")
       Button("Push next") {
-        navigator.push(.number(number + 1))
+        navigator.push(number + 1)
       }
       .accessibilityIdentifier("Push next from \(number)")
       if let goRandom = goRandom {
@@ -103,20 +91,20 @@ struct NumberView: View {
 // Included so that the same example code can be used for macOS too.
 #if os(macOS)
   extension Route {
-    static func cover(_ screen: Screen, embedInNavigationView: Bool = false) -> Route {
-      sheet(screen, embedInNavigationView: embedInNavigationView)
+    static func cover(_ screen: Screen, withNavigation: Bool = false) -> Route {
+      sheet(screen, withNavigation: withNavigation)
     }
   }
 
   extension Array where Element: RouteProtocol {
-    mutating func presentCover(_ screen: Element.Screen, embedInNavigationView: Bool = false) {
-      presentSheet(screen, embedInNavigationView: embedInNavigationView)
+    mutating func presentCover(_ screen: Element.Screen, withNavigation: Bool = false) {
+      presentSheet(screen, withNavigation: withNavigation)
     }
   }
 
   extension FlowNavigator {
-    func presentCover(_ screen: Screen, embedInNavigationView: Bool = false) {
-      presentSheet(screen, embedInNavigationView: embedInNavigationView)
+    func presentCover(_ screen: Screen, withNavigation: Bool = false) {
+      presentSheet(screen, withNavigation: withNavigation)
     }
   }
 #endif
