@@ -5,16 +5,16 @@ struct NoBindingView: View {
   var body: some View {
     FlowStack(withNavigation: true) {
       HomeView()
-        .flowDestination(for: NumberList.self, destination: { numberList in
+        .flowDestination(for: NumberList2.self, destination: { numberList in
           NumberListView(numberList: numberList)
         })
-        .flowDestination(for: Int.self, destination: { number in
+        .flowDestination(for: Double.self, destination: { number in
           NumberView(number: number)
         })
-        .flowDestination(for: EmojiVisualisation.self, destination: { visualisation in
+        .flowDestination(for: EmojiVisualisation2.self, destination: { visualisation in
           EmojiView(visualisation: visualisation)
         })
-        .flowDestination(for: ClassDestination.self, destination: { destination in
+        .flowDestination(for: ClassDestination2.self, destination: { destination in
           ClassDestinationView(destination: destination)
         })
     }
@@ -28,7 +28,7 @@ private struct HomeView: View {
   var body: some View {
     VStack(spacing: 8) {
       // Push via link
-      FlowLink(value: NumberList(range: 0 ..< 10), style: .sheet(withNavigation: true), label: { Text("Pick a number") })
+      FlowLink(value: NumberList2(range: 0 ..< 10), style: .sheet(withNavigation: true), label: { Text("Pick a number") })
       // Push via navigator
       Button("99 Red balloons", action: show99RedBalloons)
       // Push child class via navigator
@@ -43,21 +43,21 @@ private struct HomeView: View {
 
   func show99RedBalloons() {
     navigator.push(99)
-    navigator.push(EmojiVisualisation(emoji: "🎈", count: 99))
+    navigator.push(EmojiVisualisation2(emoji: "🎈", count: 99))
   }
 
   func showClassDestination() {
-    navigator.push(SampleClassDestination())
+    navigator.push(SampleClassDestination2())
   }
 }
 
 private struct NumberListView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  let numberList: NumberList
+  let numberList: NumberList2
   var body: some View {
     List {
       ForEach(numberList.range, id: \.self) { number in
-        FlowLink("\(number)", value: number, style: .push)
+        FlowLink("\(number)", value: Double(number), style: .push)
       }
       Button("Go back", action: { navigator.goBack() })
     }.navigationTitle("List")
@@ -66,7 +66,7 @@ private struct NumberListView: View {
 
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  @State var number: Int
+  @State var number: Double
 
   var body: some View {
     VStack(spacing: 8) {
@@ -82,7 +82,7 @@ private struct NumberView: View {
         label: { Text("Show next number") }
       )
       FlowLink(
-        value: EmojiVisualisation(emoji: "🐑", count: number),
+        value: EmojiVisualisation2(emoji: "🐑", count: Int(number)),
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
@@ -95,7 +95,7 @@ private struct NumberView: View {
 
 private struct EmojiView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  let visualisation: EmojiVisualisation
+  let visualisation: EmojiVisualisation2
 
   var body: some View {
     VStack {
@@ -108,7 +108,7 @@ private struct EmojiView: View {
 
 private struct ClassDestinationView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  let destination: ClassDestination
+  let destination: ClassDestination2
 
   var body: some View {
     VStack {
@@ -117,4 +117,39 @@ private struct ClassDestinationView: View {
       Button("Go back", action: { navigator.goBack() })
     }
   }
+}
+
+struct EmojiVisualisation2: Hashable, Codable {
+  let emoji: String
+  let count: Int
+
+  var text: String {
+    Array(repeating: emoji, count: count).joined()
+  }
+}
+
+struct NumberList2: Hashable, Codable {
+  let range: Range<Int>
+}
+
+class ClassDestination2 {
+  let data: String
+
+  init(data: String) {
+    self.data = data
+  }
+}
+
+extension ClassDestination2: Hashable {
+  static func == (lhs: ClassDestination2, rhs: ClassDestination2) -> Bool {
+    lhs.data == rhs.data
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(data)
+  }
+}
+
+class SampleClassDestination2: ClassDestination {
+  init() { super.init(data: "Sample data") }
 }

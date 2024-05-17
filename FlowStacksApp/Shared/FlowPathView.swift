@@ -27,6 +27,9 @@ struct FlowPathView: View {
           .flowDestination(for: ClassDestination.self, destination: { destination in
             ClassDestinationView(destination: destination)
           })
+          .flowDestination(for: ChildFlowStack.ChildType.self) { childType in
+            ChildFlowStack(childType: childType)
+          }
       }
     }
   }
@@ -113,6 +116,8 @@ private struct NumberView: View {
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
+      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .push, label: { Text("FlowPath Child") })
+      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .push, label: { Text("NoBinding Child") })
       Button("Go back to root", action: { navigator.goBackToRoot() })
     }.navigationTitle("\(number)")
   }
@@ -140,6 +145,23 @@ private struct ClassDestinationView: View {
       Text(destination.data)
         .navigationTitle("A ClassDestination")
       Button("Go back", action: { navigator.goBack() })
+    }
+  }
+}
+
+struct ChildFlowStack: View {
+  enum ChildType: Hashable {
+    case flowPath, noBinding
+  }
+
+  let childType: ChildType
+
+  var body: some View {
+    switch childType {
+    case .flowPath:
+      FlowPathView()
+    case .noBinding:
+      NoBindingView()
     }
   }
 }
