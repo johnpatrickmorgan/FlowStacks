@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct Router<Screen, RootView: View, NavigationViewModifier: ViewModifier>: View {
+struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModifier>: View {
   let rootView: RootView
   /// A view modifier that is applied to any `NavigationView`s created by the router.
   let navigationViewModifier: NavigationViewModifier

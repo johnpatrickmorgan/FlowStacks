@@ -1,7 +1,7 @@
 import Foundation
 import SwiftUI
 
-struct Node<Screen, Modifier: ViewModifier>: View {
+struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
   @Binding var allRoutes: [Route<Screen>]
   let truncateToIndex: (Int) -> Void
   let index: Int
