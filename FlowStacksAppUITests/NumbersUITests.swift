@@ -2,46 +2,9 @@ import XCTest
 
 let navigationTimeout = 0.8
 
-final class FlowStacksAppUITests: XCTestCase {
+final class NumbersUITests: XCTestCase {
   override func setUpWithError() throws {
     continueAfterFailure = false
-  }
-
-  func testVMsTab() {
-    XCUIDevice.shared.orientation = .portrait
-    let app = XCUIApplication()
-    app.launch()
-
-    XCTAssertTrue(app.tabBars.buttons["VMs"].waitForExistence(timeout: 3))
-    app.tabBars.buttons["VMs"].tap()
-    XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["Pick a number"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Numbers"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["Go back"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["Pick a number"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Numbers"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["1"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Number 1"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["PresentationMode Dismiss"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Numbers"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["2"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Number 2"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["Navigator Dismiss"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Numbers"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["3"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Number 3"].waitForExistence(timeout: navigationTimeout))
-
-    app.buttons["Go back to root"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
   }
 
   func testNumbersTab() {
@@ -52,8 +15,8 @@ final class FlowStacksAppUITests: XCTestCase {
     XCTAssertTrue(app.tabBars.buttons["Numbers"].waitForExistence(timeout: 3))
     app.tabBars.buttons["Numbers"].tap()
     XCTAssertTrue(app.navigationBars["0"].waitForExistence(timeout: navigationTimeout))
-
-    app.steppers.firstMatch.buttons["Increment"].tap()
+    
+    app.buttons["Push next"].firstMatch.tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["Present Double (cover) from 1"].firstMatch.tap()

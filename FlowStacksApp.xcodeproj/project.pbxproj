@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		523FF3102A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
 		523FF3112A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
-		525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C733427729300009CBD67 /* SwiftUINavigation */; };
 		525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C7344277BCDDA009CBD67 /* SwiftUINavigation in Frameworks */ = {isa = PBXBuildFile; productRef = 525C7343277BCDDA009CBD67 /* SwiftUINavigation */; };
@@ -17,7 +16,7 @@
 		526D9F2526AF661F00B6B882 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 526D9F1C26AF661F00B6B882 /* Assets.xcassets */; };
 		526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
 		526D9F3426AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
-		5285BBAF2B6408F500197CE7 /* FlowStacksAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5285BBAE2B6408F500197CE7 /* FlowStacksAppUITests.swift */; };
+		5285BBAF2B6408F500197CE7 /* NumbersUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5285BBAE2B6408F500197CE7 /* NumbersUITests.swift */; };
 		528AE0F32BF377C400E143C5 /* ArrayBindingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0EF2BF377C300E143C5 /* ArrayBindingView.swift */; };
 		528AE0F42BF377C400E143C5 /* ArrayBindingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0EF2BF377C300E143C5 /* ArrayBindingView.swift */; };
 		528AE0F52BF377C400E143C5 /* NoBindingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F02BF377C300E143C5 /* NoBindingView.swift */; };
@@ -28,6 +27,7 @@
 		528AE0FA2BF377C400E143C5 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */; };
 		528AE0FC2BF378D700E143C5 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0FB2BF378D700E143C5 /* Data.swift */; };
 		528AE0FD2BF378D700E143C5 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0FB2BF378D700E143C5 /* Data.swift */; };
+		528AE0FF2BF7662200E143C5 /* FlowStacksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */; };
 		52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 /* End PBXBuildFile section */
@@ -49,12 +49,13 @@
 		526D9F1C26AF661F00B6B882 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		5285BBAC2B6408F500197CE7 /* FlowStacksAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowStacksAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		5285BBAE2B6408F500197CE7 /* FlowStacksAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksAppUITests.swift; sourceTree = "<group>"; };
+		5285BBAE2B6408F500197CE7 /* NumbersUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumbersUITests.swift; sourceTree = "<group>"; };
 		528AE0EF2BF377C300E143C5 /* ArrayBindingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArrayBindingView.swift; sourceTree = "<group>"; };
 		528AE0F02BF377C300E143C5 /* NoBindingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoBindingView.swift; sourceTree = "<group>"; };
 		528AE0F12BF377C300E143C5 /* FlowPathView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowPathView.swift; sourceTree = "<group>"; };
 		528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberVMFlow.swift; sourceTree = "<group>"; };
 		528AE0FB2BF378D700E143C5 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksUITests.swift; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		52E2C8F02A7265A00042C495 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; path = .; sourceTree = "<group>"; };
@@ -66,7 +67,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				523FF3102A79998800411CF7 /* FlowStacks in Frameworks */,
-				525C733527729300009CBD67 /* SwiftUINavigation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +153,8 @@
 		5285BBAD2B6408F500197CE7 /* FlowStacksAppUITests */ = {
 			isa = PBXGroup;
 			children = (
-				5285BBAE2B6408F500197CE7 /* FlowStacksAppUITests.swift */,
+				5285BBAE2B6408F500197CE7 /* NumbersUITests.swift */,
+				528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */,
 			);
 			path = FlowStacksAppUITests;
 			sourceTree = "<group>";
@@ -175,7 +176,6 @@
 			);
 			name = "FlowStacksApp (iOS)";
 			packageProductDependencies = (
-				525C733427729300009CBD67 /* SwiftUINavigation */,
 				52E2C8F52A7268AB0042C495 /* FlowStacks */,
 			);
 			productName = "FlowStacksApp (iOS)";
@@ -327,7 +327,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5285BBAF2B6408F500197CE7 /* FlowStacksAppUITests.swift in Sources */,
+				528AE0FF2BF7662200E143C5 /* FlowStacksUITests.swift in Sources */,
+				5285BBAF2B6408F500197CE7 /* NumbersUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -683,11 +684,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		525C733427729300009CBD67 /* SwiftUINavigation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;
-			productName = SwiftUINavigation;
-		};
 		525C7343277BCDDA009CBD67 /* SwiftUINavigation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 525C733327729300009CBD67 /* XCRemoteSwiftPackageReference "swiftui-navigation" */;

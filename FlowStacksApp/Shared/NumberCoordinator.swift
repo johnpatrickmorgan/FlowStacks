@@ -1,6 +1,5 @@
 import FlowStacks
 import SwiftUI
-import SwiftUINavigation
 
 struct NumberCoordinator: View {
   @State var routes: Routes<Int> = []
