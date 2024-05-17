@@ -2,9 +2,10 @@ import Foundation
 import SwiftUI
 
 /// A view that manages state for presenting and pushing screens..
-public struct FlowStack<Root: View, Data: Hashable>: View {
+public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: ViewModifier>: View {
   var withNavigation: Bool
   var dataType: FlowStackDataType
+  var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
   @Binding var externalTypedPath: [Route<Data>]
   @State var internalTypedPath: [Route<Data>] = []
@@ -19,8 +20,8 @@ public struct FlowStack<Root: View, Data: Hashable>: View {
 
   @ViewBuilder
   var content: some View {
-    Router(rootView: root, screens: $path.routes)
-      .modifier(EmbedModifier(withNavigation: withNavigation))
+    Router(rootView: root, navigationViewModifier: navigationViewModifier, screens: $path.routes)
+      .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier))
       .environmentObject(path)
       .environmentObject(Unobserved(object: path))
       .environmentObject(destinationBuilder)
@@ -70,29 +71,46 @@ public struct FlowStack<Root: View, Data: Hashable>: View {
       }
   }
 
-  init(routes: Binding<[Route<Data>]>?, withNavigation: Bool = false, dataType: FlowStackDataType, @ViewBuilder root: () -> Root) {
+  init(routes: Binding<[Route<Data>]>?, withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, dataType: FlowStackDataType, @ViewBuilder root: () -> Root) {
     _externalTypedPath = routes ?? .constant([])
     self.root = root()
     self.withNavigation = withNavigation
+    self.navigationViewModifier = navigationViewModifier
     self.dataType = dataType
     useInternalTypedPath = routes == nil
   }
 
-  public init(_ routes: Binding<[Route<Data>]>, withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
-    self.init(routes: routes, withNavigation: withNavigation, dataType: .typedArray, root: root)
+  public init(_ routes: Binding<[Route<Data>]>, withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
+    self.init(routes: routes, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .typedArray, root: root)
   }
 }
 
 public extension FlowStack where Data == AnyHashable {
-  init(withNavigation: Bool, @ViewBuilder root: () -> Root) {
-    self.init(routes: nil, withNavigation: withNavigation, dataType: .flowPath, root: root)
+  init(withNavigation: Bool, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
+    self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .flowPath, root: root)
   }
 
-  init(_ path: Binding<FlowPath>, withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
+  init(_ path: Binding<FlowPath>, withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
     let path = Binding(
       get: { path.wrappedValue.routes },
       set: { path.wrappedValue.routes = $0 }
     )
-    self.init(routes: path, withNavigation: withNavigation, dataType: .flowPath, root: root)
+    self.init(routes: path, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .flowPath, root: root)
+  }
+}
+
+public extension FlowStack where NavigationViewModifier == UnchangedViewModifier {
+  init(_ routes: Binding<[Route<Data>]>, withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
+    self.init(routes: routes, withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), dataType: .typedArray, root: root)
+  }
+}
+
+public extension FlowStack where NavigationViewModifier == UnchangedViewModifier, Data == AnyHashable {
+  init(withNavigation: Bool, @ViewBuilder root: () -> Root) {
+    self.init(withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), root: root)
+  }
+
+  init(_ path: Binding<FlowPath>, withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
+    self.init(path, withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), root: root)
   }
 }

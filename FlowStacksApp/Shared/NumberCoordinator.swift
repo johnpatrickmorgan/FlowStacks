@@ -17,7 +17,7 @@ struct NumberCoordinator: View {
   }
 
   var body: some View {
-    FlowStack($routes, withNavigation: true) {
+    FlowStack($routes, withNavigation: true, navigationViewModifier: AccentColorModifier(color: .green)) {
       NumberView(number: 0, goRandom: goRandom)
         .flowDestination(for: Int.self) { number in
           NumberView(

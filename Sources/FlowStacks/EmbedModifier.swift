@@ -1,17 +1,20 @@
 import SwiftUI
 
 /// Embeds a view in a NavigationView or NavigationStack.
-struct EmbedModifier: ViewModifier {
+struct EmbedModifier<NavigationViewModifier: ViewModifier>: ViewModifier {
   var withNavigation: Bool
+  let navigationViewModifier: NavigationViewModifier
   @Environment(\.useNavigationStack) var useNavigationStack
 
   @ViewBuilder
   func wrapped(content: Content) -> some View {
     if #available(iOS 16.0, *, macOS 13.0, *, watchOS 7.0, *, tvOS 14.0, *), useNavigationStack == .whenAvailable {
       NavigationStack { content }
+        .modifier(navigationViewModifier)
         .environment(\.isWithinNavigationStack, true)
     } else {
       NavigationView { content }
+        .modifier(navigationViewModifier)
         .navigationViewStyle(supportedNavigationViewStyle)
         .environment(\.isWithinNavigationStack, false)
     }

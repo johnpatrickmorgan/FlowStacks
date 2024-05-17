@@ -1,18 +1,21 @@
 import Foundation
 import SwiftUI
 
-struct Router<Screen, RootView: View>: View {
+struct Router<Screen, RootView: View, NavigationViewModifier: ViewModifier>: View {
   let rootView: RootView
+  /// A view modifier that is applied to any `NavigationView`s created by the router.
+  let navigationViewModifier: NavigationViewModifier
 
   @Binding var screens: [Route<Screen>]
 
-  init(rootView: RootView, screens: Binding<[Route<Screen>]>) {
+  init(rootView: RootView, navigationViewModifier: NavigationViewModifier, screens: Binding<[Route<Screen>]>) {
     self.rootView = rootView
+    self.navigationViewModifier = navigationViewModifier
     _screens = screens
   }
 
   var pushedScreens: some View {
-    Node(allRoutes: $screens, truncateToIndex: { screens = Array(screens.prefix($0)) }, index: 0)
+    Node(allRoutes: $screens, truncateToIndex: { screens = Array(screens.prefix($0)) }, index: 0, navigationViewModifier: navigationViewModifier)
   }
 
   private var isActiveBinding: Binding<Bool> {
@@ -25,7 +28,7 @@ struct Router<Screen, RootView: View>: View {
       }
     )
   }
-  
+
   var nextRouteStyle: RouteStyle? {
     screens.first?.style
   }

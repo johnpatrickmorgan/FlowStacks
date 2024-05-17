@@ -1,11 +1,12 @@
 import Foundation
 import SwiftUI
 
-struct Node<Screen>: View {
+struct Node<Screen, Modifier: ViewModifier>: View {
   @Binding var allRoutes: [Route<Screen>]
   let truncateToIndex: (Int) -> Void
   let index: Int
   let route: Route<Screen>?
+  let navigationViewModifier: Modifier
 
   // NOTE: even though this object is unused, its inclusion avoids a glitch when swiping to dismiss
   // a sheet that's been presented from a pushed screen.
@@ -13,10 +14,11 @@ struct Node<Screen>: View {
 
   @State var isAppeared = false
 
-  init(allRoutes: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int) {
+  init(allRoutes: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, navigationViewModifier: Modifier) {
     _allRoutes = allRoutes
     self.truncateToIndex = truncateToIndex
     self.index = index
+    self.navigationViewModifier = navigationViewModifier
     route = allRoutes.wrappedValue[safe: index]
   }
 
@@ -33,7 +35,7 @@ struct Node<Screen>: View {
   }
 
   var next: some View {
-    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: index + 1)
+    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: index + 1, navigationViewModifier: navigationViewModifier)
   }
 
   var nextRouteStyle: RouteStyle? {
@@ -44,7 +46,7 @@ struct Node<Screen>: View {
     if let route = allRoutes[safe: index] ?? route {
       DestinationBuilderView(data: route.screen)
         .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
-        .modifier(EmbedModifier(withNavigation: route.withNavigation))
+        .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier))
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }
     }
