@@ -93,7 +93,7 @@ private struct NumberListView: View {
 
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  @State var number: Int
+  @Binding var number: Int
 
   var body: some View {
     VStack(spacing: 8) {

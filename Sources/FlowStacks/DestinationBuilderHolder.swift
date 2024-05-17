@@ -7,20 +7,22 @@ class DestinationBuilderHolder: ObservableObject {
     String(reflecting: type)
   }
 
-  var builders: [String: (Any) -> AnyView?] = [:]
+  var builders: [String: (Binding<AnyHashable>) -> AnyView?] = [:]
 
   init() {
     builders = [:]
   }
 
-  func appendBuilder<T>(_ builder: @escaping (T) -> AnyView) {
+  func appendBuilder<T: Hashable>(_ builder: @escaping (Binding<T>) -> AnyView) {
     let key = Self.identifier(for: T.self)
     builders[key] = { data in
-      if let typedData = data as? T {
-        return builder(typedData)
-      } else {
-        return nil
-      }
+      let binding = Binding(
+        get: { data.wrappedValue as! T },
+        set: { newValue, transaction in
+          data.transaction(transaction).wrappedValue = newValue
+        }
+      )
+      return builder(binding)
     }
   }
 
@@ -34,25 +36,25 @@ class DestinationBuilderHolder: ObservableObject {
     builders[key] = nil
   }
 
-  func build(_ typedData: AnyHashable) -> AnyView {
-    let base = typedData.base
+  func build(_ binding: Binding<AnyHashable>) -> AnyView {
+    let base = binding.wrappedValue.base
     if let identifier = base as? LocalDestinationID {
       let key = identifier.rawValue.uuidString
-      if let builder = builders[key], let output = builder(typedData) {
+      if let builder = builders[key], let output = builder(binding) {
         return output
       }
       assertionFailure("No view builder found for type \(key)")
     } else {
       let key = Self.identifier(for: type(of: base))
 
-      if let builder = builders[key], let output = builder(typedData) {
+      if let builder = builders[key], let output = builder(binding) {
         return output
       }
       var possibleMirror: Mirror? = Mirror(reflecting: base)
       while let mirror = possibleMirror {
         let mirrorKey = Self.identifier(for: mirror.subjectType)
 
-        if let builder = builders[mirrorKey], let output = builder(typedData) {
+        if let builder = builders[mirrorKey], let output = builder(binding) {
           return output
         }
         possibleMirror = mirror.superclassMirror

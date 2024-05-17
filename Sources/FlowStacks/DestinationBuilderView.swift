@@ -2,8 +2,8 @@ import Foundation
 import SwiftUI
 
 /// Builds a view from the given Data, using the destination builder environment object.
-struct DestinationBuilderView<Data: Hashable>: View {
-  let data: Data
+struct DestinationBuilderView: View {
+  let data: Binding<AnyHashable>
 
   @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
 

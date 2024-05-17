@@ -2,8 +2,12 @@ import Foundation
 import SwiftUI
 
 public extension View {
-  func flowDestination<D: Hashable, C: View>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (D) -> C) -> some View {
+  func flowDestination<D: Hashable, C: View>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>) -> C) -> some View {
     return modifier(DestinationBuilderModifier(typedDestinationBuilder: { AnyView(builder($0)) }))
+  }
+
+  func flowDestination<D: Hashable, C: View>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (D) -> C) -> some View {
+    return flowDestination(for: dataType) { binding in builder(binding.wrappedValue) }
   }
 }
 

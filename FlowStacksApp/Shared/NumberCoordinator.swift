@@ -2,6 +2,7 @@ import FlowStacks
 import SwiftUI
 
 struct NumberCoordinator: View {
+  @State var initialNumber = 0
   @State var routes: Routes<Int> = []
 
   func goRandom() {
@@ -17,7 +18,7 @@ struct NumberCoordinator: View {
 
   var body: some View {
     FlowStack($routes, withNavigation: true, navigationViewModifier: AccentColorModifier(color: .green)) {
-      NumberView(number: 0, goRandom: goRandom)
+      NumberView(number: $initialNumber, goRandom: goRandom)
         .flowDestination(for: Int.self) { number in
           NumberView(
             number: number,
@@ -50,16 +51,12 @@ struct NumberCoordinator: View {
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowNavigator<Int>
 
-  var number: Int
+  @Binding var number: Int
   let goRandom: (() -> Void)?
-
-  init(number: Int, goRandom: (() -> Void)? = nil) {
-    self.number = number
-    self.goRandom = goRandom
-  }
 
   var body: some View {
     VStack(spacing: 8) {
+      Stepper(label: { EmptyView() }, onIncrement: { number += 1 }, onDecrement: { number -= 1 })
       Button("Present Double (cover)") {
         navigator.presentCover(number * 2, withNavigation: true)
       }

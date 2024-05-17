@@ -44,7 +44,14 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
 
   var body: some View {
     if let route = allRoutes[safe: index] ?? route {
-      DestinationBuilderView(data: route.screen)
+      let binding = Binding<AnyHashable>(get: {
+        allRoutes[safe: index]?.screen ?? route.screen
+      }, set: { newValue in
+        guard let typedData = newValue as? Screen else { return }
+        allRoutes[index].screen = typedData
+      })
+
+      DestinationBuilderView(data: binding)
         .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
         .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier))
         .onAppear { isAppeared = true }
