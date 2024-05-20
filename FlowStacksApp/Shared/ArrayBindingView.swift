@@ -40,7 +40,7 @@ struct ArrayBindingView: View {
   }
 
   func restoreRoutes() {
-    guard let savedRoutes = savedRoutes else { return }
+    guard let savedRoutes else { return }
     routes = savedRoutes
   }
 }

@@ -18,7 +18,7 @@ public struct FlowLink<P: Hashable, Label: View>: View {
     // See: https://gist.github.com/tgrapperon/034069d6116ff69b6240265132fd9ef7
     Button(
       action: {
-        guard let route = route else { return }
+        guard let route else { return }
         routesHolder.object.routes.append(route.erased())
       },
       label: { label }
@@ -31,7 +31,7 @@ public extension FlowLink where Label == Text {
     self.init(route: value.map { Route(screen: $0, style: style) }, label: label)
   }
 
-  init<S>(_ title: S, value: P?, style: RouteStyle) where S: StringProtocol {
+  init(_ title: some StringProtocol, value: P?, style: RouteStyle) {
     self.init(route: value.map { Route(screen: $0, style: style) }) { Text(title) }
   }
 

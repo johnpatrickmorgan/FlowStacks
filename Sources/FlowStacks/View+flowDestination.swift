@@ -2,12 +2,12 @@ import Foundation
 import SwiftUI
 
 public extension View {
-  func flowDestination<D: Hashable, C: View>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>) -> C) -> some View {
-    return modifier(DestinationBuilderModifier(typedDestinationBuilder: { AnyView(builder($0)) }))
+  func flowDestination<D: Hashable>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>) -> some View) -> some View {
+    modifier(DestinationBuilderModifier(typedDestinationBuilder: { AnyView(builder($0)) }))
   }
 
-  func flowDestination<D: Hashable, C: View>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (D) -> C) -> some View {
-    return flowDestination(for: dataType) { binding in builder(binding.wrappedValue) }
+  func flowDestination<D: Hashable>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (D) -> some View) -> some View {
+    flowDestination(for: dataType) { binding in builder(binding.wrappedValue) }
   }
 }
 
@@ -48,7 +48,7 @@ public extension View {
   ///   - isPresented: A binding to a Boolean value that indicates whether
   ///     `destination` is currently presented.
   ///   - destination: A view to present.
-  func flowDestination<V>(isPresented: Binding<Bool>, style: RouteStyle, @ViewBuilder destination: () -> V) -> some View where V: View {
+  func flowDestination(isPresented: Binding<Bool>, style: RouteStyle, @ViewBuilder destination: () -> some View) -> some View {
     let builtDestination = AnyView(destination())
     return modifier(
       LocalDestinationBuilderModifier(
@@ -102,7 +102,7 @@ public extension View {
   ///   - style: The route style, e.g. sheet, cover, push.
   ///   - destination: A view builder that defines a view to display
   ///     when `item` is not `nil`.
-  func flowDestination<D: Hashable, C: View>(item: Binding<D?>, style: RouteStyle, @ViewBuilder destination: @escaping (D) -> C) -> some View {
+  func flowDestination<D: Hashable>(item: Binding<D?>, style: RouteStyle, @ViewBuilder destination: @escaping (D) -> some View) -> some View {
     flowDestination(
       isPresented: Binding(
         get: { item.wrappedValue != nil },

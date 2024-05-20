@@ -9,9 +9,9 @@ struct FlowStacksApp: App {
     case noBinding
     case viewModel
   }
-  
+
   @State var selectedTab: Tab = .numberCoordinator
-  
+
   var body: some Scene {
     WindowGroup {
       TabView(selection: $selectedTab) {
@@ -36,10 +36,10 @@ struct FlowStacksApp: App {
       }
     }
   }
-  
+
   private func follow(_ deeplink: Deeplink) {
     // Test deeplinks from CLI with, e.g.:
-    //`xcrun simctl openurl booted flowstacksapp://numbers/42/13`
+    // `xcrun simctl openurl booted flowstacksapp://numbers/42/13`
     switch deeplink {
     case .numberCoordinator:
       selectedTab = .numberCoordinator

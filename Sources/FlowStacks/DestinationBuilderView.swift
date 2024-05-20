@@ -9,7 +9,7 @@ struct DestinationBuilderView: View {
   @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
 
   var body: some View {
-    return destinationBuilder.build(data)
+    destinationBuilder.build(data)
       .environment(\.routeStyle, routeStyle)
   }
 }

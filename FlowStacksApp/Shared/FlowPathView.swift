@@ -42,7 +42,7 @@ struct FlowPathView: View {
   }
 
   func decodePath() {
-    guard let encodedPathData = encodedPathData else {
+    guard let encodedPathData else {
       return
     }
     let codable = try! JSONDecoder().decode(FlowPath.CodableRepresentation.self, from: encodedPathData)

@@ -4,7 +4,7 @@ struct ShowModifier<Destination: View>: ViewModifier {
   var isActiveBinding: Binding<Bool>
   var routeStyle: RouteStyle?
   var destination: Destination
-  
+
   func isActiveBinding(enabled: Bool) -> Binding<Bool> {
     Binding {
       enabled && isActiveBinding.wrappedValue
@@ -37,7 +37,7 @@ struct ShowModifier<Destination: View>: ViewModifier {
 }
 
 extension View {
-  func show<Destination: View>(isActive: Binding<Bool>, routeStyle: RouteStyle?, destination: Destination) -> some View {
-    return modifier(ShowModifier(isActiveBinding: isActive, routeStyle: routeStyle, destination: destination))
+  func show(isActive: Binding<Bool>, routeStyle: RouteStyle?, destination: some View) -> some View {
+    modifier(ShowModifier(isActiveBinding: isActive, routeStyle: routeStyle, destination: destination))
   }
 }

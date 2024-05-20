@@ -67,7 +67,7 @@ public extension ObservableObject {
   }
 
   @MainActor
-  fileprivate func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) async {
+  private func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) async {
     let binding = Binding(
       get: { [weak self] in self?[keyPath: keyPath] ?? [] },
       set: { [weak self] in self?[keyPath: keyPath] = $0 }
@@ -75,7 +75,7 @@ public extension ObservableObject {
     await binding.withDelaysIfUnsupported(from: start, to: end, keyPath: \.self)
   }
 
-  fileprivate func synchronouslyUpdateIfSupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
+  private func synchronouslyUpdateIfSupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
     guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
       return false
     }

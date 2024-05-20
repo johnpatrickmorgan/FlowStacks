@@ -36,7 +36,7 @@ extension FlowPath.CodableRepresentation: Encodable {
   }
 
   fileprivate static func encodeExistential(_ element: Encodable) throws -> Data {
-    func encodeOpened<A: Encodable>(_ element: A) throws -> Data {
+    func encodeOpened(_ element: some Encodable) throws -> Data {
       try FlowPath.CodableRepresentation.encoder.encode(element)
     }
     return try _openExistential(element, do: encodeOpened(_:))

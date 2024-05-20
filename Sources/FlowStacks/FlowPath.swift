@@ -16,11 +16,11 @@ public struct FlowPath: Equatable {
     self.routes = routes
   }
 
-  public init<S: Sequence, E: Hashable>(_ routes: S) where S.Element == Route<E> {
+  public init(_ routes: some Sequence<Route<some Hashable>>) {
     self.init(routes.map { $0.map { $0 as AnyHashable } })
   }
 
-  public mutating func append<V: Hashable>(_ value: Route<V>) {
+  public mutating func append(_ value: Route<some Hashable>) {
     routes.append(value.erased())
   }
 

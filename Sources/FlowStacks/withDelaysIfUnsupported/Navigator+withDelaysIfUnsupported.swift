@@ -33,7 +33,7 @@ public extension FlowNavigator {
     await routesBinding.withDelaysIfUnsupported(transform)
   }
 
-  fileprivate func synchronouslyUpdateIfSupported(from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
+  private func synchronouslyUpdateIfSupported(from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
     guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
       return false
     }

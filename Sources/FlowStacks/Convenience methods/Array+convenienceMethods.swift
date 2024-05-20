@@ -5,11 +5,11 @@ public extension Array where Element: RouteProtocol {
   /// `nil` will be returned, e.g. if there is no `NavigationView` in this routes stack but it's possible
   /// a `NavigationView` has been added outside the FlowStack..
   var canPush: Bool? {
-    for route in self.reversed() {
+    for route in reversed() {
       switch route.style {
       case .push:
         continue
-      case .cover(let withNavigation), .sheet(let withNavigation):
+      case let .cover(withNavigation), let .sheet(withNavigation):
         return withNavigation
       }
     }
@@ -102,7 +102,7 @@ public extension Array where Element: RouteProtocol {
   /// - Returns: A `Bool` indicating whether a screen was found.
   @discardableResult
   mutating func goBackTo(where condition: (Element.Screen) -> Bool) -> Bool {
-    return goBackTo(where: { condition($0.screen) })
+    goBackTo(where: { condition($0.screen) })
   }
 }
 
@@ -212,7 +212,7 @@ public extension Array where Element: RouteProtocol {
   /// - Returns: A `Bool` indicating whether a screen was found.
   @discardableResult
   mutating func popTo(where condition: (Element.Screen) -> Bool) -> Bool {
-    return popTo(where: { condition($0.screen) })
+    popTo(where: { condition($0.screen) })
   }
 }
 
@@ -295,7 +295,7 @@ public extension Array where Element: RouteProtocol {
   /// Dismisses all presented sheets and modals, without popping any pushed screens in the bottommost
   /// presentation layer.
   mutating func dismissAll() {
-    let count = self.filter { $0.isPresented }.count
+    let count = filter(\.isPresented).count
     guard count > 0 else { return }
     dismiss(count: count)
   }

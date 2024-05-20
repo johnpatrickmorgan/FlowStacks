@@ -15,7 +15,7 @@ final class NumbersUITests: XCTestCase {
     XCTAssertTrue(app.tabBars.buttons["Numbers"].waitForExistence(timeout: 3))
     app.tabBars.buttons["Numbers"].tap()
     XCTAssertTrue(app.navigationBars["0"].waitForExistence(timeout: navigationTimeout))
-    
+
     app.buttons["Push next"].firstMatch.tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 

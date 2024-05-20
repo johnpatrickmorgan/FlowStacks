@@ -45,7 +45,7 @@ public extension FlowPath {
   /// - Returns: A `Bool` indicating whether a matching screen was found.
   @discardableResult
   mutating func popTo(_ screen: AnyHashable) -> Bool {
-    return routes.popTo(screen)
+    routes.popTo(screen)
   }
 
   /// Pops to the topmost (most recently pushed) screen in the stack
@@ -55,6 +55,6 @@ public extension FlowPath {
   /// - Returns: A `Bool` indicating whether a matching screen was found.
   @discardableResult
   mutating func popTo<T: Hashable>(_: T.Type) -> Bool {
-    return popTo(where: { $0 is T })
+    popTo(where: { $0 is T })
   }
 }

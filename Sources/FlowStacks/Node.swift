@@ -23,7 +23,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
   }
 
   private var isActiveBinding: Binding<Bool> {
-    return Binding(
+    Binding(
       get: { allRoutes.count > index + 1 },
       set: { isShowing in
         guard !isShowing else { return }
@@ -63,6 +63,6 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
 extension Collection {
   /// Returns the element at the specified index if it is within bounds, otherwise nil.
   subscript(safe index: Index) -> Element? {
-    return indices.contains(index) ? self[index] : nil
+    indices.contains(index) ? self[index] : nil
   }
 }

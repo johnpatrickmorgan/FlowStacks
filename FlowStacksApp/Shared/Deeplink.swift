@@ -27,7 +27,7 @@ enum Deeplink {
 enum NumberDeeplink {
   case numbers([Int])
 
-  init?<C: Collection>(pathComponents: C) where C.Element == String {
+  init?(pathComponents: some Collection<String>) {
     let numbers = pathComponents.compactMap(Int.init)
     guard numbers.count == pathComponents.count else {
       return nil
@@ -39,7 +39,7 @@ enum NumberDeeplink {
 enum ViewModelTabDeeplink {
   case numbers([Int])
 
-  init?<C: Collection>(pathComponents: C) where C.Element == String {
+  init?(pathComponents: some Collection<String>) {
     let numbers = pathComponents.compactMap(Int.init)
     guard numbers.count == pathComponents.count else {
       return nil

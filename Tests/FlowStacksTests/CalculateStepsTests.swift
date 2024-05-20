@@ -183,7 +183,7 @@ final class NavigationBackportTests: XCTestCase {
     ]
 
     let steps = FlowPath.calculateSteps(from: start, to: end)
-    
+
     print(steps)
 
     let expectedSteps: [RouterState] = [

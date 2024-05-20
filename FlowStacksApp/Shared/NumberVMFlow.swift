@@ -9,7 +9,7 @@ struct NumberVMFlow: View {
     FlowStack($viewModel.routes, withNavigation: true) {
       NumberVMView(viewModel: viewModel.initialScreenViewModel)
         .flowDestination(for: ScreenViewModel.self) { screenVM in
-          if case .number(let vm) = screenVM {
+          if case let .number(vm) = screenVM {
             NumberVMView(viewModel: vm)
           }
         }
@@ -40,11 +40,11 @@ extension NumberVMFlow {
     }
 
     func follow(_ deeplink: Deeplink) {
-      guard case .viewModelTab(let link) = deeplink else {
+      guard case let .viewModelTab(link) = deeplink else {
         return
       }
       switch link {
-      case .numbers(let numbers):
+      case let .numbers(numbers):
         for number in numbers {
           routes.push(.number(.init(number: number, goRandom: goRandom)))
         }

@@ -15,11 +15,11 @@ extension FlowPath {
       .firstIndex(where: { $0.style != $1.style }) ?? pairs.endIndex
     let firstDivergingPresentationIndex = start[firstDivergingIndex ..< start.count]
       .firstIndex(where: { $0.isPresented }) ?? start.endIndex
-    
+
     // Initial step is to change screen content without changing navigation structure.
     let initialStep = Array(end[..<firstDivergingIndex] + start[firstDivergingIndex...])
     var steps = [initialStep]
-    
+
     // Dismiss extraneous presented stacks.
     while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
       var dismissed: Route<Screen>? = dismissStep.popLast()
@@ -29,7 +29,7 @@ extension FlowPath {
       }
       steps.append(dismissStep)
     }
-    
+
     // Pop extraneous pushed screens.
     while var popStep = steps.last, popStep.count > firstDivergingIndex {
       var popped: Route<Screen>? = popStep.popLast()
@@ -38,13 +38,13 @@ extension FlowPath {
       }
       steps.append(popStep)
     }
-    
+
     // Push or present each new step.
     while var newStep = steps.last, newStep.count < end.count {
       newStep.append(end[newStep.count])
       steps.append(newStep)
     }
-    
+
     return steps
   }
 

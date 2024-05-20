@@ -25,7 +25,7 @@ struct PushModifier<Destination: View>: ViewModifier {
 }
 
 extension View {
-  func push<Destination: View>(isActive: Binding<Bool>, destination: Destination) -> some View {
-    return modifier(PushModifier(isActive: isActive, destination: destination))
+  func push(isActive: Binding<Bool>, destination: some View) -> some View {
+    modifier(PushModifier(isActive: isActive, destination: destination))
   }
 }

@@ -17,7 +17,7 @@ struct SheetModifier<Destination: View>: ViewModifier {
 }
 
 extension View {
-  func sheet<Destination: View>(isActive: Binding<Bool>, destination: Destination) -> some View {
-    return modifier(SheetModifier(isActiveBinding: isActive, destination: destination))
+  func sheet(isActive: Binding<Bool>, destination: some View) -> some View {
+    modifier(SheetModifier(isActiveBinding: isActive, destination: destination))
   }
 }

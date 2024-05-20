@@ -70,7 +70,7 @@ private struct NumberView: View {
         navigator.push(number + 1)
       }
       .accessibilityIdentifier("Push next from \(number)")
-      if let goRandom = goRandom {
+      if let goRandom {
         Button("Go random", action: goRandom)
       }
       if navigator.routes.count > 1 {

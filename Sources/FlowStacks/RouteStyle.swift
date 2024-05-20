@@ -16,27 +16,27 @@ public enum RouteStyle: Hashable, Codable {
   public var isSheet: Bool {
     switch self {
     case .sheet:
-      return true
+      true
     case .cover, .push:
-      return false
+      false
     }
   }
 
   public var isCover: Bool {
     switch self {
     case .cover:
-      return true
+      true
     case .sheet, .push:
-      return false
+      false
     }
   }
 
   public var isPush: Bool {
     switch self {
     case .push:
-      return true
+      true
     case .sheet, .cover:
-      return false
+      false
     }
   }
 }

@@ -33,7 +33,7 @@ struct CoverModifier<Destination: View>: ViewModifier {
 }
 
 extension View {
-  func cover<Destination: View>(isActive: Binding<Bool>, destination: Destination) -> some View {
-    return modifier(CoverModifier(isActiveBinding: isActive, destination: destination))
+  func cover(isActive: Binding<Bool>, destination: some View) -> some View {
+    modifier(CoverModifier(isActiveBinding: isActive, destination: destination))
   }
 }
