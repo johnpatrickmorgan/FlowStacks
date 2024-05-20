@@ -18,8 +18,8 @@ struct FlowPathView: View {
           .flowDestination(for: NumberList.self, destination: { numberList in
             NumberListView(numberList: numberList)
           })
-          .flowDestination(for: Int.self, destination: { number in
-            NumberView(number: number)
+          .flowDestination(for: Number.self, destination: { $number in
+            NumberView(number: $number.value)
           })
           .flowDestination(for: EmojiVisualisation.self, destination: { visualisation in
             EmojiView(visualisation: visualisation)
@@ -72,7 +72,7 @@ private struct HomeView: View {
   }
 
   func show99RedBalloons() {
-    navigator.push(99)
+    navigator.push(Number(value: 99))
     navigator.push(EmojiVisualisation(emoji: "🎈", count: 99))
   }
 
@@ -87,7 +87,7 @@ private struct NumberListView: View {
   var body: some View {
     List {
       ForEach(numberList.range, id: \.self) { number in
-        FlowLink("\(number)", value: number, style: .push)
+        FlowLink("\(number)", value: Number(value: number), style: .push)
       }
       Button("Go back", action: { navigator.goBack() })
     }.navigationTitle("List")
@@ -149,8 +149,49 @@ private struct ClassDestinationView: View {
   }
 }
 
-struct ChildFlowStack: View {
-  enum ChildType: Hashable {
+// MARK: - State
+
+private struct EmojiVisualisation: Hashable, Codable {
+  let emoji: String
+  let count: Int
+
+  var text: String {
+    Array(repeating: emoji, count: count).joined()
+  }
+}
+
+private struct Number: Hashable, Codable {
+  var value: Int
+}
+
+private struct NumberList: Hashable, Codable {
+  let range: Range<Int>
+}
+
+private class ClassDestination {
+  let data: String
+
+  init(data: String) {
+    self.data = data
+  }
+}
+
+extension ClassDestination: Hashable {
+  static func == (lhs: ClassDestination, rhs: ClassDestination) -> Bool {
+    lhs.data == rhs.data
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(data)
+  }
+}
+
+private class SampleClassDestination: ClassDestination {
+  init() { super.init(data: "Sample data") }
+}
+
+private struct ChildFlowStack: View, Codable {
+  enum ChildType: Hashable, Codable {
     case flowPath, noBinding
   }
 

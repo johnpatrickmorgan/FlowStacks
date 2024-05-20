@@ -5,18 +5,21 @@ struct NoBindingView: View {
   var body: some View {
     FlowStack(withNavigation: true) {
       HomeView()
-        .flowDestination(for: NumberList2.self, destination: { numberList in
+        .flowDestination(for: NumberList.self, destination: { numberList in
           NumberListView(numberList: numberList)
         })
-        .flowDestination(for: Double.self, destination: { number in
-          NumberView(number: number)
+        .flowDestination(for: Number.self, destination: { $number in
+          NumberView(number: $number.value)
         })
-        .flowDestination(for: EmojiVisualisation2.self, destination: { visualisation in
+        .flowDestination(for: EmojiVisualisation.self, destination: { visualisation in
           EmojiView(visualisation: visualisation)
         })
-        .flowDestination(for: ClassDestination2.self, destination: { destination in
+        .flowDestination(for: ClassDestination.self, destination: { destination in
           ClassDestinationView(destination: destination)
         })
+        .flowDestination(for: ChildFlowStack.ChildType.self) { childType in
+          ChildFlowStack(childType: childType)
+        }
     }
   }
 }
@@ -28,7 +31,7 @@ private struct HomeView: View {
   var body: some View {
     VStack(spacing: 8) {
       // Push via link
-      FlowLink(value: NumberList2(range: 0 ..< 10), style: .sheet(withNavigation: true), label: { Text("Pick a number") })
+      FlowLink(value: NumberList(range: 0 ..< 10), style: .sheet(withNavigation: true), label: { Text("Pick a number") })
       // Push via navigator
       Button("99 Red balloons", action: show99RedBalloons)
       // Push child class via navigator
@@ -42,22 +45,22 @@ private struct HomeView: View {
   }
 
   func show99RedBalloons() {
-    navigator.push(99)
-    navigator.push(EmojiVisualisation2(emoji: "🎈", count: 99))
+    navigator.push(Number(value: 99))
+    navigator.push(EmojiVisualisation(emoji: "🎈", count: 99))
   }
 
   func showClassDestination() {
-    navigator.push(SampleClassDestination2())
+    navigator.push(SampleClassDestination())
   }
 }
 
 private struct NumberListView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  let numberList: NumberList2
+  let numberList: NumberList
   var body: some View {
     List {
       ForEach(numberList.range, id: \.self) { number in
-        FlowLink("\(number)", value: Double(number), style: .push)
+        FlowLink("\(number)", value: Number(value: number), style: .push)
       }
       Button("Go back", action: { navigator.goBack() })
     }.navigationTitle("List")
@@ -66,7 +69,7 @@ private struct NumberListView: View {
 
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  @State var number: Double
+  @Binding var number: Int
 
   var body: some View {
     VStack(spacing: 8) {
@@ -82,10 +85,12 @@ private struct NumberView: View {
         label: { Text("Show next number") }
       )
       FlowLink(
-        value: EmojiVisualisation2(emoji: "🐑", count: Int(number)),
+        value: EmojiVisualisation(emoji: "🐑", count: Int(number)),
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
+      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .push, label: { Text("FlowPath Child") })
+      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .push, label: { Text("NoBinding Child") })
       Button("Go back to root") {
         navigator.goBackToRoot()
       }
@@ -95,7 +100,7 @@ private struct NumberView: View {
 
 private struct EmojiView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  let visualisation: EmojiVisualisation2
+  let visualisation: EmojiVisualisation
 
   var body: some View {
     VStack {
@@ -108,7 +113,7 @@ private struct EmojiView: View {
 
 private struct ClassDestinationView: View {
   @EnvironmentObject var navigator: FlowPathNavigator
-  let destination: ClassDestination2
+  let destination: ClassDestination
 
   var body: some View {
     VStack {
@@ -119,7 +124,9 @@ private struct ClassDestinationView: View {
   }
 }
 
-struct EmojiVisualisation2: Hashable, Codable {
+// MARK: - State
+
+private struct EmojiVisualisation: Hashable, Codable {
   let emoji: String
   let count: Int
 
@@ -128,11 +135,15 @@ struct EmojiVisualisation2: Hashable, Codable {
   }
 }
 
-struct NumberList2: Hashable, Codable {
+private struct Number: Hashable, Codable {
+  var value: Int
+}
+
+private struct NumberList: Hashable, Codable {
   let range: Range<Int>
 }
 
-class ClassDestination2 {
+private class ClassDestination {
   let data: String
 
   init(data: String) {
@@ -140,8 +151,8 @@ class ClassDestination2 {
   }
 }
 
-extension ClassDestination2: Hashable {
-  static func == (lhs: ClassDestination2, rhs: ClassDestination2) -> Bool {
+extension ClassDestination: Hashable {
+  static func == (lhs: ClassDestination, rhs: ClassDestination) -> Bool {
     lhs.data == rhs.data
   }
 
@@ -150,6 +161,23 @@ extension ClassDestination2: Hashable {
   }
 }
 
-class SampleClassDestination2: ClassDestination {
+private class SampleClassDestination: ClassDestination {
   init() { super.init(data: "Sample data") }
+}
+
+private struct ChildFlowStack: View, Codable {
+  enum ChildType: Hashable, Codable {
+    case flowPath, noBinding
+  }
+
+  let childType: ChildType
+
+  var body: some View {
+    switch childType {
+    case .flowPath:
+      FlowPathView()
+    case .noBinding:
+      NoBindingView()
+    }
+  }
 }

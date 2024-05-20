@@ -7,6 +7,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var dataType: FlowStackDataType
   var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
+  @EnvironmentObject var routesHolder: RoutesHolder
   @Binding var externalTypedPath: [Route<Data>]
   @State var internalTypedPath: [Route<Data>] = []
   @StateObject var path = RoutesHolder()
@@ -32,6 +33,18 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   public var body: some View {
     if deferToParentFlowStack {
       root
+        .onFirstAppear {
+          externalTypedPath = routesHolder.routes.map { $0.map { $0 as! Data }}
+        }
+        .onChange(of: routesHolder.routes) { routes in
+          externalTypedPath = routes.map { $0.map { $0 as! Data }}
+        }
+        .onChange(of: externalTypedPath) { externalTypedPath in
+          guard !useInternalTypedPath else { return }
+          routesHolder.withDelaysIfUnsupported(\.routes) {
+            $0 = externalTypedPath.map { $0.erased() }
+          }
+        }
     } else {
       content
         .onFirstAppear {

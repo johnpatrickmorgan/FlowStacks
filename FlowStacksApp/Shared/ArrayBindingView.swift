@@ -1,15 +1,15 @@
 import FlowStacks
 import SwiftUI
 
-enum Screen: Hashable {
+private enum Screen: Hashable {
   case number(Int)
   case numberList(NumberList)
   case visualisation(EmojiVisualisation)
 }
 
 struct ArrayBindingView: View {
-  @State var savedRoutes: [Route<Screen>]?
-  @State var routes: [Route<Screen>] = []
+  @State private var savedRoutes: [Route<Screen>]?
+  @State private var routes: [Route<Screen>] = []
 
   var body: some View {
     VStack {
@@ -23,11 +23,11 @@ struct ArrayBindingView: View {
         HomeView()
           .flowDestination(for: Screen.self, destination: { screen in
             switch screen {
-            case .numberList(let numberList):
+            case let .numberList(numberList):
               NumberListView(numberList: numberList)
-            case .number(let number):
+            case let .number(number):
               NumberView(number: number)
-            case .visualisation(let visualisation):
+            case let .visualisation(visualisation):
               EmojiView(visualisation: visualisation)
             }
           })
@@ -117,5 +117,59 @@ private struct EmojiView: View {
     Text(visualisation.text)
       .navigationTitle("Visualise \(visualisation.count)")
     Button("Go back", action: { navigator.goBack() })
+  }
+}
+
+// MARK: - State
+
+private struct EmojiVisualisation: Hashable, Codable {
+  let emoji: String
+  let count: Int
+
+  var text: String {
+    Array(repeating: emoji, count: count).joined()
+  }
+}
+
+private struct NumberList: Hashable, Codable {
+  let range: Range<Int>
+}
+
+private class ClassDestination {
+  let data: String
+
+  init(data: String) {
+    self.data = data
+  }
+}
+
+extension ClassDestination: Hashable {
+  static func == (lhs: ClassDestination, rhs: ClassDestination) -> Bool {
+    lhs.data == rhs.data
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(data)
+  }
+}
+
+private class SampleClassDestination: ClassDestination {
+  init() { super.init(data: "Sample data") }
+}
+
+private struct ChildFlowStack: View {
+  enum ChildType: Hashable {
+    case flowPath, noBinding
+  }
+
+  let childType: ChildType
+
+  var body: some View {
+    switch childType {
+    case .flowPath:
+      FlowPathView()
+    case .noBinding:
+      NoBindingView()
+    }
   }
 }
