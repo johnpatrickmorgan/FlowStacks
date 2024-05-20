@@ -50,6 +50,7 @@ struct NumberCoordinator: View {
 
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowNavigator<Int>
+  @Environment(\.routeStyle) var routeStyle: RouteStyle?
 
   @Binding var number: Int
   let goRandom: (() -> Void)?
@@ -77,6 +78,10 @@ private struct NumberView: View {
           .accessibilityIdentifier("Go back from \(number)")
         Button("Go back to root") { navigator.goBackToRoot() }
           .accessibilityIdentifier("Go back to root from \(number)")
+      }
+      if let routeStyle {
+        Text("\(routeStyle)")
+          .font(.footnote).foregroundColor(.gray)
       }
     }
     .padding()

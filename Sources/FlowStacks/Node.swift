@@ -51,7 +51,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
         allRoutes[index].screen = typedData
       })
 
-      DestinationBuilderView(data: binding)
+      DestinationBuilderView(data: binding, routeStyle: allRoutes[safe: index]?.style)
         .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
         .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier))
         .onAppear { isAppeared = true }

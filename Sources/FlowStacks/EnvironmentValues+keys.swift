@@ -37,3 +37,14 @@ extension EnvironmentValues {
     set { self[FlowStackDataTypeKey.self] = newValue }
   }
 }
+
+struct RouteStyleKey: EnvironmentKey {
+  static let defaultValue: RouteStyle? = nil
+}
+
+public extension EnvironmentValues {
+  var routeStyle: RouteStyle? {
+    get { self[RouteStyleKey.self] }
+    set { self[RouteStyleKey.self] = newValue }
+  }
+}
