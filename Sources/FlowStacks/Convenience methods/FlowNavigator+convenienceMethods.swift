@@ -37,6 +37,12 @@ public extension FlowNavigator {
 // MARK: - Go back
 
 public extension FlowNavigator {
+  /// Returns true if it's possible to go back the given number of screens.
+  /// - Parameter count: The number of screens to go back. Defaults to 1.
+  func canGoBack(_: Int = 1) -> Bool {
+    routes.canGoBack()
+  }
+
   /// Goes back a given number of screens off the stack
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   func goBack(_ count: Int = 1) {

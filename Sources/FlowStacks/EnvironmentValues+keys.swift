@@ -1,6 +1,6 @@
 import SwiftUI
 
-public enum UseNavigationStackPolicy {
+enum UseNavigationStackPolicy {
   case whenAvailable
   case never
 }
@@ -43,8 +43,21 @@ struct RouteStyleKey: EnvironmentKey {
 }
 
 public extension EnvironmentValues {
-  var routeStyle: RouteStyle? {
+  /// If the view is part of a route within a FlowStack, this denotes the presentation style of the route within the stack.
+  internal(set) var routeStyle: RouteStyle? {
     get { self[RouteStyleKey.self] }
     set { self[RouteStyleKey.self] = newValue }
+  }
+}
+
+struct RouteIndexKey: EnvironmentKey {
+  static let defaultValue: Int? = nil
+}
+
+public extension EnvironmentValues {
+  /// If the view is part of a route within a FlowStack, this denotes the index of the route within the stack.
+  internal(set) var routeIndex: Int? {
+    get { self[RouteIndexKey.self] }
+    set { self[RouteIndexKey.self] = newValue }
   }
 }

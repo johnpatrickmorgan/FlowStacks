@@ -53,6 +53,12 @@ public extension Array where Element: RouteProtocol {
 // MARK: - Go back
 
 public extension Array where Element: RouteProtocol {
+  /// Returns true if it's possible to go back the given number of screens.
+  /// - Parameter count: The number of screens to go back. Defaults to 1.
+  func canGoBack(_ count: Int = 1) -> Bool {
+    self.count - count >= 0 && count >= 0
+  }
+
   /// Goes back a given number of screens off the stack
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   mutating func goBack(_ count: Int = 1) {

@@ -51,6 +51,7 @@ struct NumberCoordinator: View {
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowNavigator<Int>
   @Environment(\.routeStyle) var routeStyle: RouteStyle?
+  @Environment(\.routeIndex) var routeIndex: Int?
 
   @Binding var number: Int
   let goRandom: (() -> Void)?
@@ -73,14 +74,14 @@ private struct NumberView: View {
       if let goRandom {
         Button("Go random", action: goRandom)
       }
-      if navigator.routes.count > 1 {
+      if navigator.canGoBack() {
         Button("Go back") { navigator.goBack() }
           .accessibilityIdentifier("Go back from \(number)")
         Button("Go back to root") { navigator.goBackToRoot() }
           .accessibilityIdentifier("Go back to root from \(number)")
       }
-      if let routeStyle {
-        Text("\(routeStyle)")
+      if let routeStyle, let routeIndex {
+        Text("\(routeStyle) (\(routeIndex))")
           .font(.footnote).foregroundColor(.gray)
       }
     }
