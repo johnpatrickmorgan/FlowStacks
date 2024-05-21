@@ -107,7 +107,7 @@ private struct NumberView: View {
         onDecrement: { number -= 1 }
       ).labelsHidden()
       FlowLink(
-        value: number + 1,
+        value: Number(value: number + 1),
         style: .push,
         label: { Text("Show next number") }
       )

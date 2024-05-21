@@ -103,7 +103,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
 }
 
 public extension FlowStack where Data == AnyHashable {
-  init(withNavigation: Bool, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
+  init(withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
     self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .flowPath, root: root)
   }
 
@@ -123,7 +123,7 @@ public extension FlowStack where NavigationViewModifier == UnchangedViewModifier
 }
 
 public extension FlowStack where NavigationViewModifier == UnchangedViewModifier, Data == AnyHashable {
-  init(withNavigation: Bool, @ViewBuilder root: () -> Root) {
+  init(withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
     self.init(withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), root: root)
   }
 

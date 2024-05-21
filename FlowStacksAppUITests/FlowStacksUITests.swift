@@ -17,18 +17,6 @@ final class FlowStacksUITests: XCTestCase {
     launchAndRunNavigationTests(tabTitle: "NoBinding", useNavigationStack: false, app: XCUIApplication())
   }
 
-  func testNavigationViaPathWithNavigationStack() {
-    launchAndRunNavigationTests(tabTitle: "FlowPath", useNavigationStack: true, app: XCUIApplication())
-  }
-
-  func testNavigationViaArrayWithNavigationStack() {
-    launchAndRunNavigationTests(tabTitle: "ArrayBinding", useNavigationStack: true, app: XCUIApplication())
-  }
-
-  func testNavigationViaNoneWithNavigationStack() {
-    launchAndRunNavigationTests(tabTitle: "NoBinding", useNavigationStack: true, app: XCUIApplication())
-  }
-
   func launchAndRunNavigationTests(tabTitle: String, useNavigationStack: Bool, app: XCUIApplication) {
     if useNavigationStack {
       app.launchArguments = ["USE_NAVIGATIONSTACK"]

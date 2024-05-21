@@ -1,6 +1,7 @@
 import SwiftUI
 
-public extension View {
+// This is not currently public, as there are issues with it.
+extension View {
   /// Sets the policy for whether to use SwiftUI's built-in `NavigationStack` when available (i.e. when the SwiftUI
   /// version includes it). The default behaviour is to never use `NavigationStack` - instead `NavigationView`
   /// will be used on all versions, even when the API is available.

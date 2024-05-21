@@ -29,7 +29,7 @@ extension NumberVMFlow {
       initialScreenViewModel = .init(number: initialNumber)
       self.routes = routes
 
-      initialScreenViewModel.goRandom = goRandom
+      initialScreenViewModel.goRandom = { [weak self] in self?.goRandom() }
     }
 
     func open(_ url: URL) {
