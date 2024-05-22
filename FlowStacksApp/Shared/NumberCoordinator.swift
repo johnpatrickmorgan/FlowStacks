@@ -51,6 +51,7 @@ private struct NumberView: View {
   @Environment(\.routeStyle) var routeStyle: RouteStyle?
   @Environment(\.routeIndex) var routeIndex: Int?
 
+  @State private var colorShown: Color?
   @Binding var number: Int
   let goRandom: (() -> Void)?
 
@@ -69,6 +70,8 @@ private struct NumberView: View {
         navigator.push(number + 1)
       }
       .accessibilityIdentifier("Push next from \(number)")
+      Button("Show red") { colorShown = .red }
+        .accessibilityIdentifier("Show red from \(number)")
       if let goRandom {
         Button("Go random", action: goRandom)
       }
@@ -84,6 +87,10 @@ private struct NumberView: View {
       }
     }
     .padding()
+    .flowDestination(item: $colorShown, style: .sheet(withNavigation: true)) { color in
+      Text(String(describing: color)).foregroundColor(color)
+        .navigationTitle("Color")
+    }
     .navigationTitle("\(number)")
   }
 }

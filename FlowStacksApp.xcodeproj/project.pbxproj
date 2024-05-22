@@ -26,6 +26,7 @@
 		528AE0F92BF377C400E143C5 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */; };
 		528AE0FA2BF377C400E143C5 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */; };
 		528AE0FF2BF7662200E143C5 /* FlowStacksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */; };
+		529D5CCE2BFE44A200C50A7C /* NestedFlowStacksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D5CCD2BFE44A200C50A7C /* NestedFlowStacksUITests.swift */; };
 		52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 /* End PBXBuildFile section */
@@ -53,6 +54,7 @@
 		528AE0F12BF377C300E143C5 /* FlowPathView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowPathView.swift; sourceTree = "<group>"; };
 		528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberVMFlow.swift; sourceTree = "<group>"; };
 		528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksUITests.swift; sourceTree = "<group>"; };
+		529D5CCD2BFE44A200C50A7C /* NestedFlowStacksUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedFlowStacksUITests.swift; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
 		52E2C8F02A7265A00042C495 /* FlowStacks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlowStacks; path = .; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 			isa = PBXGroup;
 			children = (
 				5285BBAE2B6408F500197CE7 /* NumbersUITests.swift */,
+				529D5CCD2BFE44A200C50A7C /* NestedFlowStacksUITests.swift */,
 				528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */,
 			);
 			path = FlowStacksAppUITests;
@@ -322,6 +325,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				528AE0FF2BF7662200E143C5 /* FlowStacksUITests.swift in Sources */,
+				529D5CCE2BFE44A200C50A7C /* NestedFlowStacksUITests.swift in Sources */,
 				5285BBAF2B6408F500197CE7 /* NumbersUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

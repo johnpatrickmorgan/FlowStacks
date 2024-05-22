@@ -12,6 +12,10 @@ public struct FlowLink<P: Hashable, Label: View>: View {
     self.route = route
     self.label = label()
   }
+  
+  public init(value: P?, style: RouteStyle, @ViewBuilder label: () -> Label) {
+    self.init(route: value.map { Route(screen: $0, style: style) }, label: label)
+  }
 
   public var body: some View {
     // TODO: Ensure this button is styled more like a NavigationLink within a List.
@@ -27,9 +31,6 @@ public struct FlowLink<P: Hashable, Label: View>: View {
 }
 
 public extension FlowLink where Label == Text {
-  init(value: P?, style: RouteStyle, @ViewBuilder label: () -> Label) {
-    self.init(route: value.map { Route(screen: $0, style: style) }, label: label)
-  }
 
   init(_ title: some StringProtocol, value: P?, style: RouteStyle) {
     self.init(route: value.map { Route(screen: $0, style: style) }) { Text(title) }

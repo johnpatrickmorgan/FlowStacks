@@ -51,13 +51,18 @@ struct FlowPathView: View {
 }
 
 private struct HomeView: View {
+  @Environment(\.routeIndex) var routeIndex
   @EnvironmentObject var navigator: FlowPathNavigator
   @State var isPushing = false
 
   var body: some View {
     VStack(spacing: 8) {
       // Push via link
-      FlowLink(value: NumberList(range: 0 ..< 10), style: .sheet(withNavigation: true), label: { Text("Pick a number") })
+      FlowLink(
+        value: NumberList(range: 0 ..< 10),
+        style: .sheet(withNavigation: true),
+        label: { Text("Pick a number") }
+      ).accessibilityIdentifier("Pick a number from index \(routeIndex ?? -1)")
       // Push via navigator
       Button("99 Red balloons", action: show99RedBalloons)
       // Push child class via navigator
@@ -82,12 +87,14 @@ private struct HomeView: View {
 }
 
 private struct NumberListView: View {
+  @Environment(\.routeIndex) var routeIndex
   @EnvironmentObject var navigator: FlowPathNavigator
   let numberList: NumberList
   var body: some View {
     List {
       ForEach(numberList.range, id: \.self) { number in
         FlowLink("\(number)", value: Number(value: number), style: .push)
+          .accessibilityIdentifier("Show \(number) from index \(routeIndex ?? -1)")
       }
       Button("Go back", action: { navigator.goBack() })
     }.navigationTitle("List")
