@@ -4,8 +4,8 @@ This package takes SwiftUI's familiar and powerful `NavigationStack` API and giv
 
 You might like this library if:
 
-✅ You want to be able support deeplinks into deeply nested navigation routes in your app.<br/>
-✅ You want to be able to easily reuse views within different navigation contexts.<br/>
+✅ You want to support deeplinks into deeply nested navigation routes in your app.<br/>
+✅ You want to easily re-use views within different navigation contexts.<br/>
 ✅ You want to easily go back to the root screen or a specific screen in the navigation stack.<br/>
 ✅ You want to use the coordinator pattern to keep navigation logic in a single place.<br/>
 ✅ You want to break an app's navigation into multiple reusable coordinators and compose them together.<br/>
@@ -22,9 +22,7 @@ If you already know SwiftUI's `NavigationStack` APIs, `FlowStacks` should feel f
 
 ✅ `navigationDestination` -> `flowDestination`
 
-✅ `NavigationPath.CodableRepresentation` -> `FlowPath.CodableRepresentation`
-
-`NavigationStack`'s full API is replicated, so you can initialise a `FlowStack` with a binding to an `Array`, with a binding to a `FlowPath`, or with no binding at all. The only difference is that the array should be a `[Route<MyScreen>]`s instead of `[MyScreen]`. The `Route` enum combines the destination data with info about what style of presentation is used. Similarly, when you create a `FlowLink`, you must specify the route style, e.g. `.push`, `.sheet` or `.cover`. If the user taps the back button or swipes to dismiss a sheet, the routes array will be automatically updated to reflect the new navigation state. 
+`NavigationStack`'s full API is replicated, so you can initialise a `FlowStack` with a binding to an `Array`, with a binding to a `FlowPath`, or with no binding at all. The only difference is that the array should be a `[Route<MyScreen>]`s instead of `[MyScreen]`. The `Route` enum combines the destination data with info about what style of presentation is used. Similarly, when you create a `FlowLink`, you must additionally specify the route style, e.g. `.push`, `.sheet` or `.cover`. As with `NavigationStack`, if the user taps the back button or swipes to dismiss a sheet, the routes array will be automatically updated to reflect the new navigation state. 
 
 ## Example
 
@@ -100,7 +98,7 @@ As well as replicating the standard features of the new `NavigationStack` APIs, 
 
 ### FlowNavigator
 
-A `FlowNavigator` object is available through the environment, giving access to the current routes array. The navigator can be accessed via the environment, e.g. for a FlowPath-backed stack:
+A `FlowNavigator` object is available through the environment, giving access to the current routes array and the ability to update it via a number of convenience methods. The navigator can be accessed via the environment, e.g. for a `FlowPath`-backed stack:
 
 ```swift
 @EnvironmentObject var navigator: FlowPathNavigator
@@ -109,12 +107,32 @@ A `FlowNavigator` object is available through the environment, giving access to 
 Or for a FlowStack backed by a routes array, e.g. `[Route<ScreenType>]`:
 
 ```swift
-@EnvironmentObject var navigator: Navigator<ScreenType>
+@EnvironmentObject var navigator: FlowNavigator<ScreenType>
+```
+
+Here's an example of a `FlowNavigator` in use:
+
+```swift
+@EnvironmentObject var navigator: FlowNavigator<ScreenType>
+
+var body: some View {
+  VStack {
+    Button("View detail") {
+      navigator.push(.detail)
+    }
+    Button("Go back to profile") {
+      navigator.goBackTo(.profile)
+    }
+    Button("Go back to root") {
+      navigator.goBackToRoot()
+    }
+  }
+}
 ```
 
 ### Convenience methods
 
-When interacting with a `FlowNavigator` (or the original `Array` or `FlowPath`), a number of convenience methods are available for easier navigation, including:
+When interacting with a `FlowNavigator` (and also the original `FlowPath` or routes array), a number of convenience methods are available for easier navigation, including:
 
 | Method       | Effect                                            |
 |--------------|---------------------------------------------------|
@@ -129,7 +147,7 @@ When interacting with a `FlowNavigator` (or the original `Array` or `FlowPath`),
 
 ### Deep-linking
  
- Before the `NavigationStack` APIs were introduced, SwiftUI did not support pushing more than one screen in a single state update, e.g. when deep-linking to a screen multiple layers deep in a navigation hierarchy. `FlowStacks` works around this limitation: you can make any such changes, and the library will, behind the scenes, break down the larger update into a series of smaller updates that SwiftUI supports, with delays if necessary in between.
+ Before the `NavigationStack` APIs were introduced, SwiftUI did not support pushing more than one screen in a single state update, e.g. when deep-linking to a screen multiple layers deep in a navigation hierarchy. *FlowStacks* works around this limitation: you can make any such changes, and the library will, behind the scenes, break down the larger update into a series of smaller updates that SwiftUI supports, with delays if necessary in between.
 
 ### Bindings
 
@@ -142,8 +160,8 @@ struct BindingExampleCoordinator: View {
   @State var path = FlowPath()
     
   var body: some View {
-    FlowStack($path) {
-      FlowLink(value: 1)
+    FlowStack($path, withNavigation: true) {
+      FlowLink(value: 1, style: .push, label: { Text("Push '1'") })
         .flowDestination(for: Int.self) { $number in
           EditNumberScreen(number: $number) // This screen can now change the number stored in the path.
         }
@@ -153,30 +171,7 @@ struct BindingExampleCoordinator: View {
 
 ### Child flow coordinators
 
-FlowStacks are designed to be composable, so that you can have multiple flow coordinators, each with its own `FlowStack`, and you can present or push a child coordinator from a parent. See [Nesting FlowStacks](Docs/Nesting%20FlowStacks.md) for more info.
-
-### Routes array automatically updated
-
-If the user taps the back button or swipes to dismiss a screen, the routes array or `FlowPath` will be automatically updated to reflect the new state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as will swiping to dismiss a sheet.
-
-### FlowNavigator
-
-The example above passes closures to screen views for presenting new screens and going back. However, passing closures can soon become unwieldy if you need to pass them down through multiple layers of views. Instead, a `FlowNavigator` object is available through the environment, giving access to the current routes array and the ability to update it via all its convenience methods. It can be accessed via the environment from any view within the router, e.g.:
-
-```swift
-@EnvironmentObject var navigator: FlowNavigator<ScreenType>
-
-var body: some View {
-  VStack {
-    Button("View detail") {
-      navigator.push(.detail)
-    }
-    Button("Go back to root") {
-      navigator.goBackToRoot()
-    }
-  }
-}
-```
+`FlowStack`s are designed to be composable, so that you can have multiple flow coordinators, each with its own `FlowStack`, and you can present or push a child coordinator from a parent. See [Nesting FlowStacks](Docs/Nesting%20FlowStacks.md) for more info.
 
 ### Bindings
 
