@@ -39,10 +39,8 @@ struct NumberCoordinator: View {
     }
     switch link {
     case let .numbers(numbers):
-      $routes.withDelaysIfUnsupported {
-        for number in numbers {
-          $0.push(number)
-        }
+      for number in numbers {
+        routes.push(number)
       }
     }
   }

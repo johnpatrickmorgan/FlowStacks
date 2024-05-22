@@ -41,24 +41,24 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
         }
         .onChange(of: externalTypedPath) { externalTypedPath in
           guard !useInternalTypedPath else { return }
-          routesHolder.withDelaysIfUnsupported(\.routes) {
+          routesHolder._withDelaysIfUnsupported(\.routes) {
             $0 = externalTypedPath.map { $0.erased() }
           }
         }
     } else {
       content
         .onFirstAppear {
-          path.withDelaysIfUnsupported(\.routes) {
+          path._withDelaysIfUnsupported(\.routes) {
             $0 = externalTypedPath.map { $0.erased() }
           }
         }
         .onChange(of: externalTypedPath) { externalTypedPath in
-          path.withDelaysIfUnsupported(\.routes) {
+          path._withDelaysIfUnsupported(\.routes) {
             $0 = externalTypedPath.map { $0.erased() }
           }
         }
         .onChange(of: internalTypedPath) { internalTypedPath in
-          path.withDelaysIfUnsupported(\.routes) {
+          path._withDelaysIfUnsupported(\.routes) {
             $0 = internalTypedPath.map { $0.erased() }
           }
         }

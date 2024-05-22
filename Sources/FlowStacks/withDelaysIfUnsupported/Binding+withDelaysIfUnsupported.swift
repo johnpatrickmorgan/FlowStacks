@@ -5,6 +5,7 @@ public extension Binding where Value: Collection {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @_disfavoredOverload
   @MainActor
   func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) where Value == [Route<Screen>] {
@@ -23,6 +24,7 @@ public extension Binding where Value: Collection {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @MainActor
   func withDelaysIfUnsupported<Screen>(_ transform: (inout [Route<Screen>]) -> Void) async where Value == [Route<Screen>] {
     let start = wrappedValue
@@ -47,6 +49,7 @@ public extension Binding where Value == FlowPath {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @_disfavoredOverload
   @MainActor
   func withDelaysIfUnsupported(_ transform: (inout FlowPath) -> Void, onCompletion: (() -> Void)? = nil) {
@@ -65,6 +68,7 @@ public extension Binding where Value == FlowPath {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @MainActor
   func withDelaysIfUnsupported(_ transform: (inout Value) -> Void) async {
     let start = wrappedValue
@@ -93,7 +97,7 @@ extension Binding {
     wrappedValue[keyPath: keyPath] = steps.first!
     await scheduleRemainingSteps(steps: Array(steps.dropFirst()), keyPath: keyPath)
   }
-
+  
   @MainActor
   func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]], keyPath: WritableKeyPath<Value, [Route<Screen>]>) async {
     guard let firstStep = steps.first else {

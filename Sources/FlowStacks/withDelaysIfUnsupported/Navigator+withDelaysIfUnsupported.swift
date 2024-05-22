@@ -4,6 +4,7 @@ public extension FlowNavigator {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @_disfavoredOverload
   @MainActor
   func withDelaysIfUnsupported(transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
@@ -22,6 +23,7 @@ public extension FlowNavigator {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @MainActor
   func withDelaysIfUnsupported(transform: (inout [Route<Screen>]) -> Void) async {
     let start = routes

@@ -1,13 +1,12 @@
 import Foundation
 import SwiftUI
 
-public extension ObservableObject {
-  /// Any changes can be made to the routes array passed to the transform closure. If those
-  /// changes are not supported within a single update by SwiftUI, the changes will be
-  /// applied in stages. An async version of this function is also available.
+extension ObservableObject {
+  /// Used internally to ensure any changes made to the path, that are not supported within a single update by SwiftUI, will be
+  /// applied in stages.
   @_disfavoredOverload
   @MainActor
-  func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
+  func _withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
     let start = self[keyPath: keyPath]
     let end = apply(transform, to: start)
 
@@ -19,10 +18,23 @@ public extension ObservableObject {
       onCompletion?()
     }
   }
+}
+
+public extension ObservableObject {
+  /// Any changes can be made to the routes array passed to the transform closure. If those
+  /// changes are not supported within a single update by SwiftUI, the changes will be
+  /// applied in stages. An async version of this function is also available.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
+  @_disfavoredOverload
+  @MainActor
+  func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
+    _withDelaysIfUnsupported(keyPath, transform: transform, onCompletion: onCompletion)
+  }
 
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @MainActor
   func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void) async {
     let start = self[keyPath: keyPath]
@@ -37,6 +49,7 @@ public extension ObservableObject {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages. An async version of this function is also available.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @_disfavoredOverload
   @MainActor
   func withDelaysIfUnsupported(_ keyPath: WritableKeyPath<Self, FlowPath>, transform: (inout FlowPath) -> Void, onCompletion: (() -> Void)? = nil) {
@@ -55,6 +68,7 @@ public extension ObservableObject {
   /// Any changes can be made to the routes array passed to the transform closure. If those
   /// changes are not supported within a single update by SwiftUI, the changes will be
   /// applied in stages.
+  @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @MainActor
   func withDelaysIfUnsupported(_ keyPath: WritableKeyPath<Self, FlowPath>, transform: (inout FlowPath) -> Void) async {
     let start = self[keyPath: keyPath]
