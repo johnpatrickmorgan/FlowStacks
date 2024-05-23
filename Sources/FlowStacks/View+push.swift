@@ -4,10 +4,10 @@ struct PushModifier<Destination: View>: ViewModifier {
   @Binding var isActive: Bool
   var destination: Destination
 
-  @Environment(\.isWithinNavigationStack) var isWithinNavigationStack
+  @Environment(\.parentNavigationStackType) var parentNavigationStackType
 
   func body(content: Content) -> some View {
-    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 7.0, *, tvOS 14.0, *), isWithinNavigationStack {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 7.0, *, tvOS 14.0, *), parentNavigationStackType == .navigationStack {
       AnyView(
         content
           .navigationDestination(isPresented: $isActive, destination: { destination })
@@ -19,7 +19,17 @@ struct PushModifier<Destination: View>: ViewModifier {
             NavigationLink(destination: destination, isActive: $isActive, label: EmptyView.init)
               .hidden()
           )
-      )
+      ).onChange(of: isActive) { isActive in
+        if isActive && parentNavigationStackType == nil {
+          print(
+            """
+            Attempting to push from a view that is not embedded in a navigation view. \
+            Did you mean to pass `withNavigation: true` when creating the FlowStack or \
+            presenting the sheet/cover?
+            """
+          )
+        }
+      }
     }
   }
 }

@@ -23,8 +23,8 @@ public extension Array where Element: RouteProtocol {
     assert(
       canPush != false,
       """
-      Attempting to push a screen, but the most recently presented screen is not
-      embedded in a `NavigationView`. Please ensure the root or most recently presented
+      Attempting to push a screen, but the most recently presented screen is not \
+      embedded in a `NavigationView`. Please ensure the root or most recently presented \
       route has `withNavigation` set to `true`.
       """
     )

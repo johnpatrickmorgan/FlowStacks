@@ -11,12 +11,12 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier>: ViewModifier {
     if #available(iOS 16.0, *, macOS 13.0, *, watchOS 7.0, *, tvOS 14.0, *), useNavigationStack == .whenAvailable {
       NavigationStack { content }
         .modifier(navigationViewModifier)
-        .environment(\.isWithinNavigationStack, true)
+        .environment(\.parentNavigationStackType, .navigationStack)
     } else {
       NavigationView { content }
         .modifier(navigationViewModifier)
         .navigationViewStyle(supportedNavigationViewStyle)
-        .environment(\.isWithinNavigationStack, false)
+        .environment(\.parentNavigationStackType, .navigationView)
     }
   }
 

@@ -10,7 +10,7 @@ struct CoverModifier<Destination: View>: ViewModifier {
         .sheet(
           isPresented: isActiveBinding,
           onDismiss: nil,
-          content: { destination }
+          content: { destination.environment(\.parentNavigationStackType, nil) }
         )
     #else
       if #available(iOS 14.0, tvOS 14.0, macOS 99.9, *) {
@@ -18,14 +18,14 @@ struct CoverModifier<Destination: View>: ViewModifier {
           .fullScreenCover(
             isPresented: isActiveBinding,
             onDismiss: nil,
-            content: { destination }
+            content: { destination.environment(\.parentNavigationStackType, nil) }
           )
       } else { // Covers are unavailable on prior versions
         content
           .sheet(
             isPresented: isActiveBinding,
             onDismiss: nil,
-            content: { destination }
+            content: { destination.environment(\.parentNavigationStackType, nil) }
           )
       }
     #endif

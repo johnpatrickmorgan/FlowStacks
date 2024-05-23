@@ -9,8 +9,12 @@ struct UseNavigationStackPolicyKey: EnvironmentKey {
   static let defaultValue = UseNavigationStackPolicy.never
 }
 
-struct IsWithinNavigationStackKey: EnvironmentKey {
-  static let defaultValue = false
+enum ParentNavigationStackType {
+  case navigationView, navigationStack
+}
+
+struct ParentNavigationStackKey: EnvironmentKey {
+  static let defaultValue: ParentNavigationStackType? = nil
 }
 
 enum FlowStackDataType {
@@ -27,9 +31,9 @@ extension EnvironmentValues {
     set { self[UseNavigationStackPolicyKey.self] = newValue }
   }
 
-  var isWithinNavigationStack: Bool {
-    get { self[IsWithinNavigationStackKey.self] }
-    set { self[IsWithinNavigationStackKey.self] = newValue }
+  var parentNavigationStackType: ParentNavigationStackType? {
+    get { self[ParentNavigationStackKey.self] }
+    set { self[ParentNavigationStackKey.self] = newValue }
   }
 
   var flowStackDataType: FlowStackDataType? {

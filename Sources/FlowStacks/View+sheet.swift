@@ -11,6 +11,7 @@ struct SheetModifier<Destination: View>: ViewModifier {
         onDismiss: nil,
         content: {
           destination
+            .environment(\.parentNavigationStackType, nil)
         }
       )
   }
