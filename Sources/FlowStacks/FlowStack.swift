@@ -97,16 +97,33 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
     useInternalTypedPath = routes == nil
   }
 
+  /// Initialises a ``FlowStack`` with a binding to an Array of routes.
+  /// - Parameters:
+  ///   - routes: The array of routes that will manage navigation state.
+  ///   - withNavigation: Whether the root view should be wrapped in a navigation view.
+  ///   - navigationViewModifier: A modifier for styling any navigation views the FlowStack creates.
+  ///   - root: The root view for the ``FlowStack``.
   public init(_ routes: Binding<[Route<Data>]>, withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
     self.init(routes: routes, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .typedArray, root: root)
   }
 }
 
 public extension FlowStack where Data == AnyHashable {
+  /// Initialises a ``FlowStack`` without any binding - the stack of routes will be managed internally by the ``FlowStack``.
+  /// - Parameters:
+  ///   - withNavigation: Whether the root view should be wrapped in a navigation view.
+  ///   - navigationViewModifier: A modifier for styling any navigation views the FlowStack creates.
+  ///   - root: The root view for the ``FlowStack``.
   init(withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
     self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .flowPath, root: root)
   }
 
+  /// Initialises a ``FlowStack`` with a binding to a ``FlowPath``.
+  /// - Parameters:
+  ///   - path: The FlowPath that will manage navigation state.
+  ///   - withNavigation: Whether the root view should be wrapped in a navigation view.
+  ///   - navigationViewModifier: A modifier for styling any navigation views the FlowStack creates.
+  ///   - root: The root view for the ``FlowStack``.
   init(_ path: Binding<FlowPath>, withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
     let path = Binding(
       get: { path.wrappedValue.routes },
@@ -117,16 +134,30 @@ public extension FlowStack where Data == AnyHashable {
 }
 
 public extension FlowStack where NavigationViewModifier == UnchangedViewModifier {
+  /// Initialises a ``FlowStack`` with a binding to an Array of routes.
+  /// - Parameters:
+  ///   - routes: The array of routes that will manage navigation state.
+  ///   - withNavigation: Whether the root view should be wrapped in a navigation view.
+  ///   - root: The root view for the ``FlowStack``.
   init(_ routes: Binding<[Route<Data>]>, withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
     self.init(routes: routes, withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), dataType: .typedArray, root: root)
   }
 }
 
 public extension FlowStack where NavigationViewModifier == UnchangedViewModifier, Data == AnyHashable {
+  /// Initialises a ``FlowStack`` without any binding - the stack of routes will be managed internally by the ``FlowStack``.
+  /// - Parameters:
+  ///   - withNavigation: Whether the root view should be wrapped in a navigation view.
+  ///   - root: The root view for the ``FlowStack``.
   init(withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
     self.init(withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), root: root)
   }
 
+  /// Initialises a ``FlowStack`` with a binding to a ``FlowPath``.
+  /// - Parameters:
+  ///   - path: The FlowPath that will manage navigation state.
+  ///   - withNavigation: Whether the root view should be wrapped in a navigation view.
+  ///   - root: The root view for the ``FlowStack``.
   init(_ path: Binding<FlowPath>, withNavigation: Bool = false, @ViewBuilder root: () -> Root) {
     self.init(path, withNavigation: withNavigation, navigationViewModifier: UnchangedViewModifier(), root: root)
   }

@@ -12,7 +12,12 @@ public struct FlowLink<P: Hashable, Label: View>: View {
     self.route = route
     self.label = label()
   }
-  
+
+  /// Creates a flow link that presents the view corresponding to a value.
+  /// - Parameters:
+  ///   - value: An optional value to present. When the user selects the link, SwiftUI stores a copy of the value. Pass a nil value to disable the link.
+  ///   - style: The mode of presentation, e.g. `.push` or `.sheet`.
+  ///   - label: A label that describes the view that this link presents.
   public init(value: P?, style: RouteStyle, @ViewBuilder label: () -> Label) {
     self.init(route: value.map { Route(screen: $0, style: style) }, label: label)
   }
@@ -31,11 +36,20 @@ public struct FlowLink<P: Hashable, Label: View>: View {
 }
 
 public extension FlowLink where Label == Text {
-
+  /// Creates a flow link that presents a destination view, with a text label that the link generates from a title string.
+  /// - Parameters:
+  ///   - title: A string for creating a text label.
+  ///   - value: A view for the navigation link to present.
+  ///   - style: The mode of presentation, e.g. `.push` or `.sheet`.
   init(_ title: some StringProtocol, value: P?, style: RouteStyle) {
     self.init(route: value.map { Route(screen: $0, style: style) }) { Text(title) }
   }
 
+  /// Creates a flow link that presents a destination view, with a text label that the link generates from a localized string key.
+  /// - Parameters:
+  ///   - titleKey: A localized string key for creating a text label.
+  ///   - value: A view for the navigation link to present.
+  ///   - style: The mode of presentation, e.g. `.push` or `.sheet`.
   init(_ titleKey: LocalizedStringKey, value: P?, style: RouteStyle) {
     self.init(route: value.map { Route(screen: $0, style: style) }) { Text(titleKey) }
   }

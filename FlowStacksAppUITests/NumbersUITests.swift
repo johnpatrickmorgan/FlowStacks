@@ -79,7 +79,7 @@ final class NumbersUITests: XCTestCase {
     app.navigationBars["34"].swipeSheetDown()
     XCTAssertTrue(app.navigationBars["17"].waitForExistence(timeout: navigationTimeout))
     XCTAssertTrue(app.staticTexts["push (5)"].exists)
-    
+
     app.buttons["Show red from 17"].firstMatch.tap()
     XCTAssertTrue(app.navigationBars["Color"].waitForExistence(timeout: navigationTimeout))
     XCTAssertTrue(app.staticTexts["red"].exists)

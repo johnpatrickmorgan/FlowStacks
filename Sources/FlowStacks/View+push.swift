@@ -20,7 +20,7 @@ struct PushModifier<Destination: View>: ViewModifier {
               .hidden()
           )
       ).onChange(of: isActive) { isActive in
-        if isActive && parentNavigationStackType == nil {
+        if isActive, parentNavigationStackType == nil {
           print(
             """
             Attempting to push from a view that is not embedded in a navigation view. \

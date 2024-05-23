@@ -2,8 +2,8 @@
 
 Before its API was brought more in line with `NavigationStack` APIs, previous versions of `FlowStacks` had two major differences:
 
-- Previously the `Router` (now the `FlowStack`) handled both state management _and_ building destination views. The latter has now been decoupled into a separate function `flowDestination(...)`. This gives you more control over where you set up flow destinations, but for easy migration, you can keep them in the same place.
-- Previously the root screen was part of the routes array. The root screen is no longer part of the routes array, which might be awkward if your flow required you to swap out the root screen. In those cases, you will probably want to split the flow into two separate flows, each with its own FlowStack and a parent view that switches between them as needed.
+- Previously the `Router` (now the `FlowStack`) handled both state management _and_ building destination views. The latter has now been decoupled into a separate function `flowDestination(...)`. This decoupling you more flexibility over where you set up flow destinations, but for easy migration, you can keep them in the same place as you initialise the `FlowStack`.
+- Previously the root screen was part of the routes array. The root screen is no longer part of the routes array. Usually that will mean removing the root screen's case from your Screen enum and moving its view creation into the FlowStack initialiser. It might be awkward if your flow supported more than one root screen. In those cases, you will probably want to split the flow into two separate flows, each with its own `FlowStack` and a parent view that switches between them as needed.
   
 Here's an example migration:
 

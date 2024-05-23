@@ -2,10 +2,20 @@ import Foundation
 import SwiftUI
 
 public extension View {
+  /// Associates a destination view with a presented data type for use within a ``FlowStack``.
+  /// - Parameters:
+  ///   - dataType: The type of data that this destination matches.
+  ///   - destination: A view builder that defines a view to display when the stack’s state contains a value of the given type. The closure takes one argument, which is a binding to the value of the data to present.
+  /// - Returns: The view configured so it can present data of the given type.
   func flowDestination<D: Hashable>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (Binding<D>) -> some View) -> some View {
     modifier(DestinationBuilderModifier(typedDestinationBuilder: { AnyView(builder($0)) }))
   }
 
+  /// Associates a destination view with a presented data type for use within a ``FlowStack``.
+  /// - Parameters:
+  ///   - dataType: The type of data that this destination matches.
+  ///   - destination: A view builder that defines a view to display when the stack’s state contains a value of the given type. The closure takes one argument, which is the value of the data to present.
+  /// - Returns: The view configured so it can present data of the given type.
   func flowDestination<D: Hashable>(for dataType: D.Type, @ViewBuilder destination builder: @escaping (D) -> some View) -> some View {
     flowDestination(for: dataType) { binding in builder(binding.wrappedValue) }
   }
@@ -35,7 +45,7 @@ public extension View {
   ///         .flowDestination(isPresented: $showDetails, style: .sheet) {
   ///             ColorDetail(color: favoriteColor)
   ///         }
-  ///         .nbNavigationTitle("My Favorite Color")
+  ///         .navigationTitle("My Favorite Color")
   ///     }
   ///
   /// Do not put a navigation destination modifier inside a "lazy" container,

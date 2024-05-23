@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// A navigator to use when the `FlowStack` is initialized with a `FlowPath` binding or no binding.`
+/// A navigator to use when the `FlowStack` is initialized with a `FlowPath` binding or no binding.
 public typealias FlowPathNavigator = FlowNavigator<AnyHashable>
 
 /// An object available via the environment that gives access to the current routes array.

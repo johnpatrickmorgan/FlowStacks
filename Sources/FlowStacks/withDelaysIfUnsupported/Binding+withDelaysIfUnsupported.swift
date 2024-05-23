@@ -97,7 +97,7 @@ extension Binding {
     wrappedValue[keyPath: keyPath] = steps.first!
     await scheduleRemainingSteps(steps: Array(steps.dropFirst()), keyPath: keyPath)
   }
-  
+
   @MainActor
   func scheduleRemainingSteps<Screen>(steps: [[Route<Screen>]], keyPath: WritableKeyPath<Value, [Route<Screen>]>) async {
     guard let firstStep = steps.first else {

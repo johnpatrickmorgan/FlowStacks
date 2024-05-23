@@ -63,6 +63,9 @@ public enum Route<Screen> {
     }
   }
 
+  /// Transforms the screen data within the route.
+  /// - Parameter transform: The transform to be applied.
+  /// - Returns: A new route with the same route style, but transformed screen data.
   public func map<NewScreen>(_ transform: (Screen) -> NewScreen) -> Route<NewScreen> {
     switch self {
     case .push:
