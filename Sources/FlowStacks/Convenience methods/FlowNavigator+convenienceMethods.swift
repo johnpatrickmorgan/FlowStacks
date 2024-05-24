@@ -3,7 +3,7 @@ import Foundation
 public extension FlowNavigator {
   /// Whether the Array of Routes is able to push new screens. If it is not possible to determine,
   /// `nil` will be returned, e.g. if there is no `NavigationView` in this routes stack but it's possible
-  /// it has been pushed onto a parent coordinator with a `NavigationView`.
+  /// a `NavigationView` has been added outside the FlowStack..
   var canPush: Bool? {
     routes.canPush
   }
@@ -18,8 +18,8 @@ public extension FlowNavigator {
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
   /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
-  func presentSheet(_ screen: Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
-    routes.presentSheet(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
+  func presentSheet(_ screen: Screen, withNavigation: Bool = false) {
+    routes.presentSheet(screen, withNavigation: withNavigation)
   }
 
   #if os(macOS)
@@ -28,8 +28,8 @@ public extension FlowNavigator {
     /// - Parameter screen: The screen to push.
     /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
     @available(OSX, unavailable, message: "Not available on OS X.")
-    func presentCover(_ screen: Screen, embedInNavigationView: Bool = false, onDismiss: (() -> Void)? = nil) {
-      routes.presentCover(screen, embedInNavigationView: embedInNavigationView, onDismiss: onDismiss)
+    func presentCover(_ screen: Screen, withNavigation: Bool = false) {
+      routes.presentCover(screen, withNavigation: withNavigation)
     }
   #endif
 }
@@ -37,6 +37,12 @@ public extension FlowNavigator {
 // MARK: - Go back
 
 public extension FlowNavigator {
+  /// Returns true if it's possible to go back the given number of screens.
+  /// - Parameter count: The number of screens to go back. Defaults to 1.
+  func canGoBack(_: Int = 1) -> Bool {
+    routes.canGoBack()
+  }
+
   /// Goes back a given number of screens off the stack
   /// - Parameter count: The number of screens to go back. Defaults to 1.
   func goBack(_ count: Int = 1) {
@@ -58,7 +64,7 @@ public extension FlowNavigator {
 
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged.
+  /// the routes array will be unchanged.
   /// - Parameter condition: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a screen was found.
   @discardableResult
@@ -68,7 +74,7 @@ public extension FlowNavigator {
 
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged.
+  /// the routes array will be unchanged.
   /// - Parameter condition: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a screen was found.
   @discardableResult
@@ -80,7 +86,7 @@ public extension FlowNavigator {
 public extension FlowNavigator where Screen: Equatable {
   /// Goes back to the topmost (most recently shown) screen in the stack
   /// equal to the given screen. If no screens are found,
-  /// the screens array will be unchanged.
+  /// the routes array will be unchanged.
   /// - Parameter screen: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
   @discardableResult
@@ -91,7 +97,7 @@ public extension FlowNavigator where Screen: Equatable {
 
 public extension FlowNavigator where Screen: Identifiable {
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
-  /// with the given ID. If no screens are found, the screens array will be unchanged.
+  /// with the given ID. If no screens are found, the routes array will be unchanged.
   /// - Parameter id: The id of the screen to goBack to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
   @discardableResult
@@ -100,7 +106,7 @@ public extension FlowNavigator where Screen: Identifiable {
   }
 
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged.
   /// - Parameter screen: The screen to goBack to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
@@ -113,7 +119,7 @@ public extension FlowNavigator where Screen: Identifiable {
 /// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
 public extension FlowNavigator where Screen: Identifiable & Equatable {
   /// Goes back to the topmost (most recently shown) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged.
   /// - Parameter screen: The screen to goBack to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
@@ -155,7 +161,7 @@ public extension FlowNavigator {
 
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged. Only screens that have been pushed will
+  /// the routes array will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter condition: The predicate indicating which screen to pop to.
   /// - Returns: A `Bool` indicating whether a screen was found.
@@ -166,7 +172,7 @@ public extension FlowNavigator {
 
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// that satisfies the given condition. If no screens satisfy the condition,
-  /// the screens array will be unchanged. Only screens that have been pushed will
+  /// the routes array will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter condition: The predicate indicating which screen to pop to.
   /// - Returns: A `Bool` indicating whether a screen was found.
@@ -179,7 +185,7 @@ public extension FlowNavigator {
 public extension FlowNavigator where Screen: Equatable {
   /// Pops to the topmost (most recently pushed) screen in the stack
   /// equal to the given screen. If no screens are found,
-  /// the screens array will be unchanged. Only screens that have been pushed will
+  /// the routes array will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter screen: The predicate indicating which screen to go back to.
   /// - Returns: A `Bool` indicating whether a matching screen was found.
@@ -191,7 +197,7 @@ public extension FlowNavigator where Screen: Equatable {
 
 public extension FlowNavigator where Screen: Identifiable {
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
-  /// with the given ID. If no screens are found, the screens array will be unchanged.
+  /// with the given ID. If no screens are found, the routes array will be unchanged.
   /// Only screens that have been pushed will
   /// be popped.
   /// - Parameter id: The id of the screen to goBack to.
@@ -202,7 +208,7 @@ public extension FlowNavigator where Screen: Identifiable {
   }
 
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter screen: The screen to goBack to.
@@ -216,7 +222,7 @@ public extension FlowNavigator where Screen: Identifiable {
 /// Avoids an ambiguity when `Screen` is both `Identifiable` and `Equatable`.
 public extension FlowNavigator where Screen: Identifiable & Equatable {
   /// Pops to the topmost (most recently pushed) identifiable screen in the stack
-  /// matching the given screen. If no screens are found, the screens array
+  /// matching the given screen. If no screens are found, the routes array
   /// will be unchanged. Only screens that have been pushed will
   /// be popped.
   /// - Parameter screen: The screen to pop to.

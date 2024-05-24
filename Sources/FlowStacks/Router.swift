@@ -1,106 +1,40 @@
 import Foundation
 import SwiftUI
 
-/// Router converts an array of pushed / presented routes into a view.
-public struct Router<Screen, ScreenView: View, Modifier: ViewModifier>: View {
-  /// The array of routes that represents the navigation stack.
-  @Binding var routes: [Route<Screen>]
-
-  /// A closure that builds a `ScreenView` from a `Screen`and its index.
-  @ViewBuilder var buildView: (Binding<Screen>, Int) -> ScreenView
-
+struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModifier>: View {
+  let rootView: RootView
   /// A view modifier that is applied to any `NavigationView`s created by the router.
-  let navigationViewModifier: Modifier
+  let navigationViewModifier: NavigationViewModifier
 
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a binding to a `Screen` and its index.
-  public init(_ routes: Binding<[Route<Screen>]>, navigationViewModifier: Modifier, @ViewBuilder buildView: @escaping (Binding<Screen>, Int) -> ScreenView) {
-    _routes = routes
-    self.buildView = buildView
+  @Binding var screens: [Route<Screen>]
+
+  init(rootView: RootView, navigationViewModifier: NavigationViewModifier, screens: Binding<[Route<Screen>]>) {
+    self.rootView = rootView
     self.navigationViewModifier = navigationViewModifier
+    _screens = screens
   }
 
-  public var body: some View {
-    Node(allScreens: $routes, truncateToIndex: { index in routes = Array(routes.prefix(index)) }, index: 0, navigationViewModifier: navigationViewModifier, buildView: buildView)
-      .environmentObject(FlowNavigator($routes))
-  }
-}
-
-public extension Router {
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a `Screen` and its index.
-  ///   - navigationViewModifier: Applied to each `NavigationView` created.
-  init(_ routes: Binding<[Route<Screen>]>, navigationViewModifier: Modifier, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
-    _routes = routes
-    self.buildView = { buildView($0.wrappedValue, $1) }
-    self.navigationViewModifier = navigationViewModifier
+  var pushedScreens: some View {
+    Node(allRoutes: $screens, truncateToIndex: { screens = Array(screens.prefix($0)) }, index: 0, navigationViewModifier: navigationViewModifier)
   }
 
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - navigationViewModifier: Applied to each `NavigationView` created.
-  ///   - buildView: A closure that builds a `ScreenView` from a `Screen` binding.
-  init(_ routes: Binding<[Route<Screen>]>, navigationViewModifier: Modifier, @ViewBuilder buildView: @escaping (Binding<Screen>) -> ScreenView) {
-    _routes = routes
-    self.buildView = { screen, _ in buildView(screen) }
-    self.navigationViewModifier = navigationViewModifier
+  private var isActiveBinding: Binding<Bool> {
+    Binding(
+      get: { !screens.isEmpty },
+      set: { isShowing in
+        guard !isShowing else { return }
+        guard !screens.isEmpty else { return }
+        screens = []
+      }
+    )
   }
 
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - navigationViewModifier: Applied to each `NavigationView` created.
-  ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
-  init(_ routes: Binding<[Route<Screen>]>, navigationViewModifier: Modifier, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
-    _routes = routes
-    self.buildView = { $screen, _ in buildView(screen) }
-    self.navigationViewModifier = navigationViewModifier
-  }
-}
-
-public extension Router where Modifier == UnchangedViewModifier {
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a `Screen` and its index.
-  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Screen, Int) -> ScreenView) {
-    _routes = routes
-    self.buildView = { buildView($0.wrappedValue, $1) }
-    navigationViewModifier = UnchangedViewModifier()
+  var nextRouteStyle: RouteStyle? {
+    screens.first?.style
   }
 
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a binding to a`Screen`.
-  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>) -> ScreenView) {
-    _routes = routes
-    self.buildView = { screen, _ in buildView(screen) }
-    navigationViewModifier = UnchangedViewModifier()
-  }
-
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a `Screen`.
-  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Screen) -> ScreenView) {
-    _routes = routes
-    self.buildView = { $screen, _ in buildView(screen) }
-    navigationViewModifier = UnchangedViewModifier()
-  }
-
-  /// Initializer for creating a Router using a binding to an array of screens.
-  /// - Parameters:
-  ///   - stack: A binding to an array of screens.
-  ///   - buildView: A closure that builds a `ScreenView` from a binding to a`Screen` and its index.
-  init(_ routes: Binding<[Route<Screen>]>, @ViewBuilder buildView: @escaping (Binding<Screen>, Int) -> ScreenView) {
-    _routes = routes
-    self.buildView = buildView
-    navigationViewModifier = UnchangedViewModifier()
+  var body: some View {
+    rootView
+      .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: pushedScreens)
   }
 }

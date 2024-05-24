@@ -1,0 +1,190 @@
+import FlowStacks
+import SwiftUI
+
+struct NoBindingView: View {
+  var body: some View {
+    FlowStack(withNavigation: true) {
+      HomeView()
+        .flowDestination(for: NumberList.self, destination: { numberList in
+          NumberListView(numberList: numberList)
+        })
+        .flowDestination(for: Number.self, destination: { $number in
+          NumberView(number: $number.value)
+        })
+        .flowDestination(for: EmojiVisualisation.self, destination: { visualisation in
+          EmojiView(visualisation: visualisation)
+        })
+        .flowDestination(for: ClassDestination.self, destination: { destination in
+          ClassDestinationView(destination: destination)
+        })
+        .flowDestination(for: ChildFlowStack.ChildType.self) { childType in
+          ChildFlowStack(childType: childType)
+        }
+    }
+  }
+}
+
+private struct HomeView: View {
+  @Environment(\.routeIndex) var routeIndex
+  @EnvironmentObject var navigator: FlowPathNavigator
+  @State var isPushing = false
+
+  var body: some View {
+    VStack(spacing: 8) {
+      // Push via link
+      FlowLink(
+        value: NumberList(range: 0 ..< 10),
+        style: .sheet(withNavigation: true),
+        label: { Text("Pick a number") }
+      ).accessibilityIdentifier("Pick a number from index \(routeIndex ?? -1)")
+      // Push via navigator
+      Button("99 Red balloons", action: show99RedBalloons)
+      // Push child class via navigator
+      Button("Show Class Destination", action: showClassDestination)
+      // Push via Bool binding
+      Button("Push local destination", action: { isPushing = true }).disabled(isPushing)
+    }.navigationTitle("Home")
+      .flowDestination(isPresented: $isPushing, style: .push, destination: {
+        Text("Local destination")
+      })
+  }
+
+  func show99RedBalloons() {
+    navigator.push(Number(value: 99))
+    navigator.push(EmojiVisualisation(emoji: "🎈", count: 99))
+  }
+
+  func showClassDestination() {
+    navigator.push(SampleClassDestination())
+  }
+}
+
+private struct NumberListView: View {
+  @Environment(\.routeIndex) var routeIndex
+  @EnvironmentObject var navigator: FlowPathNavigator
+  let numberList: NumberList
+  var body: some View {
+    List {
+      ForEach(numberList.range, id: \.self) { number in
+        FlowLink("\(number)", value: Number(value: number), style: .push)
+          .accessibilityIdentifier("Show \(number) from index \(routeIndex ?? -1)")
+      }
+      Button("Go back", action: { navigator.goBack() })
+    }.navigationTitle("List")
+  }
+}
+
+private struct NumberView: View {
+  @EnvironmentObject var navigator: FlowPathNavigator
+  @Binding var number: Int
+
+  var body: some View {
+    VStack(spacing: 8) {
+      Text("\(number)").font(.title)
+      Stepper(
+        label: { Text("\(number)") },
+        onIncrement: { number += 1 },
+        onDecrement: { number -= 1 }
+      ).labelsHidden()
+      FlowLink(
+        value: Number(value: number + 1),
+        style: .push,
+        label: { Text("Show next number") }
+      )
+      FlowLink(
+        value: EmojiVisualisation(emoji: "🐑", count: Int(number)),
+        style: .sheet,
+        label: { Text("Visualise with sheep") }
+      )
+      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .push, label: { Text("FlowPath Child") })
+      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .push, label: { Text("NoBinding Child") })
+      Button("Go back to root") {
+        navigator.goBackToRoot()
+      }
+    }.navigationTitle("\(number)")
+  }
+}
+
+private struct EmojiView: View {
+  @EnvironmentObject var navigator: FlowPathNavigator
+  let visualisation: EmojiVisualisation
+
+  var body: some View {
+    VStack {
+      Text(visualisation.text)
+        .navigationTitle("Visualise \(visualisation.count)")
+      Button("Go back", action: { navigator.goBack() })
+    }
+  }
+}
+
+private struct ClassDestinationView: View {
+  @EnvironmentObject var navigator: FlowPathNavigator
+  let destination: ClassDestination
+
+  var body: some View {
+    VStack {
+      Text(destination.data)
+        .navigationTitle("A ClassDestination")
+      Button("Go back", action: { navigator.goBack() })
+    }
+  }
+}
+
+// MARK: - State
+
+private struct EmojiVisualisation: Hashable, Codable {
+  let emoji: String
+  let count: Int
+
+  var text: String {
+    Array(repeating: emoji, count: count).joined()
+  }
+}
+
+private struct Number: Hashable, Codable {
+  var value: Int
+}
+
+private struct NumberList: Hashable, Codable {
+  let range: Range<Int>
+}
+
+private class ClassDestination {
+  let data: String
+
+  init(data: String) {
+    self.data = data
+  }
+}
+
+extension ClassDestination: Hashable {
+  static func == (lhs: ClassDestination, rhs: ClassDestination) -> Bool {
+    lhs.data == rhs.data
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(data)
+  }
+}
+
+private class SampleClassDestination: ClassDestination {
+  init() { super.init(data: "Sample data") }
+}
+
+private struct ChildFlowStack: View, Codable {
+  enum ChildType: Hashable, Codable {
+    case flowPath, noBinding
+  }
+
+  let childType: ChildType
+
+  var body: some View {
+    switch childType {
+    case .flowPath:
+      FlowPathView()
+    case .noBinding:
+      NoBindingView()
+    }
+  }
+}

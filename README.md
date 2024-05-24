@@ -1,76 +1,138 @@
 # FlowStacks
-_Coordinator pattern in SwiftUI_
 
-*FlowStacks* allow you to manage complex SwiftUI navigation and presentation flows with a simple array. This makes it easy to hoist navigation state into a higher-level coordinator, allowing you to write isolated views that have zero knowledge of their context within the navigation flow of an app. 
+This package takes SwiftUI's familiar and powerful `NavigationStack` API and gives it superpowers, allowing you to use the same API not just for push navigation, but also for presenting sheets and full-screen covers. And because it's implemented using the navigation APIs available in older SwiftUI versions, you can even use it on earlier versions of iOS, tvOS, watchOS and macOS.
 
 You might like this library if:
 
-✅ You want to be able support deeplinks into deeply nested navigation routes in your app.<br/>
-✅ You want to be able to easily reuse views within different navigation contexts.<br/>
+✅ You want to support deeplinks into deeply nested navigation routes in your app.<br/>
+✅ You want to easily re-use views within different navigation contexts.<br/>
 ✅ You want to easily go back to the root screen or a specific screen in the navigation stack.<br/>
 ✅ You want to use the coordinator pattern to keep navigation logic in a single place.<br/>
 ✅ You want to break an app's navigation into multiple reusable coordinators and compose them together.<br/>
 
+### Familiar APIs
 
-The library works by translating the array of screens into a hierarchy of nested NavigationLinks and presentation calls, so:
+If you already know SwiftUI's `NavigationStack` APIs, `FlowStacks` should feel familiar and intuitive. Just replace 'Navigation' with 'Flow' in type and function names:
+ 
+✅ `NavigationStack` -> `FlowStack`
 
-🚫 It does not rely on UIKit at all.<br/>
-🚫 It does not use `AnyView` to type-erase screens.<br/>
-🚫 It does not try to recreate NavigationView from scratch.<br/>
+✅ `NavigationLink` -> `FlowLink`
 
+✅ `NavigationPath` -> `FlowPath`
 
-## Usage
+✅ `navigationDestination` -> `flowDestination`
 
-To begin, create an enum encompassing each of the screens your flow might contain, e.g.:
+`NavigationStack`'s full API is replicated, so you can initialise a `FlowStack` with a binding to an `Array`, with a binding to a `FlowPath`, or with no binding at all. The only difference is that the array should be a `[Route<MyScreen>]`s instead of `[MyScreen]`. The `Route` enum combines the destination data with info about what style of presentation is used. Similarly, when you create a `FlowLink`, you must additionally specify the route style, e.g. `.push`, `.sheet` or `.cover`. As with `NavigationStack`, if the user taps the back button or swipes to dismiss a sheet, the routes array will be automatically updated to reflect the new navigation state. 
+
+## Example
+
+<details>
+  <summary>Click to expand an example</summary>
 
 ```swift
-enum Screen {
-  case home
-  case numberList
-  case numberDetail(Int)
+import FlowStacks
+import SwiftUI
+
+struct ContentView: View {
+  @State var path = FlowPath()
+  @State var isShowingWelcome = false
+
+  var body: some View {
+    FlowStack($path, withNavigation: true) {
+      HomeView()
+        .flowDestination(for: Int.self, destination: { number in
+          NumberView(number: number)
+        })
+        .flowDestination(for: String.self, destination: { text in
+          Text(text)
+        })
+        .flowDestination(isPresented: $isShowingWelcome, style: .sheet) {
+          Text("Welcome to FlowStacks!")
+        }
+    }
+  }
+}
+
+struct HomeView: View {
+  @EnvironmentObject var navigator: FlowPathNavigator
+  
+  var body: some View {
+    List {
+      ForEach(0 ..< 10, id: \.self) { number in
+        FlowLink(value: number, style: .sheet(withNavigation: true), label: { Text("Show \(number)") })
+      }
+      Button("Show 'hello'") {
+        navigator.push("Hello")
+      }
+    }
+    .navigationTitle("Home")
+  }
+}
+
+struct NumberView: View {
+  @EnvironmentObject var navigator: FlowPathNavigator
+  let number: Int
+
+  var body: some View {
+    VStack(spacing: 8) {
+      Text("\(number)")
+      FlowLink(
+        value: number + 1,
+        style: .push,
+        label: { Text("Show next number") }
+      )
+      Button("Go back to root") {
+        navigator.goBackToRoot()
+      }
+    }
+    .navigationTitle("\(number)")
+  }
 }
 ```
 
-A coordinator view can then manage an array of `Route<Screen>`s, representing a stack of these screens, each one either pushed or presented. In the body of the coordinator view, initialize a `Router` with a binding to the routes array, and a `ViewBuilder` closure. The closure builds a view for a given screen, e.g.:
+</details>
+
+## Additional features
+
+As well as replicating the standard features of the new `NavigationStack` APIs, some helpful utilities have also been added. 
+
+### FlowNavigator
+
+A `FlowNavigator` object is available through the environment, giving access to the current routes array and the ability to update it via a number of convenience methods. The navigator can be accessed via the environment, e.g. for a `FlowPath`-backed stack:
 
 ```swift
-struct AppCoordinator: View {
-  @State var routes: Routes<Screen> = [.root(.home)]
-    
-  var body: some View {
-    Router($routes) { screen, _ in
-      switch screen {
-      case .home:
-        HomeView(onGoTapped: showNumberList)
-      case .numberList:
-        NumberListView(onNumberSelected: showNumber, cancel: goBack)
-      case .numberDetail(let number):
-        NumberDetailView(number: number, cancel: goBackToRoot)
-      }
+@EnvironmentObject var navigator: FlowPathNavigator
+```
+
+Or for a FlowStack backed by a routes array, e.g. `[Route<ScreenType>]`:
+
+```swift
+@EnvironmentObject var navigator: FlowNavigator<ScreenType>
+```
+
+Here's an example of a `FlowNavigator` in use:
+
+```swift
+@EnvironmentObject var navigator: FlowNavigator<ScreenType>
+
+var body: some View {
+  VStack {
+    Button("View detail") {
+      navigator.push(.detail)
     }
-  }
-    
-  private func showNumberList() {
-    routes.presentSheet(.numberList, embedInNavigationView: true)
-  }
-    
-  private func showNumber(_ number: Int) {
-    routes.push(.numberDetail(number))
-  }
-    
-  private func goBack() {
-    routes.goBack()
-  }
-    
-  private func goBackToRoot() {
-    routes.goBackToRoot()
+    Button("Go back to profile") {
+      navigator.goBackTo(.profile)
+    }
+    Button("Go back to root") {
+      navigator.goBackToRoot()
+    }
   }
 }
 ```
 
 ### Convenience methods
 
-The routes array can be managed using normal Array methods, but a number of convenience methods are available for common transformations, such as:
+When interacting with a `FlowNavigator` (and also the original `FlowPath` or routes array), a number of convenience methods are available for easier navigation, including:
 
 | Method       | Effect                                            |
 |--------------|---------------------------------------------------|
@@ -83,30 +145,33 @@ The routes array can be managed using normal Array methods, but a number of conv
 | pop          | Pops the current screen if it was pushed.         |
 | dismiss      | Dismisses the most recently presented screen.     |
 
-† _Pass `embedInNavigationView: true` if you want to be able to push screens from the presented screen._
+### Deep-linking
+ 
+ Before the `NavigationStack` APIs were introduced, SwiftUI did not support pushing more than one screen in a single state update, e.g. when deep-linking to a screen multiple layers deep in a navigation hierarchy. *FlowStacks* works around this limitation: you can make any such changes, and the library will, behind the scenes, break down the larger update into a series of smaller updates that SwiftUI supports, with delays if necessary in between.
 
-### Routes array automatically updated
+### Bindings
 
-If the user taps the back button, the routes array will be automatically updated to reflect the new navigation state. Navigating back with an edge swipe gesture or via a long-press gesture on the back button will also update the routes array automatically, as will swiping to dismiss a sheet.
-
-### FlowNavigator
-
-The example above passes closures to screen views for presenting new screens and going back. However, passing closures can soon become unwieldy if you need to pass them down through multiple layers of views. Instead, a `FlowNavigator` object is available through the environment, giving access to the current routes array and the ability to update it via all its convenience methods. It can be accessed via the environment from any view within the router, e.g.:
+The flow destination can be configured to work with a binding to its screen state in the routes array, rather than just a read-only value - just add `$` before the screen argument in the `flowDestination` function's view-builder closure. The screen itself can then be responsible for updating its state within the routes array, e.g.:
 
 ```swift
-@EnvironmentObject var navigator: FlowNavigator<ScreenType>
+import SwiftUINavigation
 
-var body: some View {
-  VStack {
-    Button("View detail") {
-      navigator.push(.detail)
-    }
-    Button("Go back to root") {
-      navigator.goBackToRoot()
+struct BindingExampleCoordinator: View {
+  @State var path = FlowPath()
+    
+  var body: some View {
+    FlowStack($path, withNavigation: true) {
+      FlowLink(value: 1, style: .push, label: { Text("Push '1'") })
+        .flowDestination(for: Int.self) { $number in
+          EditNumberScreen(number: $number) // This screen can now change the number stored in the path.
+        }
     }
   }
-}
 ```
+
+### Child flow coordinators
+
+`FlowStack`s are designed to be composable, so that you can have multiple flow coordinators, each with its own `FlowStack`, and you can present or push a child coordinator from a parent. See [Nesting FlowStacks](Docs/Nesting%20FlowStacks.md) for more info.
 
 ### Bindings
 
@@ -141,114 +206,10 @@ struct BindingExampleCoordinator: View {
 }
 ```
 
-### Child coordinators
-
-Coordinators are just views themselves, so they can be presented, pushed, added to a `TabView` or a `WindowGroup`, and can be configured in all the normal ways views can. They can even be pushed onto a parent coordinator's navigation stack, allowing you to break out parts of your navigation flow into separate child coordinators. When doing so, it is best that the child coordinator is always at the top of the parent's routes stack, as it will take over responsibility for pushing and presenting new screens. Otherwise, the parent might attempt to push screen(s) when the child is already pushing screen(s), causing a conflict.
-
-### Using View Models
-
-Using `Router`s in the coordinator pattern also works well when using View Models. In these cases, the navigation state can live in the coordinator's own view model, and the Screen enum can include each screen's view model. With view models, the first example above can be re-written:
-
-```swift
-enum Screen {
-  case home(HomeViewModel)
-  case numberList(NumberListViewModel)
-  case numberDetail(NumberDetailViewModel)
-}
-
-class AppCoordinatorViewModel: ObservableObject {
-  @Published var routes: Routes<Screen>
-    
-  init() {
-    self.routes = [.root(.home(.init(onGoTapped: showNumberList)))]
-  }
-    
-  func showNumberList() {
-    routes.presentSheet(.numberList(.init(onNumberSelected: showNumber, cancel: goBack)), embedInNavigationView: true)
-  }
-    
-  func showNumber(_ number: Int) {
-    routes.push(.numberDetail(.init(number: number, cancel: goBackToRoot)))
-  }
-    
-  func goBack() {
-    routes.goBack()
-  }
-    
-  func goBackToRoot() {
-    routes.goBackToRoot()
-  }
-}
-
-struct AppCoordinator: View {
-  @ObservedObject var viewModel: AppCoordinatorViewModel
-    
-  var body: some View {
-    Router($viewModel.routes) { screen in
-      switch screen {
-      case .home(let viewModel):
-        HomeView(viewModel: viewModel)
-      case .numberList(let viewModel):
-        NumberListView(viewModel: viewModel)
-      case .number(let viewModel):
-        NumberView(viewModel: viewModel)
-      }
-    }
-  }
-}
-```
-
-### Making complex navigation updates
-
-SwiftUI does not allow more than one screen to be pushed, presented or dismissed within a single update. This makes it tricky to make large updates to the navigation state, e.g. when deeplinking straight to a view deep in the navigation hierarchy, when going back several presentation layers to the root, or when restoring arbitrary navigation state. With *FlowStacks*, you can wrap such changes within a call to `withDelaysIfUnsupported`, and the library will break down the large update into a series of smaller updates that SwiftUI supports:
-
-```swift
-$routes.withDelaysIfUnsupported {
-  $0.goBackToRoot()
-}
-```
-
-Or, if using a view model:
-
-```swift
-RouteSteps.withDelaysIfUnsupported(self, \.routes) {
-  $0.push(...)
-  $0.push(...)
-  $0.presentSheet(...)
-}
-```
-
-### Fixed root screen
-
-Often the root screen in a screen flow is static - always the same screen is in the root position. In this case you can use the `showing` function on the root screen view to simplify matters. It takes the same parameters as the `Router` initializer:
-
-```swift
-struct ShowingCoordinator: View {
-  enum Screen {
-    case detail, edit, confirm
-  }
-  
-  @State var routes: Routes<Screen> = []
-  
-  var body: some View {
-    HomeView(onGoTapped: { routes.presentSheet(.detail) })
-      .showing($routes) { $number, index in
-        ...
-      }
-  }
-}
-```
-
 ## How does it work? 
 
-This [blog post](https://johnpatrickmorgan.github.io/2021/07/03/NStack/) outlines how an array of screens can be translated into a hierarchy of views and `NavigationLink`s. `Router` uses a similar approach to allow both navigation and presentation.
+The library works by translating the array of routes into a hierarchy of nested NavigationLinks and presentation calls, expanding on the technique used in [NavigationBackport](https://github.com/johnpatrickmorgan/NavigationBackport).
 
-## Caveats
+## Migrating from earlier versions
 
-Currently only the `.stack` navigation view style is supported. There are some unexpected behaviours with the `.column` navigation view style that make it problematic for the approach used in this library.
-
-Be careful that your screens do not inadvertently end up observing the navigation state, e.g. if you were to pass a coordinator object to its screens as an `ObservableObject` or `EnvironmentObject`. Not only would that cause your screens to be re-rendered unnecessarily whenever the navigation state changes, it can also cause SwiftUI's navigation state to deviate from your app's state. 
-
-## Using The Composable Architecture?
-
-See [TCACoordinators](https://github.com/johnpatrickmorgan/TCACoordinators) which uses FlowStacks to help navigation in TCA.
+Please see the [migration docs](Docs/Migration/Migrating%20to%201.0.md).

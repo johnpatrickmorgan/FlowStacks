@@ -3,46 +3,48 @@ import SwiftUI
 @main
 struct FlowStacksApp: App {
   enum Tab: Hashable {
-    case parentCoordinator
     case numberCoordinator
-    case vmCoordinator
-    case bindingCoordinator
-    case showingCoordinator
+    case flowPath
+    case arrayBinding
+    case noBinding
+    case viewModel
   }
-  
+
   @State var selectedTab: Tab = .numberCoordinator
-  
+
   var body: some Scene {
     WindowGroup {
       TabView(selection: $selectedTab) {
-        ParentCoordinator()
-          .tabItem { Text("Parent") }
-          .tag(Tab.parentCoordinator)
         NumberCoordinator()
           .tabItem { Text("Numbers") }
           .tag(Tab.numberCoordinator)
-        VMCoordinator()
-          .tabItem { Text("VMs") }
-          .tag(Tab.vmCoordinator)
-        BindingCoordinator()
-          .tabItem { Text("Binding") }
-          .tag(Tab.bindingCoordinator)
-        ShowingCoordinator()
-          .tabItem { Text("Showing") }
-          .tag(Tab.showingCoordinator)
+        FlowPathView()
+          .tabItem { Text("FlowPath") }
+          .tag(Tab.flowPath)
+        ArrayBindingView()
+          .tabItem { Text("ArrayBinding") }
+          .tag(Tab.arrayBinding)
+        NoBindingView()
+          .tabItem { Text("NoBinding") }
+          .tag(Tab.noBinding)
+        NumberVMFlow(viewModel: .init(initialNumber: 64))
+          .tabItem { Text("ViewModel") }
+          .tag(Tab.viewModel)
       }.onOpenURL { url in
         guard let deeplink = Deeplink(url: url) else { return }
         follow(deeplink)
       }
     }
   }
-  
+
   private func follow(_ deeplink: Deeplink) {
     // Test deeplinks from CLI with, e.g.:
-    //`xcrun simctl openurl booted flowstacksapp://numbers/42/13`
+    // `xcrun simctl openurl booted flowstacksapp://numbers/42/13`
     switch deeplink {
     case .numberCoordinator:
       selectedTab = .numberCoordinator
+    case .viewModelTab:
+      selectedTab = .viewModel
     }
   }
 }
