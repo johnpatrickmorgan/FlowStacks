@@ -169,42 +169,72 @@ struct BindingExampleCoordinator: View {
   }
 ```
 
+ If you're using a typed Array of routes, you're probably using an enum to represent the screen, so it might be necessary to further extract the associated value for a particular case of that enum as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
+
+
+
+<details>
+  <summary>Click to expand an example of using a Binding to a value in a typed Array of enum-based routes</summary>
+  
+```swift
+import FlowStacks
+import SwiftUI
+import SwiftUINavigation
+
+enum Screen: Hashable {
+  case number(Int)
+  case greeting(String)
+}
+
+struct BindingExampleCoordinator: View {
+  @State var routes: Routes<Screen> = []
+
+  var body: some View {
+    FlowStack($routes, withNavigation: true) {
+      HomeView()
+        .flowDestination(for: Screen.self) { $screen in
+          if let number = Binding(unwrapping: $screen, case: /Screen.number) {
+            // Here `number` is a `Binding<Int>`, so `EditNumberScreen` can change its
+            // value in the routes array.
+            EditNumberScreen(number: number)
+          } else if case let .greeting(greetingText) = screen {
+            // Here `greetingText` is a plain `String`, as a binding is not needed.
+            Text(greetingText)
+          }
+        }
+    }
+  }
+}
+
+struct HomeView: View {
+  @EnvironmentObject var navigator: FlowPathNavigator
+
+  var body: some View {
+    VStack {
+      FlowLink(value: Screen.number(42), style: .push, label: { Text("Show Number") })
+      FlowLink(value: Screen.greeting("Hello world"), style: .push, label: { Text("Show Greeting") })
+    }
+  }
+}
+
+struct EditNumberScreen: View {
+  @Binding var number: Int
+
+  var body: some View {
+    Stepper(
+      label: { Text("\(number)") },
+      onIncrement: { number += 1 },
+      onDecrement: { number -= 1 }
+    )
+  }
+}
+
+```
+</details>
+
 ### Child flow coordinators
 
 `FlowStack`s are designed to be composable, so that you can have multiple flow coordinators, each with its own `FlowStack`, and you can present or push a child coordinator from a parent. See [Nesting FlowStacks](Docs/Nesting%20FlowStacks.md) for more info.
-
-### Bindings
-
-The Router can be configured to work with a binding to the screen state, rather than just a read-only value - just add `$` before the screen argument in the view-builder closure. The screen itself can then be responsible for updating its state within the routes array. Normally an enum is used to represent the screen, so it might be necessary to further extract the associated value for a particular screen as a binding. You can do that using the [SwiftUINavigation](https://github.com/pointfreeco/swiftui-navigation) library, which includes a number of helpful Binding transformations for optional and enum state, e.g.:
-
-```swift
-import SwiftUINavigation
-
-struct BindingExampleCoordinator: View {
-  enum Screen {
-    case start
-    case number(Int)
-  }
-  
-  @State var routes: Routes<Screen> = [.root(.start, embedInNavigationView: true)]
-    
-  var body: some View {
-    Router($routes) { $screen, _ in
-      if let number = Binding(unwrapping: $screen, case: /Screen.number) {
-        // Here number is a Binding<Int>, so EditableNumberView can change its
-        // value in the routes array.
-        EditableNumberView(number: number)
-      } else {
-        StartView(goTapped: goTapped)
-      }
-    }
-  }
-  
-  func goTapped() {
-    routes.push(.number(42))
-  }
-}
-```
 
 ## How does it work? 
 
