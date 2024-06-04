@@ -145,6 +145,8 @@ When interacting with a `FlowNavigator` (and also the original `FlowPath` or rou
 | pop          | Pops the current screen if it was pushed.         |
 | dismiss      | Dismisses the most recently presented screen.     |
 
+_† Pass `embedInNavigationView: true` if you want to be able to push screens from the presented screen._
+
 ### Deep-linking
  
  Before the `NavigationStack` APIs were introduced, SwiftUI did not support pushing more than one screen in a single state update, e.g. when deep-linking to a screen multiple layers deep in a navigation hierarchy. *FlowStacks* works around this limitation: you can make any such changes, and the library will, behind the scenes, break down the larger update into a series of smaller updates that SwiftUI supports, with delays if necessary in between.
