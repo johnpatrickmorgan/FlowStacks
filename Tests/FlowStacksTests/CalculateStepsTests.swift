@@ -1,7 +1,7 @@
 @testable import FlowStacks
 import XCTest
 
-final class NavigationBackportTests: XCTestCase {
+final class CaluclateStepsTests: XCTestCase {
   typealias RouterState = [Route<Int>]
 
   func testPushOneAtATime() {

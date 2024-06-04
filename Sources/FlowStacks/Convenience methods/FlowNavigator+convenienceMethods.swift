@@ -56,8 +56,8 @@ public extension FlowNavigator {
     routes.goBackTo(index: index)
   }
 
-  /// Goes back to the root screen (index 0). The resulting screen count
-  /// will be 1.
+  /// Goes back to the root screen (index -1). The resulting screen count
+  /// will be 0.
   func goBackToRoot() {
     routes.goBackToRoot()
   }
@@ -80,6 +80,18 @@ public extension FlowNavigator {
   @discardableResult
   func goBackTo(where condition: (Screen) -> Bool) -> Bool {
     routes.goBackTo(where: condition)
+  }
+}
+
+public extension FlowNavigator where Screen == AnyHashable {
+  /// Goes back to the topmost (most recently shown) screen in the stack
+  /// whose type matches the given type. If no screens satisfy the condition,
+  /// the routes array will be unchanged.
+  /// - Parameter type: The type of the screen to go back to.
+  /// - Returns: A `Bool` indicating whether a screen was found.
+  @discardableResult
+  func goBackTo<T: Hashable>(type: T.Type) -> Bool {
+    goBackTo(where: { $0.screen is T })
   }
 }
 
@@ -147,8 +159,8 @@ public extension FlowNavigator {
     routes.popTo(index: index)
   }
 
-  /// Pops to the root screen (index 0). The resulting screen count
-  /// will be 1. Only screens that have been pushed will
+  /// Pops to the root screen (index -1). The resulting screen count
+  /// will be 0. Only screens that have been pushed will
   /// be popped.
   func popToRoot() {
     routes.popToRoot()
@@ -230,6 +242,19 @@ public extension FlowNavigator where Screen: Identifiable & Equatable {
   @discardableResult
   func popTo(_ screen: Screen) -> Bool {
     routes.popTo(screen)
+  }
+}
+
+public extension FlowNavigator where Screen == AnyHashable {
+  /// Pops to the topmost (most recently shown) screen in the stack
+  /// whose type matches the given type. If no screens satisfy the condition,
+  /// the routes array will be unchanged. Only screens that have been pushed will
+  /// be popped.
+  /// - Parameter type: The type of the screen to go back to.
+  /// - Returns: A `Bool` indicating whether a screen was found.
+  @discardableResult
+  func popTo<T: Hashable>(type: T.Type) -> Bool {
+    popTo(where: { $0.screen is T })
   }
 }
 

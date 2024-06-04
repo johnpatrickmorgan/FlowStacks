@@ -74,17 +74,17 @@ public extension Array where Element: RouteProtocol {
     removeLast(count)
   }
 
-  /// Goes back to a given index in the array of screens. The resulting array's count
-  /// will be equal to index.
+  /// Goes back to a given index in the array of screens.  The resulting array count
+  /// will be index + 1.
   /// - Parameter index: The index that should become top of the stack, e.g. 0 for the root screen.
   mutating func goBackTo(index: Int) {
-    goBack(count - index)
+    goBack(count - index - 1)
   }
 
   /// Goes back to the root screen (index 0). The resulting array's count will be 0.
   mutating func goBackToRoot() {
     guard !isEmpty else { return }
-    goBackTo(index: 0)
+    goBackTo(index: -1)
   }
 
   /// Goes back to the topmost (most recently shown) screen in the stack
@@ -171,28 +171,25 @@ public extension Array where Element: RouteProtocol {
   }
 
   /// Pops to a given index in the array of screens. The resulting screen count
-  /// will be equal to index. Only screens that have been pushed will
+  /// will be equal to index + 1. Only screens that have been pushed will
   /// be popped.
   /// - Parameter index: The index that should become top of the stack, e.g. 0 for the root.
   mutating func popTo(index: Int) {
-    let popCount = count - index
+    let popCount = count - index - 1
     pop(popCount)
   }
 
-  /// Pops to the root screen (index 0). The resulting screen count
-  /// will be 1. Only screens that have been pushed will
+  /// Pops to the root screen (index -1). The resulting screen count
+  /// will be 0. Only screens that have been pushed will
   /// be popped.
   mutating func popToRoot() {
-    popTo(index: 0)
+    popTo(index: -1)
   }
 
-  /// Pops all screens in the current navigation stack only, without dismissing any screens.
+  /// Pops all pushed screens in the current navigation stack only, without dismissing any screens.
   mutating func popToCurrentNavigationRoot() {
-    var index = endIndex - 1
-    while indices.contains(index), self[index].style.isPush {
-      index -= 1
-    }
-    goBackTo(index: index + 1)
+    let index = lastIndex(where: { !$0.style.isPush }) ?? -1
+    goBackTo(index: index)
   }
 
   /// Pops to the topmost (most recently pushed) screen in the stack
