@@ -8,6 +8,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
   @EnvironmentObject var routesHolder: RoutesHolder
+  @EnvironmentObject var inheritedDestinationBuilder: DestinationBuilderHolder
   @Binding var externalTypedPath: [Route<Data>]
   @State var internalTypedPath: [Route<Data>] = []
   @StateObject var path = RoutesHolder()
@@ -25,7 +26,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
       .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier))
       .environmentObject(path)
       .environmentObject(Unobserved(object: path))
-      .environmentObject(destinationBuilder)
+      .environmentObject(parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder)
       .environmentObject(FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath))
       .environment(\.flowStackDataType, dataType)
   }
