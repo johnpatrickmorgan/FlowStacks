@@ -60,7 +60,7 @@ private struct HomeView: View {
       // Push via link
       FlowLink(
         value: NumberList(range: 0 ..< 10),
-        style: .sheet(withNavigation: true),
+        style: .push,
         label: { Text("Pick a number") }
       ).accessibilityIdentifier("Pick a number from index \(routeIndex ?? -1)")
       // Push via navigator
