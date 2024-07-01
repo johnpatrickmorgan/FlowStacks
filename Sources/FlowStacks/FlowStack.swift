@@ -20,14 +20,19 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
     parentFlowStackDataType == .flowPath && dataType == .flowPath
   }
 
+  var screenModifier: some ViewModifier {
+    ScreenModifier(
+      path: path,
+      destinationBuilder: parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder,
+      navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath)
+    )
+  }
+
   @ViewBuilder
   var content: some View {
-    Router(rootView: root, navigationViewModifier: navigationViewModifier, screens: $path.routes)
+    Router(rootView: root, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.routes)
       .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier))
-      .environmentObject(path)
-      .environmentObject(Unobserved(object: path))
-      .environmentObject(parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder)
-      .environmentObject(FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath))
+      .modifier(screenModifier)
       .environment(\.flowStackDataType, dataType)
   }
 

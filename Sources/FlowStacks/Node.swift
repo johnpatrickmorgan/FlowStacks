@@ -1,12 +1,13 @@
 import Foundation
 import SwiftUI
 
-struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
+struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifier>: View {
   @Binding var allRoutes: [Route<Screen>]
   let truncateToIndex: (Int) -> Void
   let index: Int
   let route: Route<Screen>?
   let navigationViewModifier: Modifier
+  let screenModifier: ScreenModifier
 
   // NOTE: even though this object is unused, its inclusion avoids a glitch when swiping to dismiss
   // a sheet that's been presented from a pushed screen.
@@ -14,11 +15,12 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
 
   @State var isAppeared = false
 
-  init(allRoutes: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, navigationViewModifier: Modifier) {
+  init(allRoutes: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, navigationViewModifier: Modifier, screenModifier: ScreenModifier) {
     _allRoutes = allRoutes
     self.truncateToIndex = truncateToIndex
     self.index = index
     self.navigationViewModifier = navigationViewModifier
+    self.screenModifier = screenModifier
     route = allRoutes.wrappedValue[safe: index]
   }
 
@@ -35,7 +37,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
   }
 
   var next: some View {
-    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: index + 1, navigationViewModifier: navigationViewModifier)
+    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: index + 1, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier)
   }
 
   var nextRouteStyle: RouteStyle? {
@@ -52,6 +54,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier>: View {
       })
 
       DestinationBuilderView(data: binding)
+        .modifier(screenModifier)
         .environment(\.routeStyle, allRoutes[safe: index]?.style)
         .environment(\.routeIndex, index)
         .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
