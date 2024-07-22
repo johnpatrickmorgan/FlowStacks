@@ -22,7 +22,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
 
   var screenModifier: some ViewModifier {
     ScreenModifier(
-      path: path,
+      path: deferToParentFlowStack ? routesHolder : path,
       destinationBuilder: parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder,
       navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath)
     )
