@@ -8,6 +8,19 @@ struct DestinationBuilderView: View {
   @EnvironmentObject var destinationBuilder: DestinationBuilderHolder
 
   var body: some View {
-    destinationBuilder.build(data)
+    DataDependentView(data: data, content: { destinationBuilder.build(data) }).equatable()
+  }
+}
+
+struct DataDependentView<Content: View>: View, Equatable {
+  static func ==(lhs: DataDependentView, rhs: DataDependentView) -> Bool {
+    return lhs.data.wrappedValue == rhs.data.wrappedValue
+  }
+  
+  let data: Binding<AnyHashable>
+  let content: () -> Content
+
+  var body: some View {
+    content()
   }
 }
