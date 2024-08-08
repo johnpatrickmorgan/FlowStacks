@@ -7,6 +7,8 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
   var path: RoutesHolder
   var destinationBuilder: DestinationBuilderHolder
   var navigator: FlowNavigator<Data>
+  @Binding var externalTypedPath: [Route<Data>]
+  var isNested: Bool
 
   func body(content: Content) -> some View {
     content
@@ -14,5 +16,15 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
       .environmentObject(Unobserved(object: path))
       .environmentObject(destinationBuilder)
       .environmentObject(navigator)
+      .onChange(of: path.routes) { routes in
+        guard isNested else { return }
+        externalTypedPath = routes.map { $0.map { $0 as! Data }}
+      }
+      .onChange(of: externalTypedPath) { externalTypedPath in
+        guard isNested else { return }
+        path._withDelaysIfUnsupported(\.routes) {
+          $0 = externalTypedPath.map { $0.erased() }
+        }
+      }
   }
 }

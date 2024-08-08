@@ -18,7 +18,7 @@ struct ParentNavigationStackKey: EnvironmentKey {
 }
 
 enum FlowStackDataType {
-  case typedArray, flowPath
+  case typedArray, flowPath, noBinding
 }
 
 struct FlowStackDataTypeKey: EnvironmentKey {

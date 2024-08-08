@@ -17,21 +17,23 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var useInternalTypedPath: Bool
 
   var deferToParentFlowStack: Bool {
-    parentFlowStackDataType == .flowPath && dataType == .flowPath
+    (parentFlowStackDataType == .flowPath || parentFlowStackDataType == .noBinding) && dataType == .noBinding
   }
 
   var screenModifier: some ViewModifier {
     ScreenModifier(
-      path: deferToParentFlowStack ? routesHolder : path,
+      path: path,
       destinationBuilder: parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder,
-      navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath)
+      navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath),
+      externalTypedPath: $externalTypedPath,
+      isNested: parentFlowStackDataType != nil
     )
   }
 
   @ViewBuilder
   var content: some View {
     Router(rootView: root, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.routes)
-      .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier))
+      .modifier(EmbedModifier(withNavigation: withNavigation && parentFlowStackDataType == nil, navigationViewModifier: navigationViewModifier))
       .modifier(screenModifier)
       .environment(\.flowStackDataType, dataType)
   }
@@ -39,18 +41,6 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   public var body: some View {
     if deferToParentFlowStack {
       root
-        .onFirstAppear {
-          externalTypedPath = routesHolder.routes.map { $0.map { $0 as! Data }}
-        }
-        .onChange(of: routesHolder.routes) { routes in
-          externalTypedPath = routes.map { $0.map { $0 as! Data }}
-        }
-        .onChange(of: externalTypedPath) { externalTypedPath in
-          guard !useInternalTypedPath else { return }
-          routesHolder._withDelaysIfUnsupported(\.routes) {
-            $0 = externalTypedPath.map { $0.erased() }
-          }
-        }
     } else {
       content
         .onFirstAppear {
@@ -121,7 +111,7 @@ public extension FlowStack where Data == AnyHashable {
   ///   - navigationViewModifier: A modifier for styling any navigation views the FlowStack creates.
   ///   - root: The root view for the ``FlowStack``.
   init(withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
-    self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .flowPath, root: root)
+    self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .noBinding, root: root)
   }
 
   /// Initialises a ``FlowStack`` with a binding to a ``FlowPath``.
