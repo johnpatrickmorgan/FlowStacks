@@ -15,21 +15,21 @@ struct FlowStacksApp: App {
   var body: some Scene {
     WindowGroup {
       TabView(selection: $selectedTab) {
-        Issue76View()
+        NumberCoordinator()
           .tabItem { Text("Numbers") }
           .tag(Tab.numberCoordinator)
-//        FlowPathView()
-//          .tabItem { Text("FlowPath") }
-//          .tag(Tab.flowPath)
-//        ArrayBindingView()
-//          .tabItem { Text("ArrayBinding") }
-//          .tag(Tab.arrayBinding)
-//        NoBindingView()
-//          .tabItem { Text("NoBinding") }
-//          .tag(Tab.noBinding)
-//        NumberVMFlow(viewModel: .init(initialNumber: 64))
-//          .tabItem { Text("ViewModel") }
-//          .tag(Tab.viewModel)
+        FlowPathView()
+          .tabItem { Text("FlowPath") }
+          .tag(Tab.flowPath)
+        ArrayBindingView()
+          .tabItem { Text("ArrayBinding") }
+          .tag(Tab.arrayBinding)
+        NoBindingView()
+          .tabItem { Text("NoBinding") }
+          .tag(Tab.noBinding)
+        NumberVMFlow(viewModel: .init(initialNumber: 64))
+          .tabItem { Text("ViewModel") }
+          .tag(Tab.viewModel)
       }.onOpenURL { url in
         guard let deeplink = Deeplink(url: url) else { return }
         follow(deeplink)
