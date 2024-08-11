@@ -21,14 +21,18 @@ extension FlowPath {
     var steps = [initialStep]
 
     // Dismiss extraneous presented stacks.
-    while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
-      var dismissed: Route<Screen>? = dismissStep.popLast()
-      // Ignore pushed screens as they can be dismissed en masse.
-      while dismissed?.isPresented == false, dismissStep.count > firstDivergingPresentationIndex {
-        dismissed = dismissStep.popLast()
+//    if #available(iOS 17.0, *) {
+//      steps.append(Array(end[..<firstDivergingIndex]))
+//    } else {
+      while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
+        var dismissed: Route<Screen>? = dismissStep.popLast()
+        // Ignore pushed screens as they can be dismissed en masse.
+        while dismissed?.isPresented == false, dismissStep.count > firstDivergingPresentationIndex {
+          dismissed = dismissStep.popLast()
+        }
+        steps.append(dismissStep)
       }
-      steps.append(dismissStep)
-    }
+//    }
 
     // Pop extraneous pushed screens.
     while var popStep = steps.last, popStep.count > firstDivergingIndex {
