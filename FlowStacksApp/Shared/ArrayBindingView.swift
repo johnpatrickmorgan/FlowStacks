@@ -53,6 +53,7 @@ private struct HomeView: View {
     VStack(spacing: 8) {
       // Push via FlowLink
       FlowLink(value: Screen.numberList(NumberList(range: 0 ..< 10)), style: .sheet(withNavigation: true), label: { Text("Pick a number") })
+        .indexedA11y("Pick a number")
       // Push via navigator
       Button("99 Red balloons", action: show99RedBalloons)
       // Push via Bool binding
@@ -76,6 +77,7 @@ private struct NumberListView: View {
     List {
       ForEach(numberList.range, id: \.self) { number in
         FlowLink("\(number)", value: Screen.number(number), style: .sheet(withNavigation: true))
+          .indexedA11y("Show \(number)")
       }
       Button("Go back", action: { navigator.goBack() })
     }.navigationTitle("List")

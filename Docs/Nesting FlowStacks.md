@@ -2,7 +2,7 @@
 
 Sometimes, it can be useful to break your app's screen flows into several distinct flows of related screens. FlowStacks supports nesting coordinators, though there are some limitations to keep in mind. 
 
-'Coordinator' here is used to describe a view that contains a `FlowStack` to manage a flow of screens). Coordinators are just SwiftUI views, so they can be shown in all the normal ways views can. They can even be pushed onto a parent coordinator's `FlowStack`, allowing you to break out parts of your navigation flow into distinct child coordinators. 
+'Coordinator' here is used to describe a view that contains a `FlowStack` to manage a flow of screens. Coordinators are just SwiftUI views, so they can be shown in all the normal ways views can. They can even be pushed onto a parent coordinator's `FlowStack`, allowing you to break out parts of your navigation flow into distinct child coordinators. 
 
 The approach to nesting coordinators will depend on how you are instantiating your `FlowStack`s. A `FlowStack` can be instantiated with either:
 
@@ -10,9 +10,9 @@ The approach to nesting coordinators will depend on how you are instantiating yo
 1. a binding to a typed routes array, e.g. `[Route<MyScreen>]`, or
 1. no binding at all.
 
-## Approach 1: Nested FlowStack shares its state with its parent FlowStack
+## Approach 1: Nested FlowStack inherits its parent FlowStack's state
 
-If the child FlowStack is instantiated without its own data binding, it can share its parent's data binding as its own source of truth, as long as the parent's data binding is not a typed routes array (since that wouldn't support other types). In this approach, any type can be pushed onto the path, and as long as somewhere in the stack you have declared how to build a flow destination for that data type (using the `flowDestination` modifier), the screen will be shown. That means you can nest any number of child `FlowStack`s of this type, and they will all share the same path state - parent and children all have access to the same shared path that includes all coordinators' screens. That means:
+If the child FlowStack is instantiated without its own data binding, it can share its parent's data binding as its own source of truth, as long as the parent's data binding is not a typed routes array (since that only supports a single type). In this approach, any type can be pushed onto the path, and as long as somewhere in the stack you have declared how to build a destination for that data type (using the `flowDestination` modifier), the screen will be shown. That means you can nest any number of child `FlowStack`s of this type, and they will all share the same path state - parent and children all have access to the same shared path that includes all coordinators' screens. That means:
 
 - Both parent and child can push new routes onto the path, and the parent's path will include the ones its child has pushed.
 - Calling `goBackToRoot` from the child will go all the way back to the parent's root screen.

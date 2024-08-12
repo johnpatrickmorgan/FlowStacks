@@ -8,6 +8,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
   var destinationBuilder: DestinationBuilderHolder
   var navigator: FlowNavigator<Data>
   @Binding var typedPath: [Route<Data>]
+  var nestingIndex: Int
 
   func body(content: Content) -> some View {
     content
@@ -15,6 +16,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
       .environmentObject(Unobserved(object: path))
       .environmentObject(destinationBuilder)
       .environmentObject(navigator)
+      .environment(\.nestingIndex, nestingIndex)
       .onChange(of: path.routes) { routes in
         guard routes != typedPath.map({ $0.erased() }) else { return }
         typedPath = routes.compactMap { route in

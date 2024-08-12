@@ -7,6 +7,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var dataType: FlowStackDataType
   var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
+  @Environment(\.nestingIndex) var nestingIndex
   @EnvironmentObject var routesHolder: RoutesHolder
   @EnvironmentObject var inheritedDestinationBuilder: DestinationBuilderHolder
   @Binding var externalTypedPath: [Route<Data>]
@@ -25,7 +26,8 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
       path: path,
       destinationBuilder: parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder,
       navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath),
-      typedPath: useInternalTypedPath ? $internalTypedPath : $externalTypedPath
+      typedPath: useInternalTypedPath ? $internalTypedPath : $externalTypedPath,
+      nestingIndex: (nestingIndex ?? 0) + 1
     )
   }
 
@@ -33,7 +35,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
     if deferToParentFlowStack {
       root
     } else {
-      Router(rootView: root, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.boundRoutes)
+      Router(rootView: root.environment(\.routeIndex, -1), navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.boundRoutes)
         .modifier(EmbedModifier(withNavigation: withNavigation && parentFlowStackDataType == nil, navigationViewModifier: navigationViewModifier))
         .modifier(screenModifier)
         .environment(\.flowStackDataType, dataType)

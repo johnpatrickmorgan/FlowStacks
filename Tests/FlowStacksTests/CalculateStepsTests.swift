@@ -85,7 +85,7 @@ final class CaluclateStepsTests: XCTestCase {
     let end: RouterState = [
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -182,11 +182,11 @@ final class CaluclateStepsTests: XCTestCase {
       .push(-2),
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: false)
 
-    print(steps)
+    let expectedSteps: [RouterState]
 
-    let expectedSteps: [RouterState] = [
+    expectedSteps = [
       [
         .sheet(2),
         .push(3),
@@ -198,6 +198,32 @@ final class CaluclateStepsTests: XCTestCase {
         .push(3),
       ],
       [
+      ],
+      end,
+    ]
+    XCTAssertEqual(steps, expectedSteps)
+  }
+
+  func testSimultaneousDismissalsWhenSupported() {
+    let start: RouterState = [
+      .sheet(2),
+      .push(3),
+      .sheet(4),
+      .push(5),
+    ]
+    let end: RouterState = [
+    ]
+
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: true)
+
+    let expectedSteps: [RouterState]
+
+    expectedSteps = [
+      [
+        .sheet(2),
+        .push(3),
+        .sheet(4),
+        .push(5),
       ],
       end,
     ]
