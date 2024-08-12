@@ -26,6 +26,8 @@
 		528AE0F92BF377C400E143C5 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */; };
 		528AE0FA2BF377C400E143C5 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */; };
 		528AE0FF2BF7662200E143C5 /* FlowStacksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */; };
+		529CB4442C6ABC7B00B0AFE9 /* View+indexedA11y.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529CB4432C6ABC7B00B0AFE9 /* View+indexedA11y.swift */; };
+		529CB4452C6ABC7B00B0AFE9 /* View+indexedA11y.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529CB4432C6ABC7B00B0AFE9 /* View+indexedA11y.swift */; };
 		529D5CCE2BFE44A200C50A7C /* NestedFlowStacksUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529D5CCD2BFE44A200C50A7C /* NestedFlowStacksUITests.swift */; };
 		52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
 		52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
@@ -54,6 +56,7 @@
 		528AE0F12BF377C300E143C5 /* FlowPathView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowPathView.swift; sourceTree = "<group>"; };
 		528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberVMFlow.swift; sourceTree = "<group>"; };
 		528AE0FE2BF7662200E143C5 /* FlowStacksUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksUITests.swift; sourceTree = "<group>"; };
+		529CB4432C6ABC7B00B0AFE9 /* View+indexedA11y.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+indexedA11y.swift"; sourceTree = "<group>"; };
 		529D5CCD2BFE44A200C50A7C /* NestedFlowStacksUITests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NestedFlowStacksUITests.swift; sourceTree = "<group>"; };
 		52C5CCDB286E5D780075ABA7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deeplink.swift; sourceTree = "<group>"; };
@@ -138,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				528AE0EF2BF377C300E143C5 /* ArrayBindingView.swift */,
+				529CB4432C6ABC7B00B0AFE9 /* View+indexedA11y.swift */,
 				528AE0F12BF377C300E143C5 /* FlowPathView.swift */,
 				528AE0F02BF377C300E143C5 /* NoBindingView.swift */,
 				528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */,
@@ -300,6 +304,7 @@
 				528AE0F72BF377C400E143C5 /* FlowPathView.swift in Sources */,
 				52C5CCDE286EE92B0075ABA7 /* Deeplink.swift in Sources */,
 				528AE0F32BF377C400E143C5 /* ArrayBindingView.swift in Sources */,
+				529CB4442C6ABC7B00B0AFE9 /* View+indexedA11y.swift in Sources */,
 				528AE0F92BF377C400E143C5 /* NumberVMFlow.swift in Sources */,
 				528AE0F52BF377C400E143C5 /* NoBindingView.swift in Sources */,
 				525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
@@ -314,6 +319,7 @@
 				528AE0F82BF377C400E143C5 /* FlowPathView.swift in Sources */,
 				52C5CCDF286EE92B0075ABA7 /* Deeplink.swift in Sources */,
 				528AE0F42BF377C400E143C5 /* ArrayBindingView.swift in Sources */,
+				529CB4452C6ABC7B00B0AFE9 /* View+indexedA11y.swift in Sources */,
 				528AE0FA2BF377C400E143C5 /* NumberVMFlow.swift in Sources */,
 				528AE0F62BF377C400E143C5 /* NoBindingView.swift in Sources */,
 				525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,

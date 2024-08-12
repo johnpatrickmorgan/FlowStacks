@@ -48,8 +48,8 @@ struct NumberCoordinator: View {
 
 private struct NumberView: View {
   @EnvironmentObject var navigator: FlowNavigator<Int>
-  @Environment(\.routeStyle) var routeStyle: RouteStyle?
-  @Environment(\.routeIndex) var routeIndex: Int?
+  @Environment(\.routeStyle) var routeStyle
+  @Environment(\.routeIndex) var routeIndex
 
   @State private var colorShown: Color?
   @Binding var number: Int

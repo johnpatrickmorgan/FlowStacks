@@ -26,33 +26,34 @@ final class NestedFlowStacksUITests: XCTestCase {
     app.tabBars.buttons[tabTitle].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: 2))
 
-    app.buttons["Pick a number from index -1"].tap()
+    app.buttons["Pick a number - route 1:-1"].tap()
     XCTAssertTrue(app.navigationBars["List"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Show 1 from index 0"].tap()
+    app.buttons["Show 1 - route 1:0"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["FlowPath Child"].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Pick a number from index 2"].firstMatch.tap()
+    app.buttons["Pick a number - route 2:-1"].firstMatch.tap()
     XCTAssertTrue(app.navigationBars["List"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Show 1 from index 3"].tap()
+    app.buttons["Show 1 - route 2:0"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["NoBinding Child"].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Pick a number from index 5"].firstMatch.tap()
+    app.buttons["Pick a number - route 2:2"].firstMatch.tap()
     XCTAssertTrue(app.navigationBars["List"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Show 1 from index 6"].tap()
+    app.buttons["Show 1 - route 2:3"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["Go back to root"].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
-    XCTAssertTrue(app.buttons["Pick a number from index -1"].exists)
+    // Goes back to root of FlowPath child.
+    XCTAssertTrue(app.buttons["Pick a number - route 2:-1"].exists)
   }
 }

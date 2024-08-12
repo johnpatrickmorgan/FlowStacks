@@ -30,7 +30,7 @@ final class FlowStacksUITests: XCTestCase {
     app.tabBars.buttons[tabTitle].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: 2))
 
-    app.buttons["Pick a number"].tap()
+    app.buttons["Pick a number - route 1:-1"].tap()
     XCTAssertTrue(app.navigationBars["List"].waitForExistence(timeout: navigationTimeout))
 
     app.navigationBars["List"].swipeSheetDown()
@@ -43,10 +43,10 @@ final class FlowStacksUITests: XCTestCase {
     app.navigationBars.buttons.element(boundBy: 0).tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Pick a number"].tap()
+    app.buttons["Pick a number - route 1:-1"].tap()
     XCTAssertTrue(app.navigationBars["List"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["1"].tap()
+    app.buttons["Show 1 - route 1:0"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["Show next number"].tap()

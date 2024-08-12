@@ -7,6 +7,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var dataType: FlowStackDataType
   var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
+  @Environment(\.nestingIndex) var nestingIndex
   @EnvironmentObject var routesHolder: RoutesHolder
   @EnvironmentObject var inheritedDestinationBuilder: DestinationBuilderHolder
   @Binding var externalTypedPath: [Route<Data>]
@@ -17,79 +18,29 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var useInternalTypedPath: Bool
 
   var deferToParentFlowStack: Bool {
-    parentFlowStackDataType == .flowPath && dataType == .flowPath
+    (parentFlowStackDataType == .flowPath || parentFlowStackDataType == .noBinding) && dataType == .noBinding
   }
 
   var screenModifier: some ViewModifier {
     ScreenModifier(
-      path: deferToParentFlowStack ? routesHolder : path,
+      path: path,
       destinationBuilder: parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder,
-      navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath)
+      navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath),
+      typedPath: useInternalTypedPath ? $internalTypedPath : $externalTypedPath,
+      nestingIndex: (nestingIndex ?? 0) + 1
     )
-  }
-
-  @ViewBuilder
-  var content: some View {
-    Router(rootView: root, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.routes)
-      .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier))
-      .modifier(screenModifier)
-      .environment(\.flowStackDataType, dataType)
   }
 
   public var body: some View {
     if deferToParentFlowStack {
       root
-        .onFirstAppear {
-          externalTypedPath = routesHolder.routes.map { $0.map { $0 as! Data }}
-        }
-        .onChange(of: routesHolder.routes) { routes in
-          externalTypedPath = routes.map { $0.map { $0 as! Data }}
-        }
-        .onChange(of: externalTypedPath) { externalTypedPath in
-          guard !useInternalTypedPath else { return }
-          routesHolder._withDelaysIfUnsupported(\.routes) {
-            $0 = externalTypedPath.map { $0.erased() }
-          }
-        }
     } else {
-      content
+      Router(rootView: root.environment(\.routeIndex, -1), navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.boundRoutes)
+        .modifier(EmbedModifier(withNavigation: withNavigation && parentFlowStackDataType == nil, navigationViewModifier: navigationViewModifier))
+        .modifier(screenModifier)
+        .environment(\.flowStackDataType, dataType)
         .onFirstAppear {
-          path._withDelaysIfUnsupported(\.routes) {
-            $0 = externalTypedPath.map { $0.erased() }
-          }
-        }
-        .onChange(of: externalTypedPath) { externalTypedPath in
-          path._withDelaysIfUnsupported(\.routes) {
-            $0 = externalTypedPath.map { $0.erased() }
-          }
-        }
-        .onChange(of: internalTypedPath) { internalTypedPath in
-          path._withDelaysIfUnsupported(\.routes) {
-            $0 = internalTypedPath.map { $0.erased() }
-          }
-        }
-        .onChange(of: path.routes) { path in
-          if useInternalTypedPath {
-            guard path != internalTypedPath.map({ $0.erased() }) else { return }
-            internalTypedPath = path.compactMap { route in
-              if let data = route.screen.base as? Data {
-                return route.map { _ in data }
-              } else if route.screen.base is LocalDestinationID {
-                return nil
-              }
-              fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
-            }
-          } else {
-            guard path != externalTypedPath.map({ $0.erased() }) else { return }
-            externalTypedPath = path.compactMap { route in
-              if let data = route.screen.base as? Data {
-                return route.map { _ in data }
-              } else if route.screen.base is LocalDestinationID {
-                return nil
-              }
-              fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
-            }
-          }
+          path.routes = externalTypedPath.map { $0.erased() }
         }
     }
   }
@@ -121,7 +72,7 @@ public extension FlowStack where Data == AnyHashable {
   ///   - navigationViewModifier: A modifier for styling any navigation views the FlowStack creates.
   ///   - root: The root view for the ``FlowStack``.
   init(withNavigation: Bool = false, navigationViewModifier: NavigationViewModifier, @ViewBuilder root: () -> Root) {
-    self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .flowPath, root: root)
+    self.init(routes: nil, withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, dataType: .noBinding, root: root)
   }
 
   /// Initialises a ``FlowStack`` with a binding to a ``FlowPath``.

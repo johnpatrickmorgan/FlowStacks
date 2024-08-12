@@ -18,7 +18,7 @@ struct ParentNavigationStackKey: EnvironmentKey {
 }
 
 enum FlowStackDataType {
-  case typedArray, flowPath
+  case typedArray, flowPath, noBinding
 }
 
 struct FlowStackDataTypeKey: EnvironmentKey {
@@ -65,3 +65,16 @@ public extension EnvironmentValues {
     set { self[RouteIndexKey.self] = newValue }
   }
 }
+
+struct NestingIndexKey: EnvironmentKey {
+  static let defaultValue: Int? = nil
+}
+
+public extension EnvironmentValues {
+  /// If the view is part of a route within a FlowStack, this denotes the number of nested FlowStacks above this view in the hierarchy.
+  internal(set) var nestingIndex: Int? {
+    get { self[NestingIndexKey.self] }
+    set { self[NestingIndexKey.self] = newValue }
+  }
+}
+
