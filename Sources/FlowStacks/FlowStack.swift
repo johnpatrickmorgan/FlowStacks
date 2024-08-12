@@ -26,13 +26,13 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
       destinationBuilder: parentFlowStackDataType == nil ? destinationBuilder : inheritedDestinationBuilder,
       navigator: FlowNavigator(useInternalTypedPath ? $internalTypedPath : $externalTypedPath),
       externalTypedPath: $externalTypedPath,
-      isNested: parentFlowStackDataType != nil
+      isNested: parentFlowStackDataType != nil //deferToParentFlowStack
     )
   }
 
   @ViewBuilder
   var content: some View {
-    Router(rootView: root, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.routes)
+    Router(rootView: root, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.boundRoutes)
       .modifier(EmbedModifier(withNavigation: withNavigation && parentFlowStackDataType == nil, navigationViewModifier: navigationViewModifier))
       .modifier(screenModifier)
       .environment(\.flowStackDataType, dataType)
@@ -44,24 +44,18 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
     } else {
       content
         .onFirstAppear {
-          path._withDelaysIfUnsupported(\.routes) {
-            $0 = externalTypedPath.map { $0.erased() }
-          }
+          path.routes = externalTypedPath.map { $0.erased() }
         }
         .onChange(of: externalTypedPath) { externalTypedPath in
-          path._withDelaysIfUnsupported(\.routes) {
-            $0 = externalTypedPath.map { $0.erased() }
-          }
+          path.routes = externalTypedPath.map { $0.erased() }
         }
         .onChange(of: internalTypedPath) { internalTypedPath in
-          path._withDelaysIfUnsupported(\.routes) {
-            $0 = internalTypedPath.map { $0.erased() }
-          }
+          path.routes = internalTypedPath.map { $0.erased() }
         }
-        .onChange(of: path.routes) { path in
+        .onChange(of: path.routes) { routes in
           if useInternalTypedPath {
-            guard path != internalTypedPath.map({ $0.erased() }) else { return }
-            internalTypedPath = path.compactMap { route in
+            guard routes != internalTypedPath.map({ $0.erased() }) else { return }
+            internalTypedPath = routes.compactMap { route in
               if let data = route.screen.base as? Data {
                 return route.map { _ in data }
               } else if route.screen.base is LocalDestinationID {
@@ -70,8 +64,8 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
               fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
             }
           } else {
-            guard path != externalTypedPath.map({ $0.erased() }) else { return }
-            externalTypedPath = path.compactMap { route in
+            guard routes != externalTypedPath.map({ $0.erased() }) else { return }
+            externalTypedPath = routes.compactMap { route in
               if let data = route.screen.base as? Data {
                 return route.map { _ in data }
               } else if route.screen.base is LocalDestinationID {

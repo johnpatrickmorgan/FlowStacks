@@ -6,14 +6,15 @@ extension ObservableObject {
   /// applied in stages.
   @_disfavoredOverload
   @MainActor
-  func _withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
+  @discardableResult
+  func _withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) -> Task<Void, Never>? {
     let start = self[keyPath: keyPath]
     let end = apply(transform, to: start)
 
     let didUpdateSynchronously = synchronouslyUpdateIfSupported(keyPath, from: start, to: end)
-    guard !didUpdateSynchronously else { return }
+    guard !didUpdateSynchronously else { return nil }
 
-    Task { @MainActor in
+    return Task { @MainActor in
       await withDelaysIfUnsupported(keyPath, from: start, to: end)
       onCompletion?()
     }

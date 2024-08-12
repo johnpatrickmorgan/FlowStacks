@@ -21,9 +21,12 @@ extension FlowPath {
     var steps = [initialStep]
 
     // Dismiss extraneous presented stacks.
-//    if #available(iOS 17.0, *) {
-//      steps.append(Array(end[..<firstDivergingIndex]))
-//    } else {
+    if #available(iOS 17.0, *) {
+      if let dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
+        // On iOS 17, this can be performed in one step.
+        steps.append(Array(end[..<firstDivergingIndex]))
+      }
+    } else {
       while var dismissStep = steps.last, dismissStep.count > firstDivergingPresentationIndex {
         var dismissed: Route<Screen>? = dismissStep.popLast()
         // Ignore pushed screens as they can be dismissed en masse.
@@ -32,7 +35,7 @@ extension FlowPath {
         }
         steps.append(dismissStep)
       }
-//    }
+    }
 
     // Pop extraneous pushed screens.
     while var popStep = steps.last, popStep.count > firstDivergingIndex {
