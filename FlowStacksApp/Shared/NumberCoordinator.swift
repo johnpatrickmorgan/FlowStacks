@@ -57,7 +57,7 @@ private struct NumberView: View {
 
   var body: some View {
     VStack(spacing: 8) {
-      Stepper(label: { EmptyView() }, onIncrement: { number += 1 }, onDecrement: { number -= 1 })
+      SimpleStepper(number: $number)
       Button("Present Double (cover)") {
         navigator.presentCover(number * 2, withNavigation: true)
       }
@@ -103,6 +103,12 @@ private struct NumberView: View {
     }
   }
 
+  extension RouteStyle {
+    static func cover(withNavigation: Bool = false) -> RouteStyle {
+      .sheet(withNavigation: withNavigation)
+    }
+  }
+
   extension Array where Element: RouteProtocol {
     mutating func presentCover(_ screen: Element.Screen, withNavigation: Bool = false) {
       presentSheet(screen, withNavigation: withNavigation)
@@ -120,7 +126,7 @@ struct AccentColorModifier: ViewModifier {
   let color: Color
 
   func body(content: Content) -> some View {
-    if #available(iOS 16.0, *) {
+    if #available(iOS 16.0, macOS 13.0, tvOS 16.0, *) {
       content.tint(color)
     } else {
       content.accentColor(color)

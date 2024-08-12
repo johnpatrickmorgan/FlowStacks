@@ -97,7 +97,7 @@ struct NumberVMView: View {
 
   var body: some View {
     VStack(spacing: 8) {
-      Stepper("\(viewModel.number)", value: $viewModel.number)
+      SimpleStepper(number: $viewModel.number)
       FlowLink(value: viewModel.doubleViewModel(), style: .cover(withNavigation: true), label: { Text("Present Double (cover)") })
       FlowLink(value: viewModel.doubleViewModel(), style: .sheet(withNavigation: true), label: { Text("Present Double (sheet)") })
       FlowLink(value: viewModel.incrementedViewModel(), style: .push, label: { Text("Push next") })

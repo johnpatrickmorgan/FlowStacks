@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 
 extension FlowPath {
-  
   /// Calculates the minimal number of steps to update from one routes array to another, within the constraints of SwiftUI.
   /// For a given update to an array of routes, returns the minimum intermediate steps.
   /// required to ensure each update is supported by SwiftUI.
@@ -56,7 +55,7 @@ extension FlowPath {
 
     return steps
   }
-  
+
   /// Calculates the minimal number of steps to update from one routes array to another, within the constraints of SwiftUI.
   /// For a given update to an array of routes, returns the minimum intermediate steps.
   /// required to ensure each update is supported by SwiftUI.

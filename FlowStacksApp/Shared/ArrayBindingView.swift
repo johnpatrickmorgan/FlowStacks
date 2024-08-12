@@ -91,11 +91,7 @@ private struct NumberView: View {
   var body: some View {
     VStack(spacing: 8) {
       Text("\(number)").font(.title)
-      Stepper(
-        label: { Text("\(number)") },
-        onIncrement: { number += 1 },
-        onDecrement: { number -= 1 }
-      ).labelsHidden()
+      SimpleStepper(number: $number)
       FlowLink(
         value: Screen.number(number + 1),
         style: .push,
