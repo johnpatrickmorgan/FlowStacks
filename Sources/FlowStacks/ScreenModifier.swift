@@ -4,6 +4,7 @@ import SwiftUI
 /// nested FlowStack using its parent's navigation view would not have the child's environment objects propagated to
 /// pushed screens.
 struct ScreenModifier<Data: Hashable>: ViewModifier {
+  @Environment(\.scenePhase) var scenePhase
   var path: RoutesHolder
   var destinationBuilder: DestinationBuilderHolder
   var navigator: FlowNavigator<Data>
@@ -26,6 +27,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
         }
       }
       .onChange(of: typedPath) { typedPath in
+        guard scenePhase == .active else { return }
         path.routes = typedPath.map { $0.erased() }
       }
       .onChange(of: path.routes) { routes in
@@ -38,6 +40,10 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
           }
           fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
         }
+      }
+      .onChange(of: scenePhase) { phase in
+        guard phase == .active else { return }
+        path.routes = typedPath.map { $0.erased() }
       }
   }
 }
