@@ -41,7 +41,7 @@ class DestinationBuilderHolder: ObservableObject {
     var key = Self.identifier(for: type(of: base))
     // NOTE: - `wrappedValue` might be nested `AnyHashable` e.g. `AnyHashable<AnyHashable<AnyHashable<MyScreen>>>`.
     // And `base as? AnyHashable` will always produce a `AnyHashable` so we need check if key contains 'AnyHashable' to break the looping.
-    while key.contains("AnyHashable"), let anyHashable = base as? AnyHashable {
+    while key == "Swift.AnyHashable", let anyHashable = base as? AnyHashable {
       base = anyHashable.base
       key = Self.identifier(for: type(of: base))
     }
