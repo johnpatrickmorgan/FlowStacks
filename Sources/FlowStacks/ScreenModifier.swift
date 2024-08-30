@@ -4,12 +4,15 @@ import SwiftUI
 /// nested FlowStack using its parent's navigation view would not have the child's environment objects propagated to
 /// pushed screens.
 struct ScreenModifier<Data: Hashable>: ViewModifier {
-  @Environment(\.scenePhase) var scenePhase
   var path: RoutesHolder
   var destinationBuilder: DestinationBuilderHolder
   var navigator: FlowNavigator<Data>
   @Binding var typedPath: [Route<Data>]
   var nestingIndex: Int
+  // NOTE: Using `Environment(\.scenePhase)` doesn't work if the app uses UIKIt lifecycle events (via AppDelegate/SceneDelegate).
+  // We do not need to re-render the view when appIsActive changes, and doing so can cause animation glitches, so it is wrapped
+  // in `NonReactiveState`.
+  @State var appIsActive = NonReactiveState(value: true)
 
   func body(content: Content) -> some View {
     content
@@ -27,7 +30,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
         }
       }
       .onChange(of: typedPath) { typedPath in
-        guard scenePhase == .active else { return }
+        guard appIsActive.value else { return }
         path.routes = typedPath.map { $0.erased() }
       }
       .onChange(of: path.routes) { routes in
@@ -41,9 +44,23 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
           fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
         }
       }
-      .onChange(of: scenePhase) { phase in
-        guard phase == .active else { return }
+      .onReceive(NotificationCenter.default.publisher(for: didBecomeActive)) { _ in
+        appIsActive.value = true
         path.routes = typedPath.map { $0.erased() }
+      }
+      .onReceive(NotificationCenter.default.publisher(for: willResignActive)) { _ in
+        appIsActive.value = false
       }
   }
 }
+
+#if os(macOS)
+  private let didBecomeActive = NSApplication.didBecomeActiveNotification
+  private let willResignActive = NSApplication.willResignActiveNotification
+#elseif os(watchOS)
+  private let didBecomeActive = WKExtension.applicationDidBecomeActiveNotification
+  private let willResignActive = WKExtension.applicationWillResignActiveNotification
+#else
+  private let didBecomeActive = UIApplication.didBecomeActiveNotification
+  private let willResignActive = UIApplication.willResignActiveNotification
+#endif
