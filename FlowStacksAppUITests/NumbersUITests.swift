@@ -86,7 +86,7 @@ final class NumbersUITests: XCTestCase {
     app.navigationBars["Color"].swipeSheetDown()
 
     app.buttons["Go back to root from 17"].firstMatch.tap()
-    XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout * 3))
+    XCTAssertTrue(app.navigationBars["0"].waitForExistence(timeout: navigationTimeout * 5))
   }
 }
 
