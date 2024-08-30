@@ -37,7 +37,14 @@ class DestinationBuilderHolder: ObservableObject {
   }
 
   func build(_ binding: Binding<AnyHashable>) -> AnyView {
-    let base = binding.wrappedValue.base
+    var base = binding.wrappedValue.base
+    var key = Self.identifier(for: type(of: base))
+    // NOTE: - `wrappedValue` might be nested `AnyHashable` e.g. `AnyHashable<AnyHashable<AnyHashable<MyScreen>>>`.
+    // And `base as? AnyHashable` will always produce a `AnyHashable` so we need check if key contains 'AnyHashable' to break the looping.
+    while key == "Swift.AnyHashable", let anyHashable = base as? AnyHashable {
+      base = anyHashable.base
+      key = Self.identifier(for: type(of: base))
+    }
     if let identifier = base as? LocalDestinationID {
       let key = identifier.rawValue.uuidString
       if let builder = builders[key], let output = builder(binding) {
