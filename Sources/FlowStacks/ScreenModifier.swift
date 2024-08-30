@@ -4,12 +4,13 @@ import SwiftUI
 /// nested FlowStack using its parent's navigation view would not have the child's environment objects propagated to
 /// pushed screens.
 struct ScreenModifier<Data: Hashable>: ViewModifier {
-  @Environment(\.scenePhase) var scenePhase
   var path: RoutesHolder
   var destinationBuilder: DestinationBuilderHolder
   var navigator: FlowNavigator<Data>
   @Binding var typedPath: [Route<Data>]
   var nestingIndex: Int
+  // NOTE: Using `Environment(\.scenePhase)` doesn't work if the app uses UIKIt lifecycle events (via AppDelegate/SceneDelegate).
+  @State var appIsActive = true
 
   func body(content: Content) -> some View {
     content
@@ -27,7 +28,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
         }
       }
       .onChange(of: typedPath) { typedPath in
-        guard scenePhase == .active else { return }
+        guard appIsActive else { return }
         path.routes = typedPath.map { $0.erased() }
       }
       .onChange(of: path.routes) { routes in
@@ -41,9 +42,12 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
           fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
         }
       }
-      .onChange(of: scenePhase) { phase in
-        guard phase == .active else { return }
+      .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+        appIsActive = true
         path.routes = typedPath.map { $0.erased() }
+      }
+      .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
+        appIsActive = false
       }
   }
 }
