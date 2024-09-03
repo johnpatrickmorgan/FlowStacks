@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		521D35AC2C871FFD00C6B369 /* FlowStacksApp (watchOS).app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 521D35AB2C871FFD00C6B369 /* FlowStacksApp (watchOS).app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		521D35C02C87204600C6B369 /* View+indexedA11y.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529CB4432C6ABC7B00B0AFE9 /* View+indexedA11y.swift */; };
+		521D35C12C87204600C6B369 /* NoBindingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F02BF377C300E143C5 /* NoBindingView.swift */; };
+		521D35C22C87204600C6B369 /* FlowPathView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F12BF377C300E143C5 /* FlowPathView.swift */; };
+		521D35C32C87204600C6B369 /* ArrayBindingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0EF2BF377C300E143C5 /* ArrayBindingView.swift */; };
+		521D35C42C87204600C6B369 /* NumberVMFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AE0F22BF377C300E143C5 /* NumberVMFlow.swift */; };
+		521D35C52C87204600C6B369 /* SimpleStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52AB99512C83C8F900AC6BA5 /* SimpleStepper.swift */; };
+		521D35C62C87204600C6B369 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
+		521D35C72C87204600C6B369 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
+		521D35C82C87204600C6B369 /* Deeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C5CCDD286EE92B0075ABA7 /* Deeplink.swift */; };
+		521D35CB2C8720C100C6B369 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 521D35CA2C8720C100C6B369 /* FlowStacks */; };
+		521D35CC2C8721E400C6B369 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52AB994D2C7A5A7900AC6BA5 /* Assets.xcassets */; };
+		521D35CD2C8721E400C6B369 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52AB994D2C7A5A7900AC6BA5 /* Assets.xcassets */; };
 		523FF3102A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
 		523FF3112A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
 		525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
@@ -45,6 +58,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		521D35AD2C871FFD00C6B369 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5241BF2726AA1D3A002D6892 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 521D35AA2C871FFD00C6B369;
+			remoteInfo = "FlowStacksApp Watch App";
+		};
 		5285BBB22B6408F500197CE7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5241BF2726AA1D3A002D6892 /* Project object */;
@@ -54,7 +74,23 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		521D35BB2C871FFE00C6B369 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				521D35AC2C871FFD00C6B369 /* FlowStacksApp (watchOS).app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		521D35A62C871FFD00C6B369 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		521D35AB2C871FFD00C6B369 /* FlowStacksApp (watchOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FlowStacksApp (watchOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		525C73362774BA6B009CBD67 /* NumberCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCoordinator.swift; sourceTree = "<group>"; };
@@ -77,6 +113,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		521D35A82C871FFD00C6B369 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				521D35CB2C8720C100C6B369 /* FlowStacks in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5241BF3026AA1D3B002D6892 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,6 +181,8 @@
 				5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */,
 				5285BBAC2B6408F500197CE7 /* FlowStacksAppUITests.xctest */,
 				529CB44A2C6ACE7F00B0AFE9 /* FlowStacksApp (tvOS).app */,
+				521D35A62C871FFD00C6B369 /* FlowStacksApp.app */,
+				521D35AB2C871FFD00C6B369 /* FlowStacksApp (watchOS).app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -187,6 +233,45 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		521D35A52C871FFD00C6B369 /* FlowStacksApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 521D35BF2C871FFE00C6B369 /* Build configuration list for PBXNativeTarget "FlowStacksApp" */;
+			buildPhases = (
+				521D35A42C871FFD00C6B369 /* Resources */,
+				521D35BB2C871FFE00C6B369 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				521D35AE2C871FFD00C6B369 /* PBXTargetDependency */,
+			);
+			name = FlowStacksApp;
+			packageProductDependencies = (
+			);
+			productName = FlowStacksApp;
+			productReference = 521D35A62C871FFD00C6B369 /* FlowStacksApp.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		521D35AA2C871FFD00C6B369 /* FlowStacksApp (watchOS) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 521D35BE2C871FFE00C6B369 /* Build configuration list for PBXNativeTarget "FlowStacksApp (watchOS)" */;
+			buildPhases = (
+				521D35A72C871FFD00C6B369 /* Sources */,
+				521D35A82C871FFD00C6B369 /* Frameworks */,
+				521D35A92C871FFD00C6B369 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "FlowStacksApp (watchOS)";
+			packageProductDependencies = (
+				521D35CA2C8720C100C6B369 /* FlowStacks */,
+			);
+			productName = "FlowStacksApp Watch App";
+			productReference = 521D35AB2C871FFD00C6B369 /* FlowStacksApp (watchOS).app */;
+			productType = "com.apple.product-type.application";
+		};
 		5241BF3226AA1D3B002D6892 /* FlowStacksApp (iOS) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 5241BF4226AA1D3B002D6892 /* Build configuration list for PBXNativeTarget "FlowStacksApp (iOS)" */;
@@ -272,9 +357,15 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1530;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1610;
 				TargetAttributes = {
+					521D35A52C871FFD00C6B369 = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					521D35AA2C871FFD00C6B369 = {
+						CreatedOnToolsVersion = 16.1;
+					};
 					5241BF3226AA1D3B002D6892 = {
 						CreatedOnToolsVersion = 13.0;
 					};
@@ -309,11 +400,28 @@
 				5241BF3826AA1D3B002D6892 /* FlowStacksApp (macOS) */,
 				5285BBAB2B6408F500197CE7 /* FlowStacksAppUITests */,
 				529CB4492C6ACE7F00B0AFE9 /* FlowStacksApp (tvOS) */,
+				521D35AA2C871FFD00C6B369 /* FlowStacksApp (watchOS) */,
+				521D35A52C871FFD00C6B369 /* FlowStacksApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		521D35A42C871FFD00C6B369 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		521D35A92C871FFD00C6B369 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				521D35CD2C8721E400C6B369 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5241BF3126AA1D3B002D6892 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -341,12 +449,29 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				521D35CC2C8721E400C6B369 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		521D35A72C871FFD00C6B369 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				521D35C02C87204600C6B369 /* View+indexedA11y.swift in Sources */,
+				521D35C12C87204600C6B369 /* NoBindingView.swift in Sources */,
+				521D35C22C87204600C6B369 /* FlowPathView.swift in Sources */,
+				521D35C32C87204600C6B369 /* ArrayBindingView.swift in Sources */,
+				521D35C42C87204600C6B369 /* NumberVMFlow.swift in Sources */,
+				521D35C52C87204600C6B369 /* SimpleStepper.swift in Sources */,
+				521D35C62C87204600C6B369 /* NumberCoordinator.swift in Sources */,
+				521D35C72C87204600C6B369 /* FlowStacksApp.swift in Sources */,
+				521D35C82C87204600C6B369 /* Deeplink.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5241BF2F26AA1D3B002D6892 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -408,6 +533,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		521D35AE2C871FFD00C6B369 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 521D35AA2C871FFD00C6B369 /* FlowStacksApp (watchOS) */;
+			targetProxy = 521D35AD2C871FFD00C6B369 /* PBXContainerItemProxy */;
+		};
 		5285BBB32B6408F500197CE7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 5241BF3226AA1D3B002D6892 /* FlowStacksApp (iOS) */;
@@ -416,6 +546,104 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		521D35B92C871FFE00C6B369 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				INFOPLIST_KEY_CFBundleDisplayName = FlowStacksApp;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.uk.johnpatrickmorgan.FlowStacksApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		521D35BA2C871FFE00C6B369 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				INFOPLIST_KEY_CFBundleDisplayName = FlowStacksApp;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.uk.johnpatrickmorgan.FlowStacksApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		521D35BC2C871FFE00C6B369 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = FlowStacksApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.uk.johnpatrickmorgan.FlowStacksApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		521D35BD2C871FFE00C6B369 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = FlowStacksApp;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKWatchOnly = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = co.uk.johnpatrickmorgan.FlowStacksApp.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				VALIDATE_PRODUCT = YES;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
 		5241BF4026AA1D3B002D6892 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -767,6 +995,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		521D35BE2C871FFE00C6B369 /* Build configuration list for PBXNativeTarget "FlowStacksApp (watchOS)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				521D35BC2C871FFE00C6B369 /* Debug */,
+				521D35BD2C871FFE00C6B369 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		521D35BF2C871FFE00C6B369 /* Build configuration list for PBXNativeTarget "FlowStacksApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				521D35B92C871FFE00C6B369 /* Debug */,
+				521D35BA2C871FFE00C6B369 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		5241BF2A26AA1D3A002D6892 /* Build configuration list for PBXProject "FlowStacksApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -815,6 +1061,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		521D35CA2C8720C100C6B369 /* FlowStacks */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FlowStacks;
+		};
 		529CB4602C6AD0BF00B0AFE9 /* FlowStacks */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FlowStacks;

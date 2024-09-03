@@ -8,7 +8,7 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier>: ViewModifier {
 
   @ViewBuilder
   func wrapped(content: Content) -> some View {
-    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 7.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
       NavigationStack { content }
         .modifier(navigationViewModifier)
         .environment(\.parentNavigationStackType, .navigationStack)

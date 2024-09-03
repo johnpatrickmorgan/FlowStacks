@@ -7,7 +7,7 @@ struct PushModifier<Destination: View>: ViewModifier {
   @Environment(\.parentNavigationStackType) var parentNavigationStackType
 
   func body(content: Content) -> some View {
-    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 7.0, *, tvOS 16.0, *), parentNavigationStackType == .navigationStack {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), parentNavigationStackType == .navigationStack {
       AnyView(
         content
           .navigationDestination(isPresented: $isActive, destination: { destination })
