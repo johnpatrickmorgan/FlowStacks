@@ -44,6 +44,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
           fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
         }
       }
+    #if os(iOS)
       .onReceive(NotificationCenter.default.publisher(for: didBecomeActive)) { _ in
         appIsActive.value = true
         path.routes = typedPath.map { $0.erased() }
@@ -51,16 +52,22 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
       .onReceive(NotificationCenter.default.publisher(for: willResignActive)) { _ in
         appIsActive.value = false
       }
+    #elseif os(tvOS)
+      .onReceive(NotificationCenter.default.publisher(for: didBecomeActive)) { _ in
+        appIsActive.value = true
+        path.routes = typedPath.map { $0.erased() }
+      }
+      .onReceive(NotificationCenter.default.publisher(for: willResignActive)) { _ in
+        appIsActive.value = false
+      }
+    #endif
   }
 }
 
-#if os(macOS)
-  private let didBecomeActive = NSApplication.didBecomeActiveNotification
-  private let willResignActive = NSApplication.willResignActiveNotification
-#elseif os(watchOS)
-  private let didBecomeActive = WKExtension.applicationDidBecomeActiveNotification
-  private let willResignActive = WKExtension.applicationWillResignActiveNotification
-#else
+#if os(iOS)
+  private let didBecomeActive = UIApplication.didBecomeActiveNotification
+  private let willResignActive = UIApplication.willResignActiveNotification
+#elseif os(tvOS)
   private let didBecomeActive = UIApplication.didBecomeActiveNotification
   private let willResignActive = UIApplication.willResignActiveNotification
 #endif
