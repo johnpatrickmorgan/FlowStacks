@@ -2,7 +2,7 @@ import Foundation
 
 /// The style with which a route is shown, i.e., if the route is pushed, presented
 /// as a sheet or presented as a full-screen cover.
-public enum RouteStyle: Hashable, Codable {
+public enum RouteStyle: Hashable, Codable, Sendable {
   /// A push navigation. Only valid if the most recently presented screen is embedded in a `NavigationView`.
   case push
 
@@ -16,11 +16,11 @@ public enum RouteStyle: Hashable, Codable {
   case cover(withNavigation: Bool)
 
   /// A sheet presentation.
-  public static var sheet = RouteStyle.sheet(withNavigation: false)
+  public static let sheet = RouteStyle.sheet(withNavigation: false)
 
   /// A full-screen cover presentation.
   @available(OSX, unavailable, message: "Not available on OS X.")
-  public static var cover = RouteStyle.cover(withNavigation: false)
+  public static let cover = RouteStyle.cover(withNavigation: false)
 
   /// Whether the route style is `sheet`.
   public var isSheet: Bool {

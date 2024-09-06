@@ -13,10 +13,10 @@ struct DestinationBuilderView: View {
 }
 
 struct DataDependentView<Content: View>: View, Equatable {
-  static func ==(lhs: DataDependentView, rhs: DataDependentView) -> Bool {
+  static func == (lhs: DataDependentView, rhs: DataDependentView) -> Bool {
     return lhs.data.wrappedValue == rhs.data.wrappedValue
   }
-  
+
   let data: Binding<AnyHashable>
   let content: () -> Content
 
