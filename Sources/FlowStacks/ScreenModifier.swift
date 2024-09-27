@@ -31,6 +31,7 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
       }
       .onChange(of: typedPath) { typedPath in
         guard appIsActive.value else { return }
+        guard path.routes != typedPath.map({ $0.erased() }) else { return }
         path.routes = typedPath.map { $0.erased() }
       }
       .onChange(of: path.routes) { routes in
