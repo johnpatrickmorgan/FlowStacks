@@ -41,7 +41,7 @@ struct AppCoordinator: View {
  <summary>New API</summary>
 
 ```swift
-enum Screen {
+enum Screen: Hashable {
   case numberList
   case numberDetail(Int)
 }
