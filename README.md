@@ -245,3 +245,8 @@ The library works by translating the array of routes into a hierarchy of nested 
 ## Migrating from earlier versions
 
 Please see the [migration docs](Docs/Migration/Migrating%20to%201.0.md).
+
+-------
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T114GWOT)
+
