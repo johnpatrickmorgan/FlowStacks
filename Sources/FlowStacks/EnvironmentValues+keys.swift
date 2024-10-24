@@ -6,7 +6,7 @@ enum UseNavigationStackPolicy {
 }
 
 struct UseNavigationStackPolicyKey: EnvironmentKey {
-  static let defaultValue = UseNavigationStackPolicy.never
+  static let defaultValue = UseNavigationStackPolicy.whenAvailable
 }
 
 enum ParentNavigationStackType {

@@ -25,23 +25,29 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   }
 
   private var isActiveBinding: Binding<Bool> {
-    Binding(
-      get: { allRoutes.count > index + 1 },
+    let nextPresentedIndex = allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
+    return Binding(
+      get: { allRoutes.count > nextPresentedIndex },
       set: { isShowing in
         guard !isShowing else { return }
-        guard allRoutes.count > index + 1 else { return }
+        guard allRoutes.count > nextPresentedIndex else { return }
         guard isAppeared else { return }
-        truncateToIndex(index + 1)
+
+        truncateToIndex(nextPresentedIndex)
       }
     )
   }
 
+  var nextPresentedIndex: Int {
+    allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
+  }
+
   var next: some View {
-    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: index + 1, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier)
+    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: nextPresentedIndex /* index + 1 */, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier)
   }
 
   var nextRouteStyle: RouteStyle? {
-    allRoutes[safe: index + 1]?.style
+    allRoutes[safe: nextPresentedIndex /* index + 1 */ ]?.style
   }
 
   var body: some View {
@@ -55,10 +61,10 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
 
       DestinationBuilderView(data: binding)
         .modifier(screenModifier)
+        .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier, routes: $allRoutes, navigationStackIndex: index))
         .environment(\.routeStyle, allRoutes[safe: index]?.style)
         .environment(\.routeIndex, index)
         .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
-        .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier))
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }
     }
