@@ -92,13 +92,9 @@ final class NumbersUITests: XCTestCase {
 
 extension XCUIElement {
   func swipeSheetDown() {
-    if #available(iOS 17.0, *) {
-      // This doesn't work in iOS 16
-      self.swipeDown(velocity: .fast)
-    } else {
-      let start = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
-      let end = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 5))
-      start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0.0)
-    }
+    let start = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
+    let end = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 8))
+
+    start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0.0)
   }
 }

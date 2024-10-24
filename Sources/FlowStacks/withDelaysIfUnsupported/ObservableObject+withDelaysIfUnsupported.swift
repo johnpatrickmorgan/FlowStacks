@@ -6,18 +6,15 @@ extension ObservableObject {
   /// applied in stages.
   @_disfavoredOverload
   @MainActor
-  @discardableResult
-  func _withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) -> Task<Void, Never>? {
+  func _withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) async {
     let start = self[keyPath: keyPath]
     let end = apply(transform, to: start)
 
     let didUpdateSynchronously = synchronouslyUpdateIfSupported(keyPath, from: start, to: end)
-    guard !didUpdateSynchronously else { return nil }
+    guard !didUpdateSynchronously else { return }
 
-    return Task { @MainActor in
-      await withDelaysIfUnsupported(keyPath, from: start, to: end)
-      onCompletion?()
-    }
+    await withDelaysIfUnsupported(keyPath, from: start, to: end)
+    onCompletion?()
   }
 }
 
@@ -28,8 +25,8 @@ public extension ObservableObject {
   @available(*, deprecated, message: "No longer necessary as it is taken care of automatically")
   @_disfavoredOverload
   @MainActor
-  func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) {
-    _withDelaysIfUnsupported(keyPath, transform: transform, onCompletion: onCompletion)
+  func withDelaysIfUnsupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, transform: (inout [Route<Screen>]) -> Void, onCompletion: (() -> Void)? = nil) async {
+    await _withDelaysIfUnsupported(keyPath, transform: transform, onCompletion: onCompletion)
   }
 
   /// Any changes can be made to the routes array passed to the transform closure. If those
@@ -90,7 +87,7 @@ public extension ObservableObject {
     await binding.withDelaysIfUnsupported(from: start, to: end, keyPath: \.self)
   }
 
-  private func synchronouslyUpdateIfSupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
+  func synchronouslyUpdateIfSupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
     guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
       return false
     }

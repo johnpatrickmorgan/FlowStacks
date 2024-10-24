@@ -35,8 +35,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
     if deferToParentFlowStack {
       root
     } else {
-      Router(rootView: root.environment(\.routeIndex, -1), navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.boundRoutes)
-        .modifier(EmbedModifier(withNavigation: withNavigation && parentFlowStackDataType == nil, navigationViewModifier: navigationViewModifier))
+      Router(rootView: root.environment(\.routeIndex, -1), navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.routes, withNavigation: withNavigation && parentFlowStackDataType == nil)
         .modifier(screenModifier)
         .environment(\.flowStackDataType, dataType)
         .onFirstAppear {
