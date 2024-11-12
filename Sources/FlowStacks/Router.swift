@@ -8,6 +8,8 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
   let screenModifier: ScreenModifier
   let withNavigation: Bool
 
+  @Environment(\.parentNavigationStackType) var parentNavigationStackType
+
   @Binding var screens: [Route<Screen>]
 
   init(rootView: RootView, navigationViewModifier: NavigationViewModifier, screenModifier: ScreenModifier, screens: Binding<[Route<Screen>]>, withNavigation: Bool) {
@@ -17,9 +19,13 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
     self.withNavigation = withNavigation
     _screens = screens
   }
-  
+
   var nextPresentedIndex: Int {
-    screens.firstIndex(where: \.isPresented) ?? screens.endIndex
+    if parentNavigationStackType == .navigationStack {
+      screens.firstIndex(where: \.isPresented) ?? screens.endIndex
+    } else {
+      0
+    }
   }
 
   var pushedScreens: some View {
@@ -29,24 +35,21 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
   private var isActiveBinding: Binding<Bool> {
     Binding(
       get: {
-        // TODO:
-        screens.contains(where: \.isPresented)
+        screens.indices.contains(nextPresentedIndex)
       },
       set: { isShowing in
         guard !isShowing else { return }
         guard !screens.isEmpty else { return }
-        // TODO:
         screens = Array(screens.prefix(upTo: nextPresentedIndex))
       }
     )
   }
 
   var nextRouteStyle: RouteStyle? {
-    screens.first(where: \.isPresented)?.style
+    screens[safe: nextPresentedIndex]?.style
   }
 
   var body: some View {
-//    let _ = print(
     rootView
       .modifier(screenModifier)
       .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, routes: $screens, navigationStackIndex: -1))
