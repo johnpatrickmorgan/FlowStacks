@@ -13,6 +13,8 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   // a sheet that's been presented from a pushed screen.
   @EnvironmentObject var navigator: FlowNavigator<Screen>
 
+  @Environment(\.parentNavigationStackType) var parentNavigationStackType
+
   @State var isAppeared = false
 
   init(allRoutes: Binding<[Route<Screen>]>, truncateToIndex: @escaping (Int) -> Void, index: Int, navigationViewModifier: Modifier, screenModifier: ScreenModifier) {
@@ -25,7 +27,6 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   }
 
   private var isActiveBinding: Binding<Bool> {
-    let nextPresentedIndex = allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
     return Binding(
       get: { allRoutes.count > nextPresentedIndex },
       set: { isShowing in
@@ -39,7 +40,12 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   }
 
   var nextPresentedIndex: Int {
-    allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
+    if parentNavigationStackType == .navigationStack {
+      allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
+
+    } else {
+      index + 1
+    }
   }
 
   var next: some View {
