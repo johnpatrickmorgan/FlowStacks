@@ -8,6 +8,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
   @Environment(\.nestingIndex) var nestingIndex
+  @Environment(\.useNavigationStack) var useNavigationStack
   @EnvironmentObject var routesHolder: RoutesHolder
   @EnvironmentObject var inheritedDestinationBuilder: DestinationBuilderHolder
   @Binding var externalTypedPath: [Route<Data>]
@@ -31,15 +32,38 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
     )
   }
 
+  var shouldUseNavigationStack: Bool {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
+      return useNavigationStack == .whenAvailable
+    } else {
+      return false
+    }
+  }
+
+  @ViewBuilder
+  var router: some View {
+    Router(
+      rootView: root.environment(\.routeIndex, -1),
+      navigationViewModifier: navigationViewModifier,
+      screenModifier: screenModifier,
+      screens: shouldUseNavigationStack ? $path.routes : $path.boundRoutes,
+      withNavigation: withNavigation && parentFlowStackDataType == nil
+    )
+  }
+
   public var body: some View {
     if deferToParentFlowStack {
       root
     } else {
-      Router(rootView: root.environment(\.routeIndex, -1), navigationViewModifier: navigationViewModifier, screenModifier: screenModifier, screens: $path.routes, withNavigation: withNavigation && parentFlowStackDataType == nil)
+      router
         .modifier(screenModifier)
         .environment(\.flowStackDataType, dataType)
         .onFirstAppear {
+          path.usingNavigationStack = shouldUseNavigationStack
           path.routes = externalTypedPath.map { $0.erased() }
+        }
+        .onChange(of: shouldUseNavigationStack) { _ in
+          path.usingNavigationStack = shouldUseNavigationStack
         }
     }
   }
