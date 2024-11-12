@@ -1,13 +1,16 @@
 import SwiftUI
 
 /// Embeds a view in a NavigationView or NavigationStack.
-struct EmbedModifier<NavigationViewModifier: ViewModifier, Data: Hashable>: ViewModifier {
+struct EmbedModifier<NavigationViewModifier: ViewModifier, Data: Hashable, Destination: View>: ViewModifier {
   var withNavigation: Bool
   let navigationViewModifier: NavigationViewModifier
   @Environment(\.useNavigationStack) var useNavigationStack
   @Environment(\.routeIndex) var routeIndex
   @Binding var routes: [Route<Data>]
   let navigationStackIndex: Int
+  let isActive: Binding<Bool>
+  let nextRouteStyle: RouteStyle?
+  let destination: Destination
 
   @ViewBuilder
   func wrapped(content: Content) -> some View {
@@ -23,13 +26,25 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier, Data: Hashable>: View
               .environment(\.routeIndex, indexedRoute.index + 1 + (routeIndex ?? -1))
           }
       }
+      .show(
+        isActive: isActive,
+        routeStyle: nextRouteStyle,
+        destination: destination
+      )
       .modifier(navigationViewModifier)
       .environment(\.parentNavigationStackType, .navigationStack)
     } else {
-      NavigationView { content }
-        .modifier(navigationViewModifier)
-        .navigationViewStyle(supportedNavigationViewStyle)
-        .environment(\.parentNavigationStackType, .navigationView)
+      NavigationView {
+        content
+          .show(
+            isActive: isActive,
+            routeStyle: nextRouteStyle,
+            destination: destination
+          )
+      }
+      .modifier(navigationViewModifier)
+      .navigationViewStyle(supportedNavigationViewStyle)
+      .environment(\.parentNavigationStackType, .navigationView)
     }
   }
 
@@ -38,6 +53,11 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier, Data: Hashable>: View
       wrapped(content: content)
     } else {
       content
+        .show(
+          isActive: isActive,
+          routeStyle: nextRouteStyle,
+          destination: destination
+        )
     }
   }
 }

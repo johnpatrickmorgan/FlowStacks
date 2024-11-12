@@ -67,10 +67,19 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
 
       DestinationBuilderView(data: binding)
         .modifier(screenModifier)
-        .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier, routes: $allRoutes, navigationStackIndex: index))
+        .modifier(
+          EmbedModifier(
+            withNavigation: route.withNavigation,
+            navigationViewModifier: navigationViewModifier,
+            routes: $allRoutes,
+            navigationStackIndex: index,
+            isActive: isActiveBinding,
+            nextRouteStyle: nextRouteStyle,
+            destination: next
+          )
+        )
         .environment(\.routeStyle, allRoutes[safe: index]?.style)
         .environment(\.routeIndex, index)
-        .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }
     }

@@ -52,7 +52,16 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
   var body: some View {
     rootView
       .modifier(screenModifier)
-      .modifier(EmbedModifier(withNavigation: withNavigation, navigationViewModifier: navigationViewModifier, routes: $screens, navigationStackIndex: -1))
-      .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: pushedScreens)
+      .modifier(
+        EmbedModifier(
+          withNavigation: withNavigation,
+          navigationViewModifier: navigationViewModifier,
+          routes: $screens,
+          navigationStackIndex: -1,
+          isActive: isActiveBinding,
+          nextRouteStyle: nextRouteStyle,
+          destination: pushedScreens
+        )
+      )
   }
 }
