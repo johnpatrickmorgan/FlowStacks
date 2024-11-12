@@ -5,9 +5,13 @@ import SwiftUI
 @MainActor
 class RoutesHolder: ObservableObject {
   var task: Task<Void, Never>?
+  var usingNavigationStack = false
 
   @Published var routes: [Route<AnyHashable>] = [] {
     didSet {
+      guard routes != oldValue, !usingNavigationStack else { return }
+      // TODO: check if multiple presentations and pushes work.
+      // NOTE: We don't need to delay updates if we are using NavigationStack.
       task?.cancel()
       task = Task { @MainActor in
         await _withDelaysIfUnsupported(\.delayedRoutes, transform: { $0 = routes })
