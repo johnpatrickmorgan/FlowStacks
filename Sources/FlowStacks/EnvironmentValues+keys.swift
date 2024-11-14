@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum UseNavigationStackPolicy {
+public enum UseNavigationStackPolicy {
   case whenAvailable
   case never
 }
@@ -77,4 +77,3 @@ public extension EnvironmentValues {
     set { self[NestingIndexKey.self] = newValue }
   }
 }
-

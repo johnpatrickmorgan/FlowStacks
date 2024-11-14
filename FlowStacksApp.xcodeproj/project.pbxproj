@@ -22,6 +22,10 @@
 		521D35CD2C8721E400C6B369 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52AB994D2C7A5A7900AC6BA5 /* Assets.xcassets */; };
 		523FF3102A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
 		523FF3112A79998800411CF7 /* FlowStacks in Frameworks */ = {isa = PBXBuildFile; productRef = 52E2C8F52A7268AB0042C495 /* FlowStacks */; };
+		5256734D2CE413E500221DEA /* ProcessArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256734C2CE413E500221DEA /* ProcessArguments.swift */; };
+		5256734E2CE413E500221DEA /* ProcessArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256734C2CE413E500221DEA /* ProcessArguments.swift */; };
+		5256734F2CE413E500221DEA /* ProcessArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256734C2CE413E500221DEA /* ProcessArguments.swift */; };
+		525673502CE413E500221DEA /* ProcessArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256734C2CE413E500221DEA /* ProcessArguments.swift */; };
 		525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525C73362774BA6B009CBD67 /* NumberCoordinator.swift */; };
 		526D9F3326AF667000B6B882 /* FlowStacksApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 526D9F3226AF667000B6B882 /* FlowStacksApp.swift */; };
@@ -93,6 +97,7 @@
 		521D35AB2C871FFD00C6B369 /* FlowStacksApp (watchOS).app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FlowStacksApp (watchOS).app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3326AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5241BF3926AA1D3B002D6892 /* FlowStacksApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlowStacksApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5256734C2CE413E500221DEA /* ProcessArguments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProcessArguments.swift; sourceTree = "<group>"; };
 		525C73362774BA6B009CBD67 /* NumberCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberCoordinator.swift; sourceTree = "<group>"; };
 		526D9F3226AF667000B6B882 /* FlowStacksApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowStacksApp.swift; sourceTree = "<group>"; };
 		5285BBAC2B6408F500197CE7 /* FlowStacksAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FlowStacksAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -207,6 +212,7 @@
 		526D9F1D26AF661F00B6B882 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				5256734C2CE413E500221DEA /* ProcessArguments.swift */,
 				528AE0EF2BF377C300E143C5 /* ArrayBindingView.swift */,
 				529CB4432C6ABC7B00B0AFE9 /* View+indexedA11y.swift */,
 				528AE0F12BF377C300E143C5 /* FlowPathView.swift */,
@@ -466,6 +472,7 @@
 				521D35C32C87204600C6B369 /* ArrayBindingView.swift in Sources */,
 				521D35C42C87204600C6B369 /* NumberVMFlow.swift in Sources */,
 				521D35C52C87204600C6B369 /* SimpleStepper.swift in Sources */,
+				5256734D2CE413E500221DEA /* ProcessArguments.swift in Sources */,
 				521D35C62C87204600C6B369 /* NumberCoordinator.swift in Sources */,
 				521D35C72C87204600C6B369 /* FlowStacksApp.swift in Sources */,
 				521D35C82C87204600C6B369 /* Deeplink.swift in Sources */,
@@ -482,6 +489,7 @@
 				528AE0F32BF377C400E143C5 /* ArrayBindingView.swift in Sources */,
 				529CB4442C6ABC7B00B0AFE9 /* View+indexedA11y.swift in Sources */,
 				528AE0F92BF377C400E143C5 /* NumberVMFlow.swift in Sources */,
+				5256734F2CE413E500221DEA /* ProcessArguments.swift in Sources */,
 				52AB99532C83C90300AC6BA5 /* SimpleStepper.swift in Sources */,
 				528AE0F52BF377C400E143C5 /* NoBindingView.swift in Sources */,
 				525C73372774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
@@ -498,6 +506,7 @@
 				528AE0F42BF377C400E143C5 /* ArrayBindingView.swift in Sources */,
 				529CB4452C6ABC7B00B0AFE9 /* View+indexedA11y.swift in Sources */,
 				528AE0FA2BF377C400E143C5 /* NumberVMFlow.swift in Sources */,
+				5256734E2CE413E500221DEA /* ProcessArguments.swift in Sources */,
 				52AB99542C83C90300AC6BA5 /* SimpleStepper.swift in Sources */,
 				528AE0F62BF377C400E143C5 /* NoBindingView.swift in Sources */,
 				525C73382774BA6B009CBD67 /* NumberCoordinator.swift in Sources */,
@@ -524,6 +533,7 @@
 				529CB45B2C6AD09500B0AFE9 /* NoBindingView.swift in Sources */,
 				529CB45C2C6AD09500B0AFE9 /* FlowStacksApp.swift in Sources */,
 				529CB45D2C6AD09500B0AFE9 /* View+indexedA11y.swift in Sources */,
+				525673502CE413E500221DEA /* ProcessArguments.swift in Sources */,
 				52AB99522C83C90300AC6BA5 /* SimpleStepper.swift in Sources */,
 				529CB45E2C6AD09500B0AFE9 /* NumberCoordinator.swift in Sources */,
 				529CB45F2C6AD09500B0AFE9 /* Deeplink.swift in Sources */,
