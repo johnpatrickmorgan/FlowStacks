@@ -5,12 +5,20 @@ final class NestedFlowStacksUITests: XCTestCase {
     continueAfterFailure = false
   }
 
-  func testNestedNavigationViaPathWithFlowStack() {
+  func testNestedNavigationViaPathWithNavigationView() {
     launchAndRunNestedNavigationTests(tabTitle: "FlowPath", useNavigationStack: false, app: XCUIApplication())
   }
 
-  func testNestedNavigationViaNoneWithFlowStack() {
+  func testNestedNavigationViaNoneWithNavigationView() {
     launchAndRunNestedNavigationTests(tabTitle: "NoBinding", useNavigationStack: false, app: XCUIApplication())
+  }
+
+  func testNestedNavigationViaPathWithNavigationStack() {
+    launchAndRunNestedNavigationTests(tabTitle: "FlowPath", useNavigationStack: true, app: XCUIApplication())
+  }
+
+  func testNestedNavigationViaNoneWithNavigationStack() {
+    launchAndRunNestedNavigationTests(tabTitle: "NoBinding", useNavigationStack: true, app: XCUIApplication())
   }
 
   func launchAndRunNestedNavigationTests(tabTitle: String, useNavigationStack: Bool, app: XCUIApplication) {

@@ -30,10 +30,12 @@ struct FlowStacksApp: App {
         NumberVMFlow(viewModel: .init(initialNumber: 64))
           .tabItem { Text("ViewModel") }
           .tag(Tab.viewModel)
-      }.onOpenURL { url in
+      }
+      .onOpenURL { url in
         guard let deeplink = Deeplink(url: url) else { return }
         follow(deeplink)
       }
+      .useNavigationStack(ProcessArguments.navigationStackPolicy)
     }
   }
 
