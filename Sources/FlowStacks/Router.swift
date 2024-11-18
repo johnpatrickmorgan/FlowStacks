@@ -8,7 +8,7 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
   let screenModifier: ScreenModifier
   let withNavigation: Bool
 
-  @Environment(\.parentNavigationStackType) var parentNavigationStackType
+  @Environment(\.useNavigationStack) var useNavigationStack
 
   @Binding var screens: [Route<Screen>]
 
@@ -21,7 +21,7 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
   }
 
   var nextPresentedIndex: Int {
-    if parentNavigationStackType == .navigationStack {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
       screens.firstIndex(where: \.isPresented) ?? screens.endIndex
     } else {
       0
