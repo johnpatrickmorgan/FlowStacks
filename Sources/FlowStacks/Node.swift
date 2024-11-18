@@ -13,7 +13,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   // a sheet that's been presented from a pushed screen.
   @EnvironmentObject var navigator: FlowNavigator<Screen>
 
-  @Environment(\.parentNavigationStackType) var parentNavigationStackType
+  @Environment(\.useNavigationStack) var useNavigationStack
 
   @State var isAppeared = false
 
@@ -40,9 +40,8 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   }
 
   var nextPresentedIndex: Int {
-    if parentNavigationStackType == .navigationStack {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
       allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
-
     } else {
       index + 1
     }
