@@ -46,7 +46,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
       rootView: root.environment(\.routeIndex, -1),
       navigationViewModifier: navigationViewModifier,
       screenModifier: screenModifier,
-      screens: shouldUseNavigationStack ? $path.routes : $path.boundRoutes,
+      screens: $path.boundRoutes,
       withNavigation: withNavigation && parentFlowStackDataType == nil
     )
   }

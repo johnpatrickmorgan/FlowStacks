@@ -12,7 +12,7 @@ final class CaluclateStepsTests: XCTestCase {
       .push(-4),
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -28,6 +28,24 @@ final class CaluclateStepsTests: XCTestCase {
     ]
     XCTAssertEqual(steps, expectedSteps)
   }
+  
+  func testPushAllAtOnceInNavigationStack() {
+    let start: RouterState = []
+    let end: RouterState = [
+      .push(-2),
+      .push(-3),
+      .push(-4),
+    ]
+
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: true)
+
+    let expectedSteps: [RouterState] = [
+      [],
+      end,
+    ]
+    XCTAssertEqual(steps, expectedSteps)
+  }
+
 
   func testPopAllAtOnce() {
     let start: RouterState = [
@@ -38,7 +56,7 @@ final class CaluclateStepsTests: XCTestCase {
     let end: RouterState = [
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -59,7 +77,7 @@ final class CaluclateStepsTests: XCTestCase {
       .sheet(-4),
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -85,7 +103,7 @@ final class CaluclateStepsTests: XCTestCase {
     let end: RouterState = [
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: false)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: false, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -114,7 +132,7 @@ final class CaluclateStepsTests: XCTestCase {
       .sheet(-5),
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -149,7 +167,7 @@ final class CaluclateStepsTests: XCTestCase {
       .sheet(-5),
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState] = [
       [
@@ -182,7 +200,7 @@ final class CaluclateStepsTests: XCTestCase {
       .push(-2),
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: false)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: false, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState]
 
@@ -214,7 +232,7 @@ final class CaluclateStepsTests: XCTestCase {
     let end: RouterState = [
     ]
 
-    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: true)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: true, allowNavigationUpdatesInOne: false)
 
     let expectedSteps: [RouterState]
 

@@ -37,7 +37,7 @@ public extension Binding where Value: Collection {
   }
 
   fileprivate func synchronouslyUpdateIfSupported<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool where Value == [Route<Screen>] {
-    guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
+    guard FlowPath.canSynchronouslyUpdate(from: start, to: end, allowNavigationUpdatesInOne: false) else {
       return false
     }
     wrappedValue = end
@@ -81,7 +81,7 @@ public extension Binding where Value == FlowPath {
   }
 
   fileprivate func synchronouslyUpdateIfSupported(from start: [Route<AnyHashable>], to end: [Route<AnyHashable>]) -> Bool {
-    guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
+    guard FlowPath.canSynchronouslyUpdate(from: start, to: end, allowNavigationUpdatesInOne: false) else {
       return false
     }
     wrappedValue.routes = end
@@ -92,7 +92,7 @@ public extension Binding where Value == FlowPath {
 extension Binding {
   @MainActor
   func withDelaysIfUnsupported<Screen>(from start: [Route<Screen>], to end: [Route<Screen>], keyPath: WritableKeyPath<Value, [Route<Screen>]>) async {
-    let steps = FlowPath.calculateSteps(from: start, to: end)
+    let steps = FlowPath.calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: false)
 
     wrappedValue[keyPath: keyPath] = steps.first!
     await scheduleRemainingSteps(steps: Array(steps.dropFirst()), keyPath: keyPath)
