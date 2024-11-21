@@ -9,12 +9,12 @@ class RoutesHolder: ObservableObject {
 
   @Published var routes: [Route<AnyHashable>] = [] {
     didSet {
-      guard routes != oldValue, !usingNavigationStack else { return }
+      guard routes != oldValue else { return }
       // TODO: check if multiple presentations and pushes work.
       // NOTE: We don't need to delay updates if we are using NavigationStack.
       task?.cancel()
       task = Task { @MainActor in
-        await _withDelaysIfUnsupported(\.delayedRoutes, transform: { $0 = routes })
+        await updateRoutesWithDelays(to: routes)
       }
     }
   }
@@ -28,6 +28,36 @@ class RoutesHolder: ObservableObject {
     set {
       routes = newValue
     }
+  }
+
+  func updateRoutesWithDelays(to newRoutes: [Route<AnyHashable>]) async {
+    let didUpdateSynchronously = synchronouslyUpdateIfSupported(to: newRoutes)
+    guard !didUpdateSynchronously else { return }
+
+    let steps = FlowPath.calculateSteps(from: delayedRoutes, to: newRoutes, allowNavigationUpdatesInOne: usingNavigationStack)
+
+    delayedRoutes = steps.first!
+    await scheduleRemainingSteps(steps: Array(steps.dropFirst()))
+  }
+
+  func synchronouslyUpdateIfSupported(to newRoutes: [Route<AnyHashable>]) -> Bool {
+    guard FlowPath.canSynchronouslyUpdate(from: delayedRoutes, to: newRoutes, allowNavigationUpdatesInOne: usingNavigationStack) else {
+      return false
+    }
+    delayedRoutes = newRoutes
+    return true
+  }
+
+  func scheduleRemainingSteps(steps: [[Route<AnyHashable>]]) async {
+    guard let firstStep = steps.first else {
+      return
+    }
+    delayedRoutes = firstStep
+    do {
+      try await Task.sleep(nanoseconds: UInt64(0.65 * 1_000_000_000))
+      try Task.checkCancellation()
+      await scheduleRemainingSteps(steps: Array(steps.dropFirst()))
+    } catch {}
   }
 }
 

@@ -36,7 +36,7 @@ public extension FlowNavigator {
   }
 
   private func synchronouslyUpdateIfSupported(from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
-    guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
+    guard FlowPath.canSynchronouslyUpdate(from: start, to: end, allowNavigationUpdatesInOne: false) else {
       return false
     }
     routes = end

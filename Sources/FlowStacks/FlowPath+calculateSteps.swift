@@ -10,7 +10,7 @@ extension FlowPath {
   ///   - end: The goal state.
   ///   - allowMultipleDismissalsInOneStep: Whether the platform allows multiple layers of presented screens to be dismissed in one update.
   /// - Returns: A series of state updates from the start to end.
-  static func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>], allowMultipleDismissalsInOne: Bool) -> [[Route<Screen>]] {
+  static func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>], allowMultipleDismissalsInOne: Bool, allowNavigationUpdatesInOne: Bool) -> [[Route<Screen>]] {
     let pairs = Array(zip(start, end))
     let firstDivergingIndex = pairs
       .firstIndex(where: { $0.style != $1.style }) ?? pairs.endIndex
@@ -39,10 +39,9 @@ extension FlowPath {
     }
 
     // Pop extraneous pushed screens.
-    while var popStep = steps.last, popStep.count > firstDivergingIndex {
-      var popped: Route<Screen>? = popStep.popLast()
-      while popped?.style == .push, popStep.count > firstDivergingIndex, popStep.last?.style == .push {
-        popped = popStep.popLast()
+    if var popStep = steps.last, popStep.count > firstDivergingIndex {
+      while let popped = popStep.last, popped.style == .push, popStep.count > firstDivergingIndex {
+        popStep.removeLast()
       }
       steps.append(popStep)
     }
@@ -50,7 +49,11 @@ extension FlowPath {
     // Push or present each new step.
     while var newStep = steps.last, newStep.count < end.count {
       newStep.append(end[newStep.count])
-      steps.append(newStep)
+      if allowNavigationUpdatesInOne, newStep.last!.style.isPush == true, steps.count > 1 {
+        steps[steps.count - 1] = newStep
+      } else {
+        steps.append(newStep)
+      }
     }
 
     return steps
@@ -63,19 +66,19 @@ extension FlowPath {
   ///   - start: The initial state.
   ///   - end: The goal state.
   /// - Returns: A series of state updates from the start to end.
-  public static func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> [[Route<Screen>]] {
+  public static func calculateSteps<Screen>(from start: [Route<Screen>], to end: [Route<Screen>], allowNavigationUpdatesInOne: Bool) -> [[Route<Screen>]] {
     let allowMultipleDismissalsInOne: Bool
     if #available(iOS 17.0, *) {
       allowMultipleDismissalsInOne = true
     } else {
       allowMultipleDismissalsInOne = false
     }
-    return calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: allowMultipleDismissalsInOne)
+    return calculateSteps(from: start, to: end, allowMultipleDismissalsInOne: allowMultipleDismissalsInOne, allowNavigationUpdatesInOne: allowNavigationUpdatesInOne)
   }
 
-  static func canSynchronouslyUpdate<Screen>(from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
+  static func canSynchronouslyUpdate<Screen>(from start: [Route<Screen>], to end: [Route<Screen>], allowNavigationUpdatesInOne: Bool) -> Bool {
     // If there are less than 3 steps, the transformation can be applied in one update.
-    let steps = calculateSteps(from: start, to: end)
+    let steps = calculateSteps(from: start, to: end, allowNavigationUpdatesInOne: allowNavigationUpdatesInOne)
     return steps.count < 3
   }
 }

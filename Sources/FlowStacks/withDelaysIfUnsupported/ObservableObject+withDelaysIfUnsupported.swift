@@ -88,7 +88,7 @@ public extension ObservableObject {
   }
 
   func synchronouslyUpdateIfSupported<Screen>(_ keyPath: WritableKeyPath<Self, [Route<Screen>]>, from start: [Route<Screen>], to end: [Route<Screen>]) -> Bool {
-    guard FlowPath.canSynchronouslyUpdate(from: start, to: end) else {
+    guard FlowPath.canSynchronouslyUpdate(from: start, to: end, allowNavigationUpdatesInOne: false) else {
       return false
     }
     // Even though self is known to be a class, the compiler complains that self is immutable
