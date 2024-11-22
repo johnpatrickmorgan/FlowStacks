@@ -59,19 +59,3 @@ class RoutesHolder: ObservableObject {
     } catch {}
   }
 }
-
-extension Array where Element: RouteProtocol {
-  subscript(navigationStackFrom initialIndex: Int) -> [Element] {
-    get {
-      guard !isEmpty, initialIndex < endIndex else { return [] }
-      let remainder = self[initialIndex...]
-      let finalIndex = remainder.firstIndex(where: { $0.isPresented }) ?? endIndex
-      return Array(self[initialIndex ..< finalIndex])
-    }
-    set {
-      // TODO: Handle if change is not on top of stack?
-      removeSubrange(initialIndex ..< endIndex)
-      append(contentsOf: newValue)
-    }
-  }
-}
