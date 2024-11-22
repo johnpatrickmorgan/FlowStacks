@@ -7,6 +7,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
   var dataType: FlowStackDataType
   var navigationViewModifier: NavigationViewModifier
   @Environment(\.flowStackDataType) var parentFlowStackDataType
+  @Environment(\.parentNavigationStackType) var parentNavigationStackType
   @Environment(\.nestingIndex) var nestingIndex
   @Environment(\.useNavigationStack) var useNavigationStack
   @EnvironmentObject var routesHolder: RoutesHolder
@@ -47,7 +48,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
       navigationViewModifier: navigationViewModifier,
       screenModifier: screenModifier,
       screens: $path.boundRoutes,
-      withNavigation: withNavigation && parentFlowStackDataType == nil
+      withNavigation: withNavigation && (parentNavigationStackType == nil || shouldUseNavigationStack)
     )
   }
 
