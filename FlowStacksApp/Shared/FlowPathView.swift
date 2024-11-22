@@ -117,8 +117,8 @@ private struct NumberView: View {
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
-      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .push, label: { Text("FlowPath Child") })
-      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .push, label: { Text("NoBinding Child") })
+      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .sheet(withNavigation: true), label: { Text("FlowPath Child") })
+      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .sheet(withNavigation: true), label: { Text("NoBinding Child") })
       Button("Go back to root", action: { navigator.goBackToRoot() })
     }.navigationTitle("\(number)")
   }
