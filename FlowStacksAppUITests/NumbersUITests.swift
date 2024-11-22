@@ -7,9 +7,22 @@ final class NumbersUITests: XCTestCase {
     continueAfterFailure = false
   }
 
-  func testNumbersTab() {
+  func testNumbersTabWithoutNavigationStack() {
+    testNumbersTab(useNavigationStack: false)
+  }
+
+  func testNumbersTabWithNavigationStack() {
+    testNumbersTab(useNavigationStack: true)
+  }
+
+  func testNumbersTab(useNavigationStack: Bool) {
     XCUIDevice.shared.orientation = .portrait
     let app = XCUIApplication()
+    app.launch()
+
+    if useNavigationStack {
+      app.launchArguments = ["USE_NAVIGATIONSTACK"]
+    }
     app.launch()
 
     XCTAssertTrue(app.tabBars.buttons["Numbers"].waitForExistence(timeout: 3))
