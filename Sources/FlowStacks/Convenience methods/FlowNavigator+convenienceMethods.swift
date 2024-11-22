@@ -17,7 +17,6 @@ public extension FlowNavigator {
 
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
-  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
   func presentSheet(_ screen: Screen, withNavigation: Bool = false) {
     routes.presentSheet(screen, withNavigation: withNavigation)
   }
@@ -26,7 +25,6 @@ public extension FlowNavigator {
   #else
     /// Presents a new screen via a full-screen cover presentation.
     /// - Parameter screen: The screen to push.
-    /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
     @available(OSX, unavailable, message: "Not available on OS X.")
     func presentCover(_ screen: Screen, withNavigation: Bool = false) {
       routes.presentCover(screen, withNavigation: withNavigation)

@@ -33,7 +33,6 @@ public extension Array where Element: RouteProtocol {
 
   /// Presents a new screen via a sheet presentation.
   /// - Parameter screen: The screen to push.
-  /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
   mutating func presentSheet(_ screen: Element.Screen, withNavigation: Bool = false) {
     append(.sheet(screen, withNavigation: withNavigation))
   }
@@ -42,7 +41,6 @@ public extension Array where Element: RouteProtocol {
   #else
     /// Presents a new screen via a full-screen cover presentation.
     /// - Parameter screen: The screen to push.
-    /// - Parameter onDismiss: A closure to be invoked when the screen is dismissed.
     @available(OSX, unavailable, message: "Not available on OS X.")
     mutating func presentCover(_ screen: Element.Screen, withNavigation: Bool = false) {
       append(.cover(screen, withNavigation: withNavigation))

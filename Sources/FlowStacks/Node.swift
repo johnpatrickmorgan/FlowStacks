@@ -9,10 +9,6 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   let navigationViewModifier: Modifier
   let screenModifier: ScreenModifier
 
-  // NOTE: even though this object is unused, its inclusion avoids a glitch when swiping to dismiss
-  // a sheet that's been presented from a pushed screen.
-  @EnvironmentObject var navigator: FlowNavigator<Screen>
-
   @Environment(\.useNavigationStack) var useNavigationStack
 
   @State var isAppeared = false
