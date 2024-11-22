@@ -19,7 +19,6 @@ final class FlowStacksUITests: XCTestCase {
 
   func launchAndRunNavigationTests(tabTitle: String, useNavigationStack: Bool, app: XCUIApplication) {
     if useNavigationStack {
-      // This currently has no effect, but may do so in future.
       app.launchArguments = ["USE_NAVIGATIONSTACK"]
     }
     app.launch()
