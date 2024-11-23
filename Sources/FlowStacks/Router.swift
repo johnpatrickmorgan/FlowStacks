@@ -56,6 +56,7 @@ struct Router<Screen: Hashable, RootView: View, NavigationViewModifier: ViewModi
         EmbedModifier(
           withNavigation: withNavigation,
           navigationViewModifier: navigationViewModifier,
+          screenModifier: screenModifier,
           routes: $screens,
           navigationStackIndex: -1,
           isActive: isActiveBinding,
