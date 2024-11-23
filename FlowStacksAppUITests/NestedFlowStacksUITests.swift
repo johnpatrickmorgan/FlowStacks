@@ -13,12 +13,20 @@ final class NestedFlowStacksUITests: XCTestCase {
     launchAndRunNestedNavigationTests(tabTitle: "NoBinding", useNavigationStack: false, app: XCUIApplication())
   }
 
+  func testNestedNavigationViaArrayWithNavigationView() {
+    launchAndRunNestedNavigationTests(tabTitle: "ArrayBinding", useNavigationStack: false, app: XCUIApplication())
+  }
+
   func testNestedNavigationViaPathWithNavigationStack() {
     launchAndRunNestedNavigationTests(tabTitle: "FlowPath", useNavigationStack: true, app: XCUIApplication())
   }
 
   func testNestedNavigationViaNoneWithNavigationStack() {
     launchAndRunNestedNavigationTests(tabTitle: "NoBinding", useNavigationStack: true, app: XCUIApplication())
+  }
+
+  func testNestedNavigationViaArrayWithNavigationStack() {
+    launchAndRunNestedNavigationTests(tabTitle: "ArrayBinding", useNavigationStack: true, app: XCUIApplication())
   }
 
   func launchAndRunNestedNavigationTests(tabTitle: String, useNavigationStack: Bool, app: XCUIApplication) {
@@ -39,7 +47,7 @@ final class NestedFlowStacksUITests: XCTestCase {
     app.buttons["Show 1 - route 1:0"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["FlowPath Child"].tap()
+    app.buttons["FlowPath Child - route 1:1"].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["Pick a number - route 2:-1"].firstMatch.tap()
@@ -48,7 +56,7 @@ final class NestedFlowStacksUITests: XCTestCase {
     app.buttons["Show 1 - route 2:0"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["NoBinding Child"].tap()
+    app.buttons["NoBinding Child - route 2:1"].firstMatch.tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
     app.buttons["Pick a number - route 2:2"].firstMatch.tap()
@@ -57,7 +65,7 @@ final class NestedFlowStacksUITests: XCTestCase {
     app.buttons["Show 1 - route 2:3"].tap()
     XCTAssertTrue(app.navigationBars["1"].waitForExistence(timeout: navigationTimeout))
 
-    app.buttons["Go back to root"].tap()
+    app.buttons["Go back to root - route 2:4"].tap()
     XCTAssertTrue(app.navigationBars["Home"].waitForExistence(timeout: navigationTimeout))
 
     // Goes back to root of FlowPath child.

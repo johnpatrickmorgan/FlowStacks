@@ -105,9 +105,12 @@ private struct NumberView: View {
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
-      FlowLink(value: Screen.child(.flowPath), style: .sheet(withNavigation: false), label: { Text("FlowPath Child") })
-      FlowLink(value: Screen.child(.noBinding), style: .sheet(withNavigation: true), label: { Text("NoBinding Child") })
+      FlowLink(value: Screen.child(.flowPath), style: .cover(withNavigation: false), label: { Text("FlowPath Child") })
+        .indexedA11y("FlowPath Child")
+      FlowLink(value: Screen.child(.noBinding), style: .cover(withNavigation: true), label: { Text("NoBinding Child") })
+        .indexedA11y("NoBinding Child")
       Button("Go back to root", action: { navigator.goBackToRoot() })
+        .indexedA11y("Go back to root")
     }.navigationTitle("\(number)")
   }
 }
