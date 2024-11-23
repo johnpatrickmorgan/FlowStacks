@@ -5,6 +5,7 @@ private enum Screen: Hashable {
   case number(Int)
   case numberList(NumberList)
   case visualisation(EmojiVisualisation)
+  case child(ChildFlowStack.ChildType)
 }
 
 struct ArrayBindingView: View {
@@ -29,6 +30,8 @@ struct ArrayBindingView: View {
               NumberView(number: number)
             case let .visualisation(visualisation):
               EmojiView(visualisation: visualisation)
+            case let .child(child):
+              ChildFlowStack(childType: child)
             }
           })
       }
@@ -102,6 +105,8 @@ private struct NumberView: View {
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
+      FlowLink(value: Screen.child(.flowPath), style: .sheet(withNavigation: false), label: { Text("FlowPath Child") })
+      FlowLink(value: Screen.child(.noBinding), style: .sheet(withNavigation: true), label: { Text("NoBinding Child") })
       Button("Go back to root", action: { navigator.goBackToRoot() })
     }.navigationTitle("\(number)")
   }
