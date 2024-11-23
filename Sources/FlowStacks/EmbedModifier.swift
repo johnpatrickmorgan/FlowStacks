@@ -1,9 +1,10 @@
 import SwiftUI
 
 /// Embeds a view in a NavigationView or NavigationStack.
-struct EmbedModifier<NavigationViewModifier: ViewModifier, Data: Hashable, Destination: View>: ViewModifier {
+struct EmbedModifier<NavigationViewModifier: ViewModifier, ScreenModifier: ViewModifier, Data: Hashable, Destination: View>: ViewModifier {
   var withNavigation: Bool
   let navigationViewModifier: NavigationViewModifier
+  let screenModifier: ScreenModifier
   @Environment(\.useNavigationStack) var useNavigationStack
   @Environment(\.routeIndex) var routeIndex
   @Binding var routes: [Route<Data>]
@@ -24,6 +25,7 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier, Data: Hashable, Desti
             DestinationBuilderView(data: binding)
               .environment(\.routeStyle, route.style)
               .environment(\.routeIndex, indexedRoute.index + 1 + (routeIndex ?? -1))
+              .modifier(screenModifier)
           }
       }
       .show(

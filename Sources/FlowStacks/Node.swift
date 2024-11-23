@@ -66,6 +66,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
           EmbedModifier(
             withNavigation: route.withNavigation,
             navigationViewModifier: navigationViewModifier,
+            screenModifier: screenModifier,
             routes: $allRoutes,
             navigationStackIndex: index,
             isActive: isActiveBinding,
