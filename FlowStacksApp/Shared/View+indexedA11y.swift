@@ -12,6 +12,7 @@ struct IndexedA11yIdModifier: ViewModifier {
   var id: String
 
   func body(content: Content) -> some View {
+    let _ = print("\(id) - route \(nestingIndex ?? -1):\(routeIndex ?? -1)")
     content.accessibilityIdentifier("\(id) - route \(nestingIndex ?? -1):\(routeIndex ?? -1)")
   }
 }
