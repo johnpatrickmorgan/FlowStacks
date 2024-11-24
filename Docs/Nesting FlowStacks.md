@@ -16,6 +16,7 @@ If the child FlowStack is instantiated without its own data binding, it can shar
 
 - Both parent and child can push new routes onto the path, and the parent's path will include the ones its child has pushed.
 - Calling `goBackToRoot` from the child will go all the way back to the parent's root screen.
+- The parent is responsible for whether the child should be shown with navigation or not.
 
 
 ## Approach 2: Nested FlowStack holds its own state and takes over navigation duties from its parent FlowStack
@@ -26,3 +27,4 @@ That means:
 
 - Only the child can push new routes onto the path: it assumes responsibility for navigation until it is removed from its parent's path.
 - Calling `goBackToRoot` from the child will go back to the child's root screen.
+- The child is responsible for whether its root should be shown with navigation or not.

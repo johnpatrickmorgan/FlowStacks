@@ -79,7 +79,7 @@ private struct NumberListView: View {
   var body: some View {
     List {
       ForEach(numberList.range, id: \.self) { number in
-        FlowLink("\(number)", value: Screen.number(number), style: .sheet(withNavigation: true))
+        FlowLink("\(number)", value: Screen.number(number), style: .push)
           .indexedA11y("Show \(number)")
       }
       Button("Go back", action: { navigator.goBack() })
