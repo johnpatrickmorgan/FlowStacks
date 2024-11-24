@@ -31,8 +31,14 @@ final class FlowStacksUITests: XCTestCase {
 
   func launchAndRunNavigationTests(tabTitle: String, useNavigationStack: Bool, app: XCUIApplication) {
     if useNavigationStack {
-      app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
+        app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      } else {
+        // Navigation Stack unavailable, so test can be skipped
+        return
+      }
     }
+    
     app.launch()
 
     let navigationTimeout = 0.8

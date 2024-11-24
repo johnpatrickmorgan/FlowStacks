@@ -18,11 +18,16 @@ final class NumbersUITests: XCTestCase {
   func testNumbersTab(useNavigationStack: Bool) {
     XCUIDevice.shared.orientation = .portrait
     let app = XCUIApplication()
-    app.launch()
 
     if useNavigationStack {
-      app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
+        app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      } else {
+        // Navigation Stack unavailable, so test can be skipped
+        return
+      }
     }
+    
     app.launch()
 
     XCTAssertTrue(app.tabBars.buttons["Numbers"].waitForExistence(timeout: 3))
