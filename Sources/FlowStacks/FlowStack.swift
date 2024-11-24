@@ -48,7 +48,7 @@ public struct FlowStack<Root: View, Data: Hashable, NavigationViewModifier: View
       navigationViewModifier: navigationViewModifier,
       screenModifier: screenModifier,
       screens: $path.boundRoutes,
-      withNavigation: withNavigation && (parentNavigationStackType == nil || shouldUseNavigationStack)
+      withNavigation: withNavigation && !deferToParentFlowStack
     )
   }
 
