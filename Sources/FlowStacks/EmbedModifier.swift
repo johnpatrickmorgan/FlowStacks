@@ -26,7 +26,9 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier, ScreenModifier: ViewM
               .environment(\.routeStyle, route.style)
               .environment(\.routeIndex, indexedRoute.index + 1 + (routeIndex ?? -1))
               .modifier(screenModifier)
+              .environment(\.parentNavigationStackType, .navigationStack)
           }
+          .environment(\.parentNavigationStackType, .navigationStack)
       }
       .show(
         isActive: isActive,
@@ -34,7 +36,6 @@ struct EmbedModifier<NavigationViewModifier: ViewModifier, ScreenModifier: ViewM
         destination: destination
       )
       .modifier(navigationViewModifier)
-      .environment(\.parentNavigationStackType, .navigationStack)
     } else {
       NavigationView {
         content
