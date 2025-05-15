@@ -14,7 +14,7 @@ public class FlowNavigator<Screen>: ObservableObject {
     set { routesBinding.wrappedValue = newValue }
   }
 
-  init(_ routesBinding: Binding<[Route<Screen>]>) {
+  public init(_ routesBinding: Binding<[Route<Screen>]>) {
     self.routesBinding = routesBinding
   }
 }
