@@ -8,17 +8,13 @@ struct PushModifier<Destination: View>: ViewModifier {
 
   func body(content: Content) -> some View {
     if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), parentNavigationStackType == .navigationStack {
-      AnyView(
         content
           .navigationDestination(isPresented: $isActive, destination: { destination })
-      )
     } else {
-      AnyView(
         content
           .background(
             NavigationLink(destination: destination, isActive: $isActive, label: EmptyView.init)
               .hidden()
-          )
       ).onChange(of: isActive) { isActive in
         if isActive, parentNavigationStackType == nil {
           print(
