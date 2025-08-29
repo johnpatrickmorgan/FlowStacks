@@ -6,7 +6,15 @@ public enum UseNavigationStackPolicy {
 }
 
 struct UseNavigationStackPolicyKey: EnvironmentKey {
-  static let defaultValue = UseNavigationStackPolicy.whenAvailable
+  static var defaultValue: UseNavigationStackPolicy {
+    if #available(iOS 26.0, *, macOS 26.0, *, watchOS 26.0, *, tvOS 26.0, *) {
+      // NavigationView has problems on iOS 26.
+      // See https://github.com/johnpatrickmorgan/TCACoordinators/issues/90
+      .whenAvailable
+    } else {
+      .never
+    }
+  }
 }
 
 enum ParentNavigationStackType {
