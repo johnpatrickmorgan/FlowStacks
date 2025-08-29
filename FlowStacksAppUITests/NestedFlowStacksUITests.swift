@@ -37,6 +37,9 @@ final class NestedFlowStacksUITests: XCTestCase {
         // Navigation Stack unavailable, so test can be skipped
         return
       }
+    } else if #available(iOS 26.0, *, macOS 26.0, *, watchOS 26.0, *, tvOS 26.0, *) {
+      // NavigationView has issues on v26.0, so it is not supported.
+      return
     }
     app.launch()
 
