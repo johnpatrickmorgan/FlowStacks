@@ -117,9 +117,14 @@ private struct NumberView: View {
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
-      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .push, label: { Text("FlowPath Child") })
-      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .push, label: { Text("NoBinding Child") })
+      // NOTE: When presenting a child that handles its own state, the child determines whether its root is shown with navigation.
+      FlowLink(value: ChildFlowStack.ChildType.flowPath, style: .sheet(withNavigation: false), label: { Text("FlowPath Child") })
+        .indexedA11y("FlowPath Child")
+      // NOTE: When presenting a child that defers to the parent state, the parent determines whether it is shown with navigation.
+      FlowLink(value: ChildFlowStack.ChildType.noBinding, style: .sheet(withNavigation: true), label: { Text("NoBinding Child") })
+        .indexedA11y("NoBinding Child")
       Button("Go back to root", action: { navigator.goBackToRoot() })
+        .indexedA11y("Go back to root")
     }.navigationTitle("\(number)")
   }
 }

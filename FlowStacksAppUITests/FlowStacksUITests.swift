@@ -5,23 +5,43 @@ final class FlowStacksUITests: XCTestCase {
     continueAfterFailure = false
   }
 
-  func testNavigationViaPathWithFlowStack() {
+  func testNavigationViaPathWithNavigationView() {
     launchAndRunNavigationTests(tabTitle: "FlowPath", useNavigationStack: false, app: XCUIApplication())
   }
 
-  func testNavigationViaArrayWithFlowStack() {
+  func testNavigationViaArrayWithNavigationView() {
     launchAndRunNavigationTests(tabTitle: "ArrayBinding", useNavigationStack: false, app: XCUIApplication())
   }
 
-  func testNavigationViaNoneWithFlowStack() {
+  func testNavigationViaNoneWithNavigationView() {
     launchAndRunNavigationTests(tabTitle: "NoBinding", useNavigationStack: false, app: XCUIApplication())
+  }
+
+  func testNavigationViaPathWithNavigationStack() {
+    launchAndRunNavigationTests(tabTitle: "FlowPath", useNavigationStack: true, app: XCUIApplication())
+  }
+
+  func testNavigationViaArrayWithNavigationStack() {
+    launchAndRunNavigationTests(tabTitle: "ArrayBinding", useNavigationStack: true, app: XCUIApplication())
+  }
+
+  func testNavigationViaNoneWithNavigationStack() {
+    launchAndRunNavigationTests(tabTitle: "NoBinding", useNavigationStack: true, app: XCUIApplication())
   }
 
   func launchAndRunNavigationTests(tabTitle: String, useNavigationStack: Bool, app: XCUIApplication) {
     if useNavigationStack {
-      // This currently has no effect, but may do so in future.
-      app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
+        app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      } else {
+        // Navigation Stack unavailable, so test can be skipped
+        return
+      }
+    } else if #available(iOS 26.0, *, macOS 26.0, *, watchOS 26.0, *, tvOS 26.0, *) {
+      // NavigationView has issues on v26.0, so it is not supported.
+      return
     }
+
     app.launch()
 
     let navigationTimeout = 0.8

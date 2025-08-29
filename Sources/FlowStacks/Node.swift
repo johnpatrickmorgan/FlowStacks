@@ -9,9 +9,7 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   let navigationViewModifier: Modifier
   let screenModifier: ScreenModifier
 
-  // NOTE: even though this object is unused, its inclusion avoids a glitch when swiping to dismiss
-  // a sheet that's been presented from a pushed screen.
-  @EnvironmentObject var navigator: FlowNavigator<Screen>
+  @Environment(\.useNavigationStack) var useNavigationStack
 
   @State var isAppeared = false
 
@@ -25,23 +23,32 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
   }
 
   private var isActiveBinding: Binding<Bool> {
-    Binding(
-      get: { allRoutes.count > index + 1 },
+    return Binding(
+      get: { allRoutes.count > nextPresentedIndex },
       set: { isShowing in
         guard !isShowing else { return }
-        guard allRoutes.count > index + 1 else { return }
+        guard allRoutes.count > nextPresentedIndex else { return }
         guard isAppeared else { return }
-        truncateToIndex(index + 1)
+
+        truncateToIndex(nextPresentedIndex)
       }
     )
   }
 
+  var nextPresentedIndex: Int {
+    if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *), useNavigationStack == .whenAvailable {
+      allRoutes.indices.contains(index + 1) ? allRoutes[(index + 1)...].firstIndex(where: \.isPresented) ?? allRoutes.endIndex : allRoutes.endIndex
+    } else {
+      index + 1
+    }
+  }
+
   var next: some View {
-    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: index + 1, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier)
+    Node(allRoutes: $allRoutes, truncateToIndex: truncateToIndex, index: nextPresentedIndex /* index + 1 */, navigationViewModifier: navigationViewModifier, screenModifier: screenModifier)
   }
 
   var nextRouteStyle: RouteStyle? {
-    allRoutes[safe: index + 1]?.style
+    allRoutes[safe: nextPresentedIndex /* index + 1 */ ]?.style
   }
 
   var body: some View {
@@ -55,10 +62,20 @@ struct Node<Screen: Hashable, Modifier: ViewModifier, ScreenModifier: ViewModifi
 
       DestinationBuilderView(data: binding)
         .modifier(screenModifier)
+        .modifier(
+          EmbedModifier(
+            withNavigation: route.withNavigation,
+            navigationViewModifier: navigationViewModifier,
+            screenModifier: screenModifier,
+            routes: $allRoutes,
+            navigationStackIndex: index,
+            isActive: isActiveBinding,
+            nextRouteStyle: nextRouteStyle,
+            destination: next
+          )
+        )
         .environment(\.routeStyle, allRoutes[safe: index]?.style)
         .environment(\.routeIndex, index)
-        .show(isActive: isActiveBinding, routeStyle: nextRouteStyle, destination: next)
-        .modifier(EmbedModifier(withNavigation: route.withNavigation, navigationViewModifier: navigationViewModifier))
         .onAppear { isAppeared = true }
         .onDisappear { isAppeared = false }
     }

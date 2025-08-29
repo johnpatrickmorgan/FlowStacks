@@ -7,9 +7,30 @@ final class NumbersUITests: XCTestCase {
     continueAfterFailure = false
   }
 
-  func testNumbersTab() {
+  func testNumbersTabWithoutNavigationStack() {
+    testNumbersTab(useNavigationStack: false)
+  }
+
+  func testNumbersTabWithNavigationStack() {
+    testNumbersTab(useNavigationStack: true)
+  }
+
+  func testNumbersTab(useNavigationStack: Bool) {
     XCUIDevice.shared.orientation = .portrait
     let app = XCUIApplication()
+
+    if useNavigationStack {
+      if #available(iOS 16.0, *, macOS 13.0, *, watchOS 9.0, *, tvOS 16.0, *) {
+        app.launchArguments = ["USE_NAVIGATIONSTACK"]
+      } else {
+        // Navigation Stack unavailable, so test can be skipped
+        return
+      }
+    } else if #available(iOS 26.0, *, macOS 26.0, *, watchOS 26.0, *, tvOS 26.0, *) {
+      // NavigationView has issues on v26.0, so it is not supported.
+      return
+    }
+    
     app.launch()
 
     XCTAssertTrue(app.tabBars.buttons["Numbers"].waitForExistence(timeout: 3))
@@ -92,13 +113,9 @@ final class NumbersUITests: XCTestCase {
 
 extension XCUIElement {
   func swipeSheetDown() {
-    if #available(iOS 17.0, *) {
-      // This doesn't work in iOS 16
-      self.swipeDown(velocity: .fast)
-    } else {
-      let start = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
-      let end = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 5))
-      start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0.0)
-    }
+    let start = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.8))
+    let end = coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 8))
+
+    start.press(forDuration: 0.05, thenDragTo: end, withVelocity: .fast, thenHoldForDuration: 0.0)
   }
 }

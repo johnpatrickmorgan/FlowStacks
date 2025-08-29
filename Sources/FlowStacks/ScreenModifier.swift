@@ -34,17 +34,6 @@ struct ScreenModifier<Data: Hashable>: ViewModifier {
         guard path.routes != typedPath.map({ $0.erased() }) else { return }
         path.routes = typedPath.map { $0.erased() }
       }
-      .onChange(of: path.routes) { routes in
-        guard routes != typedPath.map({ $0.erased() }) else { return }
-        typedPath = routes.compactMap { route in
-          if let data = route.screen.base as? Data {
-            return route.map { _ in data }
-          } else if route.screen.base is LocalDestinationID {
-            return nil
-          }
-          fatalError("Cannot add \(type(of: route.screen.base)) to stack of \(Data.self)")
-        }
-      }
     #if os(iOS)
       .onReceive(NotificationCenter.default.publisher(for: didBecomeActive)) { _ in
         appIsActive.value = true

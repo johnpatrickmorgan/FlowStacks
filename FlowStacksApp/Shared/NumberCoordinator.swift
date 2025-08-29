@@ -87,6 +87,7 @@ private struct NumberView: View {
       }
     }
     .padding()
+    .background(Color.white)
     .flowDestination(item: $colorShown, style: .sheet(withNavigation: true)) { color in
       Text(String(describing: color)).foregroundColor(color)
         .navigationTitle("Color")

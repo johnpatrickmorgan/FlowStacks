@@ -5,6 +5,7 @@ private enum Screen: Hashable {
   case number(Int)
   case numberList(NumberList)
   case visualisation(EmojiVisualisation)
+  case child(ChildFlowStack.ChildType)
 }
 
 struct ArrayBindingView: View {
@@ -29,6 +30,8 @@ struct ArrayBindingView: View {
               NumberView(number: number)
             case let .visualisation(visualisation):
               EmojiView(visualisation: visualisation)
+            case let .child(child):
+              ChildFlowStack(childType: child)
             }
           })
       }
@@ -76,7 +79,7 @@ private struct NumberListView: View {
   var body: some View {
     List {
       ForEach(numberList.range, id: \.self) { number in
-        FlowLink("\(number)", value: Screen.number(number), style: .sheet(withNavigation: true))
+        FlowLink("\(number)", value: Screen.number(number), style: .push)
           .indexedA11y("Show \(number)")
       }
       Button("Go back", action: { navigator.goBack() })
@@ -102,7 +105,13 @@ private struct NumberView: View {
         style: .sheet,
         label: { Text("Visualise with sheep") }
       )
+      // NOTE: When presenting a child that handles its own state, the child determines whether its root is shown with navigation.
+      FlowLink(value: Screen.child(.flowPath), style: .sheet(withNavigation: false), label: { Text("FlowPath Child") })
+        .indexedA11y("FlowPath Child")
+      FlowLink(value: Screen.child(.noBinding), style: .sheet(withNavigation: false), label: { Text("NoBinding Child") })
+        .indexedA11y("NoBinding Child")
       Button("Go back to root", action: { navigator.goBackToRoot() })
+        .indexedA11y("Go back to root")
     }.navigationTitle("\(number)")
   }
 }
