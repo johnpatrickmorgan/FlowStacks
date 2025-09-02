@@ -1,6 +1,6 @@
 import Foundation
 
-#if TCACOORDINATORS
+#if FOR_TCACOORDINATORS
   let rootIndex = 0
 #else
   let rootIndex = -1
