@@ -284,7 +284,7 @@ public extension Array where Element: RouteProtocol {
     assert(count >= 0)
     var index = endIndex - 1
     var dismissed = 0
-    while dismissed < count, index > rootIndex {
+    while dismissed < count, index + 1 > rootIndex {
       if self[index].isPresented {
         dismissed += 1
       }

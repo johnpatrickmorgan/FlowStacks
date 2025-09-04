@@ -86,11 +86,17 @@ final class ConvenienceMethodsTests: XCTestCase {
     XCTAssertEqual(path.count, 2)
   }
 
-  func testDismissAll() {
+  func testDismissAllWhereFirstIsPushed() {
     var path = FlowPath([.push(1), .sheet("two"), .push(3), .cover("four"), .push(5), .cover("six"), .push(7)])
     path.dismiss()
     XCTAssertEqual(path.count, 5)
     path.dismissAll()
     XCTAssertEqual(path.count, 1)
+  }
+
+  func testDismissAllWhereFirstIsPresented() {
+    var path = FlowPath([.cover(1), .sheet("two"), .push(3), .cover("four"), .push(5), .cover("six"), .push(7)])
+    path.dismissAll()
+    XCTAssertEqual(path.count, 0)
   }
 }
