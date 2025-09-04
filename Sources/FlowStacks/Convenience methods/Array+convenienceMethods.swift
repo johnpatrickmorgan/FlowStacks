@@ -284,13 +284,7 @@ public extension Array where Element: RouteProtocol {
     assert(count >= 0)
     var index = endIndex - 1
     var dismissed = 0
-    while dismissed < count, indices.contains(index) {
-      assert(
-        index > rootIndex,
-        "Can't dismiss\(count == 1 ? "" : " \(count) screens") - the number of presented screens is \(dismissed)"
-      )
-      guard index > rootIndex else { return }
-
+    while dismissed < count, index > rootIndex {
       if self[index].isPresented {
         dismissed += 1
       }
