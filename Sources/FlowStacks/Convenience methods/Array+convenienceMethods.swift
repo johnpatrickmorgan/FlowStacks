@@ -1,10 +1,7 @@
 import Foundation
 
-#if FOR_TCACOORDINATORS
-  let rootIndex = 0
-#else
-  let rootIndex = -1
-#endif
+// FlowStacksForTCACoordinators sets this to 0.
+@_spi(Private) public var rootIndex = -1
 
 public extension Array where Element: RouteProtocol {
   /// Whether the Array of Routes is able to push new screens. If it is not possible to determine,
