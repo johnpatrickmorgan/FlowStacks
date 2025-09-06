@@ -1,7 +1,8 @@
 import Foundation
 
-// FlowStacksForTCACoordinators sets this to 0.
-@_spi(Private) public var rootIndex = -1
+// TCACoordinators sets this to true.
+@_spi(Private) public var isWithinTCACoordinators = false
+private var rootIndex: Int { isWithinTCACoordinators ? 0 : -1 }
 
 public extension Array where Element: RouteProtocol {
   /// Whether the Array of Routes is able to push new screens. If it is not possible to determine,

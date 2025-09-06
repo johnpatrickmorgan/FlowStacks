@@ -12,23 +12,12 @@ let package = Package(
       name: "FlowStacks",
       targets: ["FlowStacks"]
     ),
-    .library(
-      name: "FlowStacksForTCACoordinators",
-      targets: ["FlowStacksForTCACoordinators"]
-    ),
   ],
   dependencies: [],
   targets: [
     .target(
       name: "FlowStacks",
       dependencies: []
-    ),
-    .target(
-      name: "FlowStacksForTCACoordinators",
-      dependencies: ["FlowStacks"],
-      swiftSettings: [
-        .define("FOR_TCACOORDINATORS"),
-      ]
     ),
     .testTarget(
       name: "FlowStacksTests",
