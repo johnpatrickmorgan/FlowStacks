@@ -278,6 +278,18 @@ public extension Array where Element: RouteProtocol, Element.Screen: Identifiabl
   }
 }
 
+// MARK: - Pop and push
+
+public extension Array where Element: RouteProtocol {
+  /// Pops the top pushed screen and pushes a new screen, resulting in a push transition to the new screen.
+  /// Only the top screen will be popped, and it must have been pushed (not presented).
+  /// - Parameter screen: The new screen to push.
+  mutating func popAndPush(_ screen: Element.Screen) {
+    pop()
+    push(screen)
+  }
+}
+
 // MARK: - Dismiss
 
 public extension Array where Element: RouteProtocol {

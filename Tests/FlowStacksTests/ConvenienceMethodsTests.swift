@@ -86,6 +86,24 @@ final class ConvenienceMethodsTests: XCTestCase {
     XCTAssertEqual(path.count, 2)
   }
 
+  func testPopAndPush() {
+    var path = FlowPath([.push(1), .push("two"), .push(true)])
+    path.popAndPush("three")
+    XCTAssertEqual(path.count, 3)
+    // Last route should be a push of the new screen
+    XCTAssertEqual(path.routes.last?.style, .push)
+    XCTAssertEqual(path.routes.last?.screen as? String, "three")
+    // Previous screen should be unchanged
+    XCTAssertEqual(path.routes[1].screen as? String, "two")
+  }
+
+  func testPopAndPushFromSingleScreen() {
+    var path = FlowPath([.push(1)])
+    path.popAndPush("replacement")
+    XCTAssertEqual(path.count, 1)
+    XCTAssertEqual(path.routes.last?.screen as? String, "replacement")
+  }
+
   func testDismissAllWhereFirstIsPushed() {
     var path = FlowPath([.push(1), .sheet("two"), .push(3), .cover("four"), .push(5), .cover("six"), .push(7)])
     path.dismiss()
