@@ -256,6 +256,17 @@ public extension FlowNavigator where Screen == AnyHashable {
   }
 }
 
+// MARK: - Pop and push
+
+public extension FlowNavigator {
+  /// Pops the top pushed screen and pushes a new screen, resulting in a push transition to the new screen.
+  /// Only the top screen will be popped, and it must have been pushed (not presented).
+  /// - Parameter screen: The new screen to push.
+  func popAndPush(_ screen: Screen) {
+    routes.popAndPush(screen)
+  }
+}
+
 // MARK: - Dismiss
 
 public extension FlowNavigator {
